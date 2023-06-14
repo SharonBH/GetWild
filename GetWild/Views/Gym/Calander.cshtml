@@ -1,0 +1,48 @@
+﻿@model GetWild.Models.GymCalanderViewModel
+@{
+    ViewBag.Title = "לו'ז אימונים";
+}
+<div class="row gym-row">
+   
+    <div class="col-md-9 col-md-pull-3">
+        <h2>לו"ז אימונים</h2>
+        <div class="panel panel-info" id="CalanderDailyPanel">
+            @Html.Partial(Utilities.App.DefaultCompany.CalanderMode == "Daily" ? "CalanderDailyAllRooms" : "CalanderDaily", @Model)
+        </div>
+    </div>
+    <div class="col-md-3 col-md-push-9 gymnav">
+        @{ Html.RenderAction("GetRightNav", "Gym");}
+    </div>
+</div>
+@Html.Partial("_PopupPartial")
+@Html.Partial("_ConfirmEnrollFull")
+
+@*<script>
+    jQuery(document).ready(function($) {
+        var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+
+
+        $("#CalanderClassBox").click(function () {
+            var id = $(this).data("id");
+            $('#myModal .modal-body').html(loaddingdiv).load("/Gym/GetCalanderDetails?classId=" + id, function (response, status, xhr) {
+                if (status != "success") {
+                    $('#myModal .modal-body').html('תקלה, אנא נסה מאוחר יותר' + response);
+                }
+            });
+            $('#myModal').modal('show', { backdrop: 'static' });
+        });
+
+        $(".CalanderBox").click(function () {
+            var id = $(this).data("id");
+            $('#myModal .modal-body').html(loaddingdiv).load("/Gym/GetCalanderDetails?classId=" + id, function (response, status, xhr) {
+                if (status != "success") {
+                    $('#myModal .modal-body').html('תקלה, אנא נסה מאוחר יותר' + response);
+                }
+            });
+            $('#myModal').modal('show', { backdrop: 'static' });
+        });
+
+        
+
+    });
+</script>*@

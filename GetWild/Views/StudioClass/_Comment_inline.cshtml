@@ -1,0 +1,99 @@
+﻿@model InShapeModels.EnrollmentCommentModel
+<!-- Modal content-->
+<div class="row nopadding">
+    <div class="col-md-10" style="padding:10px;">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.ClassId)
+            @Html.HiddenFor(model => model.UserId)
+            @Html.HiddenFor(model => model.EnrollmentId)
+            <div class="form-horizontal">
+                @if (Model.Id > 0)
+                {
+                    <div class="form-group">
+                        <div class="control-label col-md-3">נכתב ע"י:</div>
+                        <div class="col-md-8">
+                            @Model.CommentBy
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="control-label col-md-3">בתאריך:</div>
+                        <div class="col-md-8">
+                            @Model.CreateDate.Value.ToLongDateString()
+                        </div>
+                    </div>
+                }
+                <div class="form-group">
+                    <div class="control-label col-md-3">הערה:</div>
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(m => m.Comment, new { @class = "form-control", @id = "UserComment", style = "height: 100px;" })
+
+                    </div>
+                </div>
+            </div>
+        }
+
+            <div class="form-group">
+                <button type="button" id="btn_UpdateComment" class="btn btn-primary" data-id="@Model.EnrollmentId">שמור</button>
+                <button type="button" class="btn btn-danger" id="btn_closeComment">סגור</button>
+            </div>
+    </div>
+</div>
+
+<script>
+    var enrollmentid = @Model.EnrollmentId;
+    
+    //$('#classenrollments').on('click', '#btn_UpdateComment', function (e) {
+    function submitUpdateComment() {
+        //var btnid = $(this).data("id")
+        //if (btnid != enrollmentid) return false;
+        var userid = '@Model.UserId';
+        var commentid = @Model.Id;
+        var classid = @Model.ClassId;
+        
+        //var note = @Model.Comment;
+        var comment = $('#CommentPopupDiv_' + enrollmentid).find('#UserComment');
+        var note = comment.val();
+        $.ajax({
+            type: "POST",
+            url: "/StudioClass/SaveUserComment",
+            data: { UserId: userid, Note: note, Classid: classid, EnrollmentId: enrollmentid, CommentId: commentid },
+            datatype: "text",
+            success: function (data) {
+                $('#CommentPopupDiv_' + enrollmentid).addClass("hidden");
+
+            }
+        });
+    };
+
+    //$('#btn_closeComment').click(function () {
+    $('#classenrollments').on('click', '#btn_closeComment', function (e) {
+        $('#CommentPopupDiv_' + enrollmentid).addClass("hidden");
+        });
+
+        @*var enrollmentid = @Model.EnrollmentId;
+    $('#classenrollments').on('click', '#btn_UpdateComment', function (e) {
+        var userid = '@Model.UserId';
+        var commentid = @Model.Id;
+        var classid = @Model.ClassId;
+        
+        //var note = @Model.Comment;
+        var note = $('#UserComment').val();
+        $.ajax({
+            type: "POST",
+            url: "/StudioClass/SaveUserComment",
+            data: { UserId: userid, Note: note, Classid: classid, EnrollmentId: enrollmentid, CommentId: commentid },
+            datatype: "text",
+            success: function (data) {
+                $('#CommentPopupDiv_' + enrollmentid).addClass("hidden");
+            }
+        });
+    });
+
+    //$('#btn_closeComment').click(function () {
+        $('#classenrollments').on('click', '#btn_closeComment', function (e) {
+      $('#CommentPopupDiv_' + enrollmentid).addClass("hidden");
+    });*@
+</script>

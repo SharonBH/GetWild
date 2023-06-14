@@ -1,0 +1,155 @@
+﻿@using InShapeModels
+@model List<ClassEnrollmentModel>
+<ol class="list-group" id="classenrollments">
+    @foreach (var u in Model)
+    {
+    <li class='list-group-item @(!u.IsVerified ? "list-group-item-danger" : "") @(u.CSSClass)'>
+        @if (u.CommentBy != null)
+        {<span class="btn btn-xs"><i class="glyphicon glyphicon-info-sign EnrollComment" rel="tooltip" title="@u.Commentformated"></i></span>}
+
+        @if (u.Class.IsStarted)
+        {
+            if (u.IsVerified)
+            {
+                <a class="btn btn-xs btn-success btn-MarkNoShow" data-id="@u.Id" data-value="false"><i class="glyphicon glyphicon-thumbs-up"></i></a>
+            }
+            else
+            {
+                <a class="btn btn-xs btn-warning btn-MarkNoShow" data-id="@u.Id" data-value="true"><i class="glyphicon glyphicon-thumbs-down"></i></a>
+            }
+
+        }@*@if (ViewBag.EnableOutroll != null && ViewBag.EnableOutroll)
+        {*@<a class="btn btn-xs btn-danger btn-RemoveParticipants" data-id="@u.SubscriptionId" data-wr="@ViewBag.WeeklyReport" data-classid="@u.ClassId" data-name="@u.UserSubscription.FullName"><i class="glyphicon glyphicon-remove-circle"></i></a>
+        @*}*@
+        <a class="btn btn-xs btn-SetComment btn-comment" data-enrolmentid="@u.Id" data-userid="@u.UserSubscription.UserId"
+           data-classid="@u.ClassId" data-title="@u.UserSubscription.FullName" data-value="true"><i class="glyphicon glyphicon-comment"></i></a>
+        @u.UserSubscription.FullName: @u.DateEnrolled.ToShortDateString(), טלפון: @u.UserSubscription.PhoneNumber
+        @if (u.SelectedPlacement != null)
+        {
+            <text>| @u.SelectedPlacement.StudioPlacementName: @u.SelectedPlacement.ClassPlacementNumber</text>
+        }
+    </li>
+        <div id="CommentPopupDiv_@u.Id" class="hidden"></div>
+    }
+</ol>
+<div class="alert alert-info">
+    סה"כ מתאמנים רשומים: @Model.Count (הבריזו: @Model.Count(x => !x.IsVerified)) (פוטנציאל: @Model.Count(x => x.IsTrailUser))
+    @*@if (Utilities.App.CurrentCompany.UsePlacements && @Model.Any(e => e.SelectedPlacement != null))
+    {
+    <input id="btn_ShowClassplacements" type="button" class="btn btn-primary btn-block" value="תרשים" />
+    }*@
+</div>
+
+<script src="~/Scripts/tooltipMobile.js"></script>
+<script type="text/javascript">
+			$(document).ready(function() {
+
+                function openInNewTab(url) {
+                    var win = window.open(url, '_blank');
+                    win.focus();
+                }
+				// Custom Title, Content and Placement
+                @*$("#btn_ShowClassplacements").click(function () {
+
+                    //$('#myModal').modal('hide');
+                    //$('#ClassplacementsModal').modal('show');
+
+                    openInNewTab("/studioclass/printplacements?classid="+@Model[0].ClassId.ToString());
+                    //$('#ClassplacementsModal').modal({ show: true });
+                });*@
+
+                
+
+			    $(".btn-RemoveParticipants").click(function () {
+			        var classId = $(this).data('classid');
+			        var subscriptionId = $(this).data('id');
+			        var weeklyreport = $(this).data('wr');
+			        $.ajax({
+			            type: "POST",
+			            url: "/StudioClass/AdminOutrollFromClass",
+			            data: { classId: classId, subscriptionId: subscriptionId, WeeklyReport: weeklyreport },
+			            datatype: "text",
+			            success: function (data) {
+			                var result = data.Response;
+			                if (result == 'Error') {
+			                    $('#enroll-result').html(data.Message);
+			                } else {
+			                    $('#myModal').modal('hide');
+			                    $('body').removeClass('modal-open');
+			                    $('.modal-backdrop').remove();
+			                    $('#ClassesTable').html(data);
+			                }
+			            }
+			        });
+			    });
+
+			    $(".btn-MarkNoShow").click(function () {
+			        var id = $(this).data('id');
+			        var value = $(this).data('value');
+			        var icon = $(this);
+			        $.ajax({
+			            type: "POST",
+			            url: "/StudioClass/AdminMarkNoShow",
+			            data: { EnrollmentId: id, Value: value },
+			            datatype: "text",
+			            success: function (data) {
+			                var result = data.Response;
+			                if (result == 'Error') {
+			                    $('#enroll-result').html(data.Message);
+			                } else {
+			                    if (value == false) {
+			                        icon.removeClass("btn-success");
+			                        icon.children().removeClass("glyphicon-thumbs-up");
+			                        icon.addClass("btn-warning");
+			                        icon.children().addClass("glyphicon-thumbs-down");
+                                    icon.data('value',true);
+                                } else {
+                                    icon.removeClass("btn-warning");
+                                    icon.children().removeClass("glyphicon-thumbs-down");
+			                        icon.addClass("btn-success");
+			                        icon.children().addClass("glyphicon-thumbs-up");
+			                        icon.data('value', false);
+                                }
+			                }
+			            }
+			        });
+			    });
+
+			    $(".btn-RemoveParticipants").popConfirm({
+			        title: "ביטול רישום",
+			        content: "בטוח שברצונך לבטל?",
+			        placement: "bottom"
+                });
+
+                $('.btn-SetComment').click(function (ev) {
+                    var enrollmentid = $(this).data('enrolmentid');
+                    var userid = $(this).data('userid');
+                    var classid = $(this).data('classid');
+                    var title = $(this).data('title');
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/StudioClass/GetUserCommentInline",
+                        data: { UserId: userid, EnrollmentId: enrollmentid, ClassId: classid },
+                        datatype: "text",
+                        //beforeSend: function () {
+                        //    $('#ReportClasses').html(loaddingdiv);
+                        //},
+                        success: function (data) {
+                            var div = $('#CommentPopupDiv_' + enrollmentid);
+                            div.html(data);
+                           div.removeClass("hidden");
+                            var btn = div.find('#btn_UpdateComment');
+                            btn.click(function () {
+                                submitUpdateComment();
+                                return false;
+                            });
+                            //$('#CommentModal').modal('show', { backdrop: 'static' });
+                            //$('#CommentModal .modal-title').html('הערה למתאמן: ' + title);
+                        }
+                    });
+                    ev.stopPropagation();
+                });
+
+			});
+</script>

@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewBag.Title = "דוחות";
+}
+
+<h2>ניהול הסטודיו - לו"ז שבועי</h2>
+<div class="row row-bottombuffer">
+    <div id="weeklyTop" class="col-md-4">
+        @Html.ActionLink("הוסף אימון חדש", "Create", "StudioClass", routeValues: new { WeeklyReport = true }, htmlAttributes: new { @class = "btn btn-info" })
+        <a data-confirm="" onclick="DataConfirmClicked(event, this);" class="btn btn-warning" data-href="/studioclass/CopyCalander" data-toggle="modal" data-target="#confirm-delete" data-title="שכפל לו'ז שבועי"
+           data-message="האם אתה בטוח שברצונך לשכפל את הלו'ז ?" data-action="DuplicateCal"><i class="glyphicon glyphicon-copy"></i>שכפל לו'ז</a>
+        <a id="linkPublishCalander" onclick="DataConfirmClicked(event, this);" data-confirm="" class="btn btn-warning hidden" data-href="/studioclass/PublishCalander" data-toggle="modal" data-target="#confirm-delete"
+           data-title="פרסם לו'ז שבועי" data-message="האם אתה בטוח שברצונך לפרסם את הלו'ז ?" data-action="PublishCal"><i class="glyphicon glyphicon-pushpin"></i>פרסם לו'ז</a>
+        <a class="btn btn-warning btn-WeeklyTrails"><i class="glyphicon glyphicon-th-list"></i>פוטנציאל שבועי</a>
+    </div>
+
+</div>
+<div class="" id="ClassesTable" data-source="WeeklyReport">
+    @{
+        Html.RenderAction("GetWeeklyTable", "Report");
+        //Html.RenderAction("GetWeeklyNoTable","Report");
+    }
+</div>
+@Html.Partial("_PopupPartial")
+@*@Html.Partial("_ConfirmDelete")*@
+@Html.Partial("_ConfirmDelete")
+@Html.Partial("_ConfirmEnroll")
+@*@Html.Partial("_ConfirmDelete")
+    @Html.Partial("BOEnrollToClassPartial")*@
+@Html.Partial("BOEnrollToClassPartial-holder")
+@section Scripts {
+    @*<script type="text/javascript" src="~/scripts/jquery.popconfirm.js"></script>*@
+}
+
+

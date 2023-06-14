@@ -1,0 +1,53 @@
+﻿@using InShapeModels
+@model List<ClassEnrollmentModel>
+<ol class="list-group">
+    @foreach (var u in Model)
+    {
+        <li class='list-group-item @(u.HaveClassToday ? "list-group-item-info" : "list-group-item-danger") @(u.IsTrailUser ? "TrailUser" : "")'>
+            <a class="btn btn-xs btn-danger btn-RemovefromWaitList" data-id="@u.SubscriptionId" data-wr="@ViewBag.WeeklyReport" data-classid="@u.ClassId" data-name="@u.UserSubscription.FullName"><i class="glyphicon glyphicon-remove-circle"></i></a>
+            @u.UserSubscription.FullName: @u.DateEnrolled.ToShortDateString(), טלפון: @u.UserSubscription.PhoneNumber
+            @if (u.HaveClassToday)
+            {
+                <a href="#" data-toggle="tooltip" data-placement="bottom" title="@u.Class.Name (@u.Class.Time.ToShortTimeString())"><i class="glyphicon glyphicon-comment"></i></a>
+            }
+        </li>
+    }
+</ol>
+<script type="text/javascript">
+			$(document).ready(function() {
+				
+				// Custom Title, Content and Placement
+			    $('[data-toggle="tooltip"]').tooltip();
+
+			    $(".btn-RemovefromWaitList").click(function () {
+			        var classId = $(this).data('classid');
+			        var subscriptionId = $(this).data('id');
+			        var weeklyreport = $(this).data('wr');
+			        $.ajax({
+			            type: "POST",
+			            url: "/StudioClass/AdminRemoveFromWaitList",
+			            data: { classId: classId, subscriptionId: subscriptionId, WeeklyReport: weeklyreport },
+			            datatype: "text",
+			            success: function (data) {
+			                var result = data.Response;
+			                if (result == 'Error') {
+			                    $('#enroll-result').html(data.Message);
+			                } else {
+			                    $('#myModal').modal('hide');
+			                    $('body').removeClass('modal-open');
+			                    $('.modal-backdrop').remove();
+			                    $('#ClassesTable').html(data);
+			                }
+			            }
+			        });
+			    });
+
+
+			    $(".btn-RemovefromWaitList").popConfirm({
+			        title: "ביטול רישום",
+			        content: "בטוח שברצונך לבטל?",
+			        placement: "bottom"
+			    });
+
+			});
+</script>

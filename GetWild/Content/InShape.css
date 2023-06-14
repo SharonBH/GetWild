@@ -1,0 +1,158 @@
+﻿.navbar-brand {
+    background: no-repeat url(/images/logo-inshape.png) 0 0;
+    height: 110px;
+    width: 280px;
+    overflow: hidden;
+    float: left !important;
+    border: none;
+    margin: 4px;
+}
+
+
+.btn-logout {
+    background-color: #FF2D28 !important;
+}
+
+.navbar-reg li a {
+    /*padding: 8px 20px;
+    margin: 70px 5px 0 0;*/
+    background-color: #233D7F;
+    border-color: #363636;
+    color: #fff !important;
+}
+
+    .navbar-reg li a:hover {
+        background-color: #FF2D28 !important;
+    }
+
+.navbar-brand,
+.navbar-nav li a {
+    /*line-height: 30px;
+    height: 36px;
+    padding-top: 6px;*/
+    border-radius: 5px;
+}
+
+.panel-footer {
+    background-color: #233D7F !important;
+    border-top: none;
+}
+
+.form-box .input-group-addon {
+    background-color: #233D7F;
+    color: #fff;
+    border-radius: 0 4px 4px 0;
+}
+
+.form-top h3 {
+    margin-top: 0;
+    color: #233D7F;
+}
+
+.form-top p {
+    opacity: 0.8;
+    color: #233D7F;
+}
+
+.gymnav {
+    background-color: #233D7F;
+    /*color: #fff;*/
+    height: 100%;
+    min-height: 400px;
+}
+
+.gym-row {
+    border-top: #FF2D28 solid 2px;
+}
+
+.gymnav a:hover, .gymnav a:active {
+    color: #FF2D28;
+    text-decoration: none;
+}
+
+.badge-notify {
+    background: #FF2D28 !important;
+    font-size: 30px;
+    font-weight: bold;
+    position: absolute;
+    top: 148px;
+    left: 86px;
+}
+
+.icon-big {
+    position: absolute;
+    top: 140px;
+    left: 80px;
+    font-size: 60px;
+    color: #FF2D28;
+}
+
+.icon-big2 {
+    font-size: 60px;
+    color: #FF2D28;
+}
+
+.badge-notify2 {
+    background: #FF2D28 !important;
+    font-size: 120%;
+}
+
+.icon-red {
+    font-size: 32px;
+    color: #FF2D28;
+    padding: 0 1%;
+}
+
+
+
+.panel-center {
+    text-align: center;
+    font-size: 120%;
+    color: #233D7F !important;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.userinfo {
+    color: #233D7F !important;
+    font-size: 120%;
+    padding: 2%;
+}
+
+.modal h2 {
+    color: #FF2D28;
+}
+
+.CalNextWeek:hover, .CalPrevWeek:hover, .CalanderChangeDate:hover {
+    cursor: pointer;
+    text-decoration: none;
+    color: #FF2D28;
+}
+
+.CalanderBox {
+    border-radius: 4px;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05) inset;
+    padding: 2%;
+    /*margin-bottom: 2%;*/
+    color: #000;
+}
+
+.ActiveUser {
+    border-bottom: 3px solid #0000ff;
+}
+
+.InctiveUser {
+    border-bottom: 3px solid #ff4500;
+}
+
+.InctiveTrailUser {
+    border-bottom: 3px solid #111111;
+}
+
+.FrozenUser {
+    border-bottom: 3px solid #800000;
+}
+
+.ActiveTrailUser {
+    border-bottom: 3px solid #006400;
+}

@@ -1,0 +1,47 @@
+﻿<!-- Modal -->
+<div id="TandCModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<button type="button" class="close" data-dismiss="modal">&times;</button>*@
+                <h3 class="modal-title">אישור תנאים לשימוש באתר GETWILD</h3>
+            </div>
+            <div class="modal-body">
+                @Html.Action("TandC", "Content")
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-success" data-dismiss="modal" id="btn_confirmtandc"><span class="glyphicon glyphicon-ok"></span> אני מסכים לתנאי האתר</a>
+                <button type="button" id="closetandc" class="btn btn-primary hidden" data-dismiss="modal">סגור</button>
+                @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-left" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @*<button type="button" class="btn btn-danger" data-dismiss="modal" id="btn_logout">לא מסכים, התנתק</button>*@
+                    <a id="btn_logouttandc" href="javascript:document.getElementById('logoutForm').submit()" class="btn btn-danger" style="margin: 0 6px;"><span class="glyphicon glyphicon-remove"></span> לא מסכים, התנתק</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function ($) {
+
+        $("#btn_confirmtandc").click(function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            $.ajax({
+                type: "POST",
+                url: "/Account/ConfirmTandC",
+                success: function(data) {
+                    var result = data.Response;
+                    if (result == 'Success') {
+                        $('#TandCModal').modal('hide');
+                        $('body').removeClass('modal-open');
+                        $('.modal-backdrop').remove();
+                    }
+                }
+            });
+        });
+
+    });
+</script>

@@ -1,0 +1,36 @@
+﻿@model InShapeModels.WeeklyReportModel
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">דוח שבועי מסכם</h3>
+        </div>
+        <div class="panel-body">
+            @foreach (var day in Model.WeeklyDates)
+            {
+                <div class="col-md-1">
+                    @day.ToShortDateString()
+                    @foreach (var room in Model.StudioRooms)
+                    {
+                        <div class="col-md-6">
+                            @room.Name
+                            @foreach (var dailyslot in Model.DailySlots)
+                            {
+                                <div class="panel-default">
+                                    @{
+                                        var i = Model.WeeklyReportDetails.FirstOrDefault(x => x.Date.Date == day && x.StudioRoomId == room.Id && x.DailySlotId == dailyslot.Id);
+                                        if (i != null)
+                                        {
+                                            @Model.ClassTypes.FirstOrDefault(x => x.Id == i.ClassTypeId).Name
+                                            <text>:</text>
+                                            @i.Participants
+                                        }
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+
+                </div>
+            }
+        </div>
+    </div>
+

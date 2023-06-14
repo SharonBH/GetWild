@@ -1,0 +1,185 @@
+﻿@model GetWild.Models.HealthTandCViewModel
+<!-- Modal -->
+<div id="HealthTandCModal" class="modal fade" role="dialog">
+    <div class="modal-dialog model-wide ">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<button type="button" class="close" data-dismiss="modal">&times;</button>*@
+                <h3 class="modal-title">הצהרת בריאות GETWILD</h3>
+            </div>
+            <div class="modal-body">
+                <h4>פרטים אישיים:</h4>
+                <form id="HealthTandC" class="form-horizontal">
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.Userid)
+                    @Html.HiddenFor(m => m.Email)
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.FirstName, new {@class = "col-md-2 control-label"})
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.FirstName, new {@class = "form-control"})
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.LastName, new {@class = "col-md-2 control-label"})
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.LastName, new {@class = "form-control"})
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.CitizenId, new {@class = "col-md-2 control-label"})
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.CitizenId, new {@class = "form-control"})
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.PhoneNumber, new {@class = "col-md-2 control-label"})
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.PhoneNumber, new {@class = "form-control"})
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.DOB, new {@class = "col-md-2 control-label"})
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.DOB, "{0:dd/MM/yyyy}", new { @class = "form-control", @placeholder = "DD/MM/YYYY" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Address, new {@class = "col-md-2 control-label"})
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.Address, new {@class = "form-control"})
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Occupation, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.Occupation, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    @*<div class="form-group">
+                        @Html.LabelFor(m => m.Email, new {@class = "col-md-2 control-label"})
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.Email, new {@class = "form-control"})
+                        </div>
+                    </div>*@
+                    <hr/>
+                    <div class="text-primary">
+                        @Html.Action("HealthTandC", "Content")
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Signature, new {@class = "col-md-2 control-label"})
+                        <div class="col-md-10">
+                            @Html.EditorFor(m => m.Signature, new {@class = "form-control"})
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-success" data-dismiss="modal" id="btn_confirmHtandc"><span class="glyphicon glyphicon-ok"></span> אשר הצהרת בריאות</a>
+                <button type="button" id="closetandc" class="btn btn-primary hidden" data-dismiss="modal">סגור</button>
+                @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new {id = "logoutForm", @class = "navbar-left"}))
+                {
+                    @Html.AntiForgeryToken()
+                    @*<button type="button" class="btn btn-danger" data-dismiss="modal" id="btn_logout">לא מסכים, התנתק</button>*@
+                    <a id="btn_logouttandc" href="javascript:document.getElementById('logoutForm').submit()" class="btn btn-danger" style="margin: 0 6px;"><span class="glyphicon glyphicon-remove"></span> לא מסכים, התנתק</a>
+                }
+                <div id="errormsg" class="text-danger"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="~/Scripts/signature_pad.min.js"></script>
+    @*<script src="~/Scripts/SignaturePadInit.js"></script>*@
+<script>
+    var errorExists = false;
+    var signaturePadWrapper = document.querySelector('.signature-pad');
+    var canvas = signaturePadWrapper.querySelector('canvas');
+    var clearButton = signaturePadWrapper.querySelector('.btn-clear-canvas');
+    var hiddenInput = signaturePadWrapper.querySelector('input[type="hidden"]');
+
+    var signaturePad = new SignaturePad(canvas);
+
+    // Read base64 string from hidden input
+    var base64str = hiddenInput.value;
+
+    if (base64str) {
+        // Draws signature image from data URL
+        signaturePad.fromDataURL('data:image/png;base64,' + base64str);
+    }
+
+    if (hiddenInput.disabled) {
+        signaturePad.off();
+        clearButton.classList.add('hidden');
+    } else {
+        signaturePad.onEnd = function () {
+            // Returns signature image as data URL and set it to hidden input
+            base64str = signaturePad.toDataURL().split(',')[1];
+            hiddenInput.value = base64str;
+        };
+
+        clearButton.addEventListener('click', function () {
+            // Clear the canvas and hidden input
+            signaturePad.clear();
+            hiddenInput.value = '';
+        });
+    }
+
+    $("#btn_confirmHtandc").click(function () {
+        if (signaturePad.isEmpty()) {
+            if (errorExists === false) {
+                $("#signature-pad").append("<div class='text-danger' id='sig-error'>חובה לחתום</div>");
+                $("#signature-pad").parent().parent().addClass('has-error');
+                errorExists = true;
+            }
+        } else if (!signaturePad.isEmpty()) {
+            if (errorExists === true) {
+                $('#sig-error').remove();
+                $("#signature-pad").parent().parent().removeClass('has-error');
+                errorExists = false;
+            }
+        }
+        var isValid = $('#HealthTandC').validate().form();
+        if (!isValid) return false;
+        $.ajax({
+            type: "POST",
+            url: "/Account/SignHealthTandC",
+            data: $('#HealthTandC').serialize(),
+            datatype: "html",
+            success: function(data) {
+                var result = data.Response;
+                if (result == 'Success') {
+                    $('#HealthTandCModal').modal('hide');
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                } else {
+                    $('#errormsg').html(data.Message);
+                }
+            }
+        });
+    });
+
+    $(function () {
+        $.validator.addMethod('date',
+            function (value, element) {
+                if (this.optional(element)) {
+                    return true;
+                }
+                var ok = true;
+                try {
+                    $.datepicker.parseDate('dd/mm/yy', value);
+                } catch (err) {
+                    ok = false;
+                }
+                return ok;
+            });
+        //$.validator.addMethod("signature", function (value, element, options) {
+        //    if (signaturePad.isEmpty()) {
+        //        return false;
+        //    }
+        //    return true;
+        //}, "Your signature is required");
+        $('.datepicker').datepicker({ dateFormat: 'dd/mm/yy' });
+    });
+
+</script>

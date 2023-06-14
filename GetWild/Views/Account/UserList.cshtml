@@ -1,0 +1,51 @@
+﻿@using InShapeModels
+@model UsersList
+
+@{
+    ViewBag.Title = "משתמשים רשומים";
+}
+
+@if (ViewBag.showHeader != 0)
+{
+    <h2>ניהול משתמשים</h2>
+
+    <div class="row row-bottombuffer">
+        <div class="col-md-6" id="manageHeader">
+            @Html.ActionLink("הוסף משתמש חדש", "RegisterPlus", null, new { @class = "btn btn-info" })
+            <a class="btn btn-primary btn-export" href="~/export/ExportUserWithSubscription"><i class="glyphicon glyphicon-export"></i> יצוא </a>
+            @if (Model.CurrentCompany.UseSMS)
+            {
+                <a class="btn btn-primary btn-smsSend" data-smstype="@SmsListType.All"><i class="glyphicon glyphicon-phone"></i> לכולם</a>
+                <a class="btn btn-primary btn-smsSend" data-smstype="@SmsListType.Active"><i class="glyphicon glyphicon-phone"></i> פעילים</a>
+                <a class="btn btn-primary btn-smsSend" data-smstype="@SmsListType.Frozen"><i class="glyphicon glyphicon-phone"></i> קפואים</a>
+                <a class="btn btn-primary btn-smsSend" data-smstype="@SmsListType.Inactive"><i class="glyphicon glyphicon-phone"></i> לא פעילים</a>
+            }
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                @*@Html.TextBox("SearchString", null, new { @class = "form-control form-control-rounded autocomplete-with-hidden", @id = "userddl", data_type = "user", data_url = Url.Action("GetUsersSearch", "Account") })*@
+                @Html.TextBox("SearchString", null, new { @class = "form-control form-control-rounded", @id = "searchbox" })
+                <span id="btn_searchUsers" class="input-group-addon btn-rounded" style="background-color: #39B3D7; color: #fff;">
+                    <i class="glyphicon glyphicon-search"></i>
+                </span>
+                @*<span class="input-group-btn">
+            <button class="btn btn-info btn-rounded" type="button"><i class="glyphicon glyphicon-search"></i></button>
+        </span>*@
+            </div>
+        </div>
+        <div class="col-md-2">
+            @Html.EnumDropDownListFor(m => m.UserType, "כולם (בחר לסינון)", new { @class = "form-control ddlUserTypes" })
+        </div>
+        @*<div class="col-md-2">
+                <label>@Html.CheckBoxFor(m => m.IncludeFrozen, new { @id = "cbFrozen" }) כולל קפואים</label>
+            </div>*@
+        <div class="col-md-2">
+
+        </div>
+    </div>
+    @Html.Action("GetUsersSummary", "Account")
+}
+<div id="UserListTable">
+    @Html.Partial("UserListTable", Model)
+</div>
+@Html.Partial("_ConfirmDelete")

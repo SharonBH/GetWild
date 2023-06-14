@@ -1,0 +1,62 @@
+﻿@model GetWild.Models.SubscriptionDetailViewModel
+
+               <form id="Subscriptionchange" class="form-horizontal">
+                    @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.SubscriptionId)
+                        @Html.HiddenFor(model => model.UserId)
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ChangeTypeId, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(model => model.ChangeTypeId, new SelectList(Model.ChangeTypes, "Id", "Name"), "בחר סוג", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.ChangeTypeId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Value, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Value, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Value, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+                            </div>
+                        </div>             
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                @*<button type="button" class="btn btn-default" data-dismiss="modal">ביטול</button>*@
+                                <input id="btn_changesubscription" type="button" class="btn btn-primary btn-block" value="עדכן מנוי" />
+                            </div>
+                        </div>
+               </form>
+
+
+<script type="text/javascript">
+    $(function() {
+        // Document.ready -> link up remove event handler
+        $("#btn_changesubscription").click(function () {
+            var isValid = $('#Subscriptionchange').validate().form();
+            if (!isValid) return false;
+            $.ajax({
+                type: "POST",
+                url: "/Account/ChangeSubscription",
+                data: $('#Subscriptionchange').serialize(),
+                datatype: "html",
+                success: function (data) {
+                    if ((data.Response) == 'Error') {
+                        $('#myModal .modal-title').html('ניהול משתמשים');
+                        $('#myModal .modal-body').html(data.Message);
+                        $('#myModal').modal('show', { backdrop: 'static' });
+                    } else {
+                        $('#subsription-tab').html(data);
+                        //$('#myModal').modal('hide');  
+                    }
+                    //$('#subsription-tab').load('/Account/ManageSubscriptions');
+                }
+            });
+        });
+    });
+</script>

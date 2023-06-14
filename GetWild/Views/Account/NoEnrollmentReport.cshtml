@@ -1,0 +1,41 @@
+﻿@using InShapeModels
+@{
+    ViewBag.Title = "דוחות";
+}
+
+<h2>ניהול הסטודיו - דוחות</h2>
+@*<div class="row">
+    <div style="text-align:left; width: 25%; float: right;">
+        <a class="btn btn-info glyphicon glyphicon-chevron-right CalanderChangeDate" data-weekno="@(ViewBag.WeekNo - 1)"></a>
+    </div>
+    <div style="text-align:center;width: 50%; float: right;">&nbsp;</div>
+    <div style="text-align:right; width: 25%; float: right;">
+        <a class="btn btn-info glyphicon glyphicon-chevron-left CalanderChangeDate" data-weekno="@(ViewBag.WeekNo + 1)"></a>
+    </div>
+</div>*@
+<div class="row">
+    <div class="col-md-12">
+        <h3>דו"ח עצלנים</h3>
+        <p>כל מי שלא נרשם לאימון לשבוע הנוכחי</p>
+    </div>
+</div>
+<div class="row row-bottombuffer">
+    <div class="col-md-2">
+        <a class="btn btn-primary btn-smsSender" data-smstype="@SmsListType.NoEnrollmentReport"><i class="glyphicon glyphicon-phone"></i> שלח הודעה</a>
+    </div>
+    <div class="col-md-2">
+        <a class="btn btn-info btn-export" href="~/export/ExportUserWithNoEnrollments"><i class="glyphicon glyphicon-export"></i> יצוא </a>
+    </div>
+</div>
+<div class="row row-topbuffer">
+    <div class="col-md-12 col">
+        <div id="WekklyDayReport" style="min-height: 300px;">
+            @{Html.RenderAction("UsersWithNoEnrollmentsList", "Account");}
+        </div>
+    </div>
+</div>
+@*<script>
+    $(".btn-smsSender").click(function () {
+        window.document.location = "/Sms/SmsSender?smsType=" + $(this).data("smstype") + "&usertype=0";
+    });
+</script>*@

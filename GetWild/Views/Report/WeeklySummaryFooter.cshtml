@@ -1,0 +1,41 @@
+﻿@using System.Linq
+@using InShapeModels
+@using Utilities
+
+@model List<InShapeModels.DailyStatsModel>
+
+           
+                    <td>סה"כ</td>
+                    @foreach (var day in Model)
+                    {
+                        <td colspan="@Model.StudioRooms.Count" style="text-align: center;">
+                            @day.TotalClasses
+                            @if (day.TotalParticipants > 0)
+                            {
+                            <a class="btn btn-xs btn-info btn-DailyParticipants" data-date="@day.Date" data-name="@day.Date.ToString("dddd, dd/MM")" data-footer="@day.TotalParticipants">@day.TotalParticipants (@day.MissedParticipants) <i class="glyphicon glyphicon-th-list"></i></a>
+                            <a class="btn btn-xs btn-warning btn-DailyTrails" data-date="@day.Date" data-name="@day.Date.ToString("dddd, dd/MM")" data-footer="">@day.TrailParticipants <i class="glyphicon glyphicon-th-list"></i></a>
+                            if (Model.CurrentCompany.UseSMS)
+                            {<a class="btn btn-xs btn-primary btn-smsSendday" data-smstype="@SmsListType.ByDay" data-refdate="@day.Date"><i class="glyphicon glyphicon-phone"></i></a>}
+                            }
+                        </td>
+
+                    }
+                    <td style="text-align: center;"></td>
+              <script>
+                  jQuery(document).ready(function ($) {
+                      var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+                          $.ajax({
+                              type: "POST",
+                              url: "/Report/GetWeeklyFooter",
+                              data: { fromdate: fromdate, todate: todate },
+                              datatype: "text",
+                              beforeSend: function () {
+                                  $('#weeklytablefooter').html(loaddingdiv);
+                              },
+                              success: function (data) {
+                                  $('#weeklytablefooter').html(data);
+                              }
+                          });
+                      });
+              </script>
+

@@ -1,0 +1,70 @@
+﻿@model GetWild.Models.StudioRoomViewModel
+
+@{
+    ViewBag.Title = "ניהול סטודיו";
+}
+
+@if (@Model != null)
+{
+    <h2>ערוך @Utilities.App.DefaultCompany.StudioRoomName</h2>
+}
+else
+{
+    <h2>הוסף @Utilities.App.DefaultCompany.StudioRoomName</h2>
+}
+@*@using (Html.BeginForm("Upload", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))*@
+<form action="" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.StudioId)
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MaxParticipants, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MaxParticipants, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MaxParticipants, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*<div class="form-group">
+            @Html.LabelFor(model => model.ImageUpload, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                                @if (@Model != null)
+                                {
+                                    <img src="@Model.Picture" class="form-img" />
+                                    <br/>
+                                }
+                @Html.TextBoxFor(model => model.ImageUpload, new { type = "file" })
+                @Html.ValidationMessageFor(model => model.ImageUpload, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @if (@Model != null)
+                { <input type="submit" value="שמור שינויים" class="btn btn-primary btn-block" />}
+                else
+                { <input type="submit" value="הוסף" class="btn btn-primary btn-block" />}
+            </div>
+        </div>
+    </div>
+    </form>
+
+    <div>
+        @Html.ActionLink("חזרה לניהול", "Index")
+    </div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }

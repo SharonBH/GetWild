@@ -1,0 +1,140 @@
+﻿@using Utilities
+@model List<InShapeModels.ClassEnrollmentModel>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                האימונים שלי
+            </div>
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#next-tab">אימונים קרובים</a></li>
+                <li><a data-toggle="tab" href="#past-tab">אימונים קודמים</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="next-tab" class="tab-pane fade in active">
+                    <div class="panel-body">
+                        <div id="update-message">
+                        </div>
+                        @if (Model.Any(x => x.Class.Date > DateTime.UtcNow.ToLocal()))
+                {
+                            <table class="table table-striped table-hover ">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:right;">
+                                            אימון
+                                        </th>
+                                        <th style="text-align:right;">
+                                            תאריך
+                                        </th>
+                                        @*<th style="text-align:right;">
+                                            תאריך רישום
+                                        </th>*@
+                                        <th style="text-align:right;"></th>
+                                    </tr>
+                                </thead>
+                                @foreach (var item in Model.Where(x => x.Class.Date > DateTime.UtcNow.ToLocal()))
+                        {
+                                    <tr class="clickable-row" data-id="@item.Id" data-userid="@item.UserSubscription.UserId" style="cursor:pointer; text-align:right;">
+                                        <td>
+                                            @item.Class.Name <span class="badge@(item.SelectedPlacement == null ? " hidden" : "")">@item.SelectedPlacement.DisplyName</span> - @item.Class.Date.ToString("f")
+                                        </td>
+                                        <td>
+                                            @item.Class.Date.ToShortDateString()
+                                        </td>
+                                        @*<td>
+                                            @item.DateEnrolled.ToShortDateString()
+                                        </td>*@
+                                        <td></td>
+                                    </tr>
+                        }
+                                <tr class="info" style="text-align:right;">
+                                    <td>
+                                        סה"כ אימונים למנוי:
+                                    </td>
+                                    <td></td>
+                                    @*<td></td>*@
+                                    <td id="cart-total">
+                                        @Model.Count()
+                                    </td>
+                                </tr>
+                            </table>
+
+                }
+                else
+                {
+                            <div>
+                                <p>
+                                    אין אימונים קרובים.
+                                </p>
+                            </div>
+                }
+                    </div>
+                </div>
+
+                <div id="past-tab" class="tab-pane fade">
+                    <div class="panel-body">
+                        <div id="update-message">
+                        </div>
+                        @if (Model.Any(x => x.Class.Date < DateTime.UtcNow.ToLocal()))
+                        {
+                            <table class="table table-fixed ">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:right; width: 60%;">
+                                            אימון
+                                        </th>
+                                        <th style="text-align:right; width: 18%;">
+                                            תאריך
+                                        </th>
+                                        @*<th style="text-align:right; width: 18%;">
+                                            תאריך רישום
+                                        </th>*@
+                                        <th style="text-align:right; width: 2%;"></th>
+                                    </tr>
+                                </thead>
+                                @foreach (var item in Model.Where(x => x.Class.Date < DateTime.UtcNow.ToLocal()))
+                                {
+                                    <tr class="clickable-row" data-id="@item.Id" data-userid="@item.UserSubscription.UserId" style="cursor:pointer; text-align:right;">
+                                        <td style="text-align:right; width: 60%;">
+                                            @item.Class.Name - @item.Class.Date.ToString("f")
+                                        </td>
+                                        <td style="text-align:right; width: 18%;">
+                                            @item.Class.Date.ToShortDateString()
+                                        </td>
+                                        @*<td style="text-align:right; width: 18%;">
+                                            @item.DateEnrolled.ToShortDateString()
+                                        </td>*@
+                                        <td style="text-align:right; width: 2%;"></td>
+                                    </tr>
+                                }
+                                <tr class="info" style="text-align:right;">
+                                    <td style="text-align:right; width: 80%;">
+                                        סה"כ אימונים למנוי:
+                                    </td>
+                                    <td style="text-align:right; width: 20%;" id="cart-total">
+                                        @Model.Count()
+                                    </td>
+                                </tr>
+                            </table>
+
+                        }
+                        else
+                        {
+                            <div>
+                                <p>
+                                    אין אימונים קודמים.
+                                </p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+                <div class="form-group" style="text-align: left; padding-left: 6%;">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">סגור</button>
+                </div>
+
+            </div>
+        </div>
+
+

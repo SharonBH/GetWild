@@ -1,0 +1,66 @@
+﻿@using InShapeModels
+
+@{
+    ViewBag.Title = "ניהול SMS";
+}
+
+<h2>ניהול SMS</h2>
+<p>יתרת הודעות: <b>@ViewBag.SMSCount</b></p>
+<div class="row">
+    <div class="col-md-1">טלפון לשליחה:</div>
+    <div class="col-md-2"><input class="form-control" id="SenderNumber" /></div>
+    <div class="col-md-2">
+        <input type="button" value="שמור" class="btn btn-default btn-primary btn-block btn_NumberUpdate" />
+    </div>
+</div>
+<div class="row">
+    <div class="form-horizontal" style="min-height: 400px;">
+        <hr />
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#BeforeStart-tab">תזכורת אימון</a></li>
+            <li><a data-toggle="tab" href="#Welcome-tab">רישום לאתר</a></li>
+            <li><a data-toggle="tab" href="#Expire-tab">לפני מנוי פג תוקף</a></li>
+            <li><a data-toggle="tab" href="#Inactive-tab">מנוי לא פעיל</a></li>
+
+            @if (ViewBag.WaitingListEnabled)
+            {
+                <li><a data-toggle="tab" href="#WaitList-tab">רשימת המתנה</a></li>
+                <li><a data-toggle="tab" href="#BroadcastWaitList-tab">רשימת המתנה - כולם</a></li>
+            }
+            <li><a data-toggle="tab" href="#InstructorReminder-tab">תזכורת מאמן</a></li>
+            <li><a data-toggle="tab" href="#SendSms-tab">שלח הודעה</a></li>
+        </ul>
+        <div class="tab-content">
+            @*<div id="BeforeStart-tab" class="tab-pane fade in active">*@
+            @{ Html.RenderAction("EditMessage", new { tid = (int)MessageType.BeforeStart }); }
+            @*</div>
+        <div id="Welcome-tab" class="tab-pane fade">*@
+            @{ Html.RenderAction("EditMessage", new { tid = (int)MessageType.Welcome }); }
+            @*</div>
+        <div id="Expire-tab" class="tab-pane fade">*@
+            @{ Html.RenderAction("EditMessage", new { tid = (int)MessageType.Expire }); }
+            @*</div>
+        <div id="Inactive-tab" class="tab-pane fade">*@
+            @{ Html.RenderAction("EditMessage", new { tid = (int)MessageType.Inactive }); }
+            @*</div>
+        <div id="WaitingList-tab" class="tab-pane fade">*@
+
+            @*</div>
+        <div id="WaitingList2-tab" class="tab-pane fade">*@
+            @if (ViewBag.WaitingListEnabled)
+            {
+                Html.RenderAction("EditMessage", new { tid = (int)MessageType.WaitList });
+                Html.RenderAction("EditMessage", new { tid = (int)MessageType.BroadcastWaitList });
+            }
+            @{ Html.RenderAction("EditMessage", new { tid = (int)MessageType.InstructorReminder }); }
+            <div id="SendSms-tab" class="tab-pane fade">
+
+                @{ Html.RenderAction("SendTestMSG"); }
+            </div>
+        </div>
+    </div>
+    </div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+    @Html.Partial("_PopupPartial")

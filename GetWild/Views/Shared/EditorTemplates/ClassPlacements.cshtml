@@ -1,0 +1,85 @@
+﻿@model List<InShapeModels.AvailablePlacementsModel>
+@foreach (var placementId in Model.Select(x => x.StudioPlacementId).Distinct())
+{
+<div class="row">
+    @for (int i = 0; i < Model.Count(); i++)
+    {
+        if (Model[i].StudioPlacementId == placementId)
+        {
+            @Html.HiddenFor(m => Model[i].Id)
+            @Html.HiddenFor(m => Model[i].ClassId)
+            @Html.HiddenFor(m => Model[i].StudioPlacementId)
+            @Html.HiddenFor(m => Model[i].StudioPlacementName)
+            @Html.HiddenFor(m => Model[i].IsInUse)
+            @Html.HiddenFor(m => Model[i].ClassPlacementNumber)
+            <div class="col-md-1">
+                <div class="panel @(!Model[i].IsDeleted ? Model[i].ClassEnrollment != null ? "panel-primary" : "panel-success" : "panel-danger")">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <h5>@Model[i].DisplyName</h5>
+                                </div>
+                                <div class="col-md-3">
+                                    @if (Model[i].ClassEnrollment == null)
+                                    {
+                                        @Html.CheckBoxFor(m => Model[i].ToCreate, new { @class = "checkbox ToCreate", data_placementid = Model[i].StudioPlacementId, data_id = Model[i].Id })
+                                    }
+                                    else
+                                    {
+                                        @Html.CheckBoxFor(m => Model[i].ToCreate, new { @class = "checkbox ToCreate", @readonly = "readonly", data_placementid = Model[i].StudioPlacementId, data_id = Model[i].Id })
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        @if (Model[i].ClassEnrollment != null)
+                        {
+                            <div class="nopadding small">
+                                @*<a class="btn btn-xs btn-danger btn-RemoveParticipants" data-id="@Model[i].ClassEnrollment.SubscriptionId" data-wr="@ViewBag.WeeklyReport" data-classid="@Model[i].ClassEnrollment.ClassId" data-name="@Model[i].ClassEnrollment.UserSubscription.FullName"><i class="glyphicon glyphicon-remove-circle"></i></a>*@
+                                @Model[i].ClassEnrollment.UserSubscription.FullName
+                            </div>
+
+                        }
+                        
+                            
+                            @*<div id="addParticipants@(Model[i].Id)" class="nopadding @(Model[i].ToCreate && Model[i].ClassEnrollment == null ? "" : "hidden")">
+                                <a class="btn btn-xs btn-success btn-AddParticipants" data-id="@Model[i].ClassId"><i class="glyphicon glyphicon-plus-sign"></i></a>
+                            </div>*@
+                        
+                            </div>
+                        </div>
+            </div>
+        }
+    }
+</div>
+}
+
+@*<script>
+    //jQuery(document).ready(function ($) {
+    //    $('.checkbox.ToCreate').prop('readonly', true);
+    //});
+    $('.checkbox.ToCreate').change(function () {
+        var MaxParticipants = $('#MaxParticipantstxt');
+        var val = $(this).data('placementid');
+        var id = 'addParticipants' + $(this).data('id');
+        var p = Number(MaxParticipants.val());
+        if ($(this).prop('checked')) {
+            $(this).closest('div.panel').removeClass("panel-danger").addClass("panel-success");
+            $('#'+id).removeClass("hidden");
+            if (val != 999 && val != 1003 && val != 1007) p = p + 1;
+            $('#MaxParticipantstxt').val(p);
+        }
+        else {
+            $(this).closest('div.panel').removeClass("panel-success").addClass("panel-danger");
+            $('#' + id).addClass("hidden");
+            if (val != 999 && val != 1003 && val != 1007) p = p - 1;
+            $('#MaxParticipantstxt').val(p);
+        }
+    });
+
+
+    //.attr('readonly',false); 
+    //$("#YourTextBoxId").removeAttr('readonly');
+</script>*@

@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{672EFE6D-A3B3-46DE-899B-70800B714AA4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DAL</RootNamespace>
+    <AssemblyName>DAL</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'GetWild|AnyCPU'">
+    <OutputPath>bin\GetWild\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'PulseStudio|AnyCPU'">
+    <OutputPath>bin\PulseStudio\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'InShape|AnyCPU'">
+    <OutputPath>bin\InShape\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SBH|AnyCPU'">
+    <OutputPath>bin\SBH\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.1.1\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AspNetUser.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetUserRole.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BalanceChangeType.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Class.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ClassAvailablePlacement.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ClassDailySlot.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ClassEnrollment.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ClassType.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ClassTypeDetail.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ClassWaitList.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Class_Instructors.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Company.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DailyExport.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EnrollmentComment.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ExpensesRepo.cs" />
+    <Compile Include="FrozenSubscription.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InShape.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InShape.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InShape.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InShape.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InShape.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="InstructorDetail.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InstructorSalary.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LastClass.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MSGType.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProfileTracking.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ClassRepo.cs" />
+    <Compile Include="ReportRepo.cs" />
+    <Compile Include="ServiceRepo.cs" />
+    <Compile Include="SmsSender.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SMSSetting.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Studio.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="StudioExpens.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="StudioPlacement.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="StudioRepo.cs" />
+    <Compile Include="SmsRepo.cs" />
+    <Compile Include="StudioRoom.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Subscriber.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SubscriptionType.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SysAlert.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SystemRepo.cs" />
+    <Compile Include="SubscriptionTypeRepo.cs" />
+    <Compile Include="Tip.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TipRepo.cs" />
+    <Compile Include="UserBalanceTracking.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserDailyTick.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserMobileDevice.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserProcessing.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserRepo.cs" />
+    <Compile Include="UserSMSs.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserSubscription.cs">
+      <DependentUpon>InShape.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <EntityDeploy Include="InShape.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>InShape.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="InShape.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>InShape.edmx</DependentUpon>
+      <LastGenOutput>InShape.Context.cs</LastGenOutput>
+    </None>
+    <None Include="InShape.edmx.diagram">
+      <DependentUpon>InShape.edmx</DependentUpon>
+    </None>
+    <None Include="InShape.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>InShape.edmx</DependentUpon>
+      <LastGenOutput>InShape.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InShapeModels\InShapeModels.csproj">
+      <Project>{3844BA7B-54B9-4EE4-93FE-E7AC877C0BBE}</Project>
+      <Name>InShapeModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
+      <Project>{5fc9327f-b769-4fa6-99af-cda53cc2290f}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Readme\Elmah.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

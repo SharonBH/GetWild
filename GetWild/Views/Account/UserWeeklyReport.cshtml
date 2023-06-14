@@ -1,0 +1,58 @@
+﻿@using InShapeModels
+@{
+    ViewBag.Title = "דוחות";
+}
+
+<h2>ניהול הסטודיו - דוחות</h2>
+<div class="row">
+    <div class="col-md-5"></div>
+    <div class="col-md-2">
+        @Html.DropDownList("UserType", EnumHelper.GetSelectList(typeof(ParticipantType)), "כולם (בחר לסינון)", new { @class = "form-control ddlUserTypesWeekly" })
+    </div>
+    <div class="col-md-2">
+        <div class="checkbox">
+            <label><input type="checkbox" id="cbFrozenWeekly" value="">כולל קפואים</label>
+        </div>
+    </div>
+</div>
+<div class="row" id="UserWeeklyReport">
+    <div style="text-align: left; width: 25%; float: right;">
+        <a class="btn btn-info glyphicon glyphicon-chevron-right CalanderChangeDate" data-weekno="@(ViewBag.WeekNo - 1)"></a>
+    </div>
+
+    <div style="text-align:center;width: 50%; float: right;">@ViewBag.Header</div>
+    <div style="text-align:right; width: 25%; float: right;">
+        <a class="btn btn-info glyphicon glyphicon-chevron-left CalanderChangeDate" data-weekno="@(ViewBag.WeekNo + 1)"></a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div id="linkbuttons" class="btn-group btn-group-justified">
+            @for (int i = 0; i < 8; i++)
+            {
+                <a href="#" data-id="@i" id="day@(i)" data-weekno="@(ViewBag.WeekNo)"
+                   class="btn btn-primary @(ViewBag.Id == i ? "btn-info disabled" : "") ReportChanged">@(i == 7 ? "7+" : i.ToString())</a>
+            }
+        </div>
+    </div>
+</div>
+<div class="row row-topbuffer">
+    <div class="col-md-2">
+        <a class="btn btn-primary btn-smsSendWR" data-smstype="@SmsListType.WeeklyReport" data-weekno="@(ViewBag.WeekNo)"><i class="glyphicon glyphicon-phone"></i> שלח הודעה</a>
+    </div>
+    <div class="col-md-2">
+        <button id="btn-export-weekly" type="button" class="btn btn-info" style="float:right;" data-weekno="@(ViewBag.WeekNo)" data-id="@(ViewBag.Id)">יצוא</button>
+    </div>
+    </div>
+    <div class="row row-topbuffer">
+        <div class="col-md-12 col">
+            <div id="WekklyDayReport" style="min-height: 300px;">
+                @{Html.RenderAction("WeeklyReportList", "Account", new { id = 0, weekno = ViewBag.WeekNo, ut = 0 });}
+            </div>
+        </div>
+    </div>
+
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }

@@ -1,0 +1,89 @@
+﻿@using InShapeModels
+@model List<AvailablePlacementsModel>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/Content/@Utilities.App.CurrentCompany.CSSFileName" />
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap-rtl.css" />
+    <title></title>
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+</head>
+<body>
+    <div id="PlacementsPrint" class="container-fluid body-content">
+        <h1 class="">@Model[0].ClassEnrollment.Class.Name | @Model[0].ClassEnrollment.Class.Date.ToString("g")</h1>
+        @foreach (var placementId in Model.Select(x => x.StudioPlacementId).Distinct())
+        {
+            <div class="row">
+                @foreach (var item in Model.Where(s => s.StudioPlacementId == placementId))
+                {
+                    @*@Html.HiddenFor(m => item.Id)
+                        @Html.HiddenFor(m => item.ClassId)
+                        @Html.HiddenFor(m => item.StudioPlacementId)
+                        @Html.HiddenFor(m => item.StudioPlacementName)
+                        @Html.HiddenFor(m => item.IsInUse)
+                        @Html.HiddenFor(m => item.ClassPlacementNumber)*@
+                    <div class="col-md-1">
+                        <div class="panel @(!item.IsDeleted ? item.ClassEnrollment.Id > 0 ? "panel-primary" : "panel-success" : "panel-danger")">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    <div class="row">
+                                        <div class="col-md-9">
+                                            <h5>@item.DisplyName</h5>
+                                        </div>
+                                        <div class="col-md-3">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div id="RemoveParticipants@(item.Id)" class="nopadding small @(item.ClassEnrollment.Id > 0 ? "" : "hidden")">
+                                    <a class="btn btn-xs btn-danger btn-RemoveParticipants" data-id="@item.ClassEnrollment.SubscriptionId" data-wr="@ViewBag.WeeklyReport" data-classid="@item.ClassEnrollment.ClassId" data-name="@item.ClassEnrollment.UserSubscription.FullName"><i class="glyphicon glyphicon-remove-circle"></i></a>
+                                    @item.ClassEnrollment.UserSubscription.FullName
+                                </div>
+
+
+                                <div id="addParticipants@(item.Id)" class="btn-AddParticipants nopadding @(!item.IsDeleted && item.ClassEnrollment.Id == 0 ? "" : "hidden")">
+                                    <a class="btn btn-xs btn-success btn-AddParticipants" data-id="@item.ClassId"><i class="glyphicon glyphicon-plus-sign"></i></a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+    @Html.Partial("_ConfirmDelete")
+    @Html.Partial("BOEnrollToClassPartial-holder")
+</body>
+</html>
+<script>
+    $('.btn-AddParticipants').click(function (ve) {
+        //var title = $(this).data('name');
+        var id = $(this).data('id');
+        debugger;
+        //$('#BoClassEnrollModal .modal-title').html('רישום לאימון: ' + title);
+        //$('#BoClassEnrollModal').find('.btn-reg').data('id', id);
+        //$('#BoClassEnrollModal').modal('show', { backdrop: 'static' });
+        var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+
+        $('#BoClassEnrollModal .modal-content').html(loaddingdiv).load("studioclass/GetClassById?classId=" + id, function (response, status, xhr) {
+            if (status != "success") {
+                $('#BoClassEnrollModal .modal-body').html('תקלה, אנא נסה מאוחר יותר' + response);
+            }
+        });
+        $('#BoClassEnrollModal').modal('show', { backdrop: 'static' });
+        ve.stopPropagation();
+    });
+</script>

@@ -1,0 +1,157 @@
+﻿@using InShapeModels
+@model GetWild.Models.RegisterViewModel
+
+<form id="UserUpdate">
+    @Html.AntiForgeryToken()
+    @*@Html.ValidationSummary("", new { @class = "text-danger" })*@
+    <div class="form-group">
+        @Html.LabelFor(m => m.Fname, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Fname, new { @class = "form-control" })
+            @*@Html.ValidationMessageFor(m => m.Fname)*@
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Lname, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Lname, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.mobile, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.mobile, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Address, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.DOB, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.DOB, "{0:dd/MM/yyyy}", new { @class = "form-control", @placeholder = "DD/MM/YYYY" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.AgeGroup, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            <label class="radio-inline">@Html.RadioButtonFor(m => m.AgeGroup, AgeGroup.ילדים)@Html.Label(AgeGroup.ילדים.ToString())</label>
+            <label class="radio-inline">@Html.RadioButtonFor(m => m.AgeGroup, AgeGroup.נוער)@Html.Label(AgeGroup.נוער.ToString())</label>
+            <label class="radio-inline">@Html.RadioButtonFor(m => m.AgeGroup, AgeGroup.מבוגרים)@Html.Label(AgeGroup.מבוגרים.ToString())</label>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ReceiveSMS, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.CheckBoxFor(m => m.ReceiveSMS, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Marked, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.CheckBoxFor(m => m.Marked, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.UserType, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.EnumDropDownListFor(m => m.UserType, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Gender, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            <div style="text-align:right;">
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.Gender, Gender.נקבה)@Html.Label(Gender.נקבה.ToString())</label>
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.Gender, Gender.זכר)@Html.Label(Gender.זכר.ToString())</label>
+            </div>
+        </div>
+    </div>
+    @Html.HiddenFor(m => m.Password)
+    @Html.HiddenFor(m => m.ConfirmPassword)
+    @Html.HiddenFor(m => m.Userid)
+    <hr />
+    <div class="form-group">
+        <div class="col-md-2">
+            <a data-confirm="" onclick="DataConfirmClicked(event, this);" class="btn btn-block btn-danger" data-href="/Account/DeleteConfirmed?UserId=@Model.Userid" data-toggle="modal" data-target="#confirm-delete" data-title="מחק משתמש" data-message="האם אתה בטוח שברצונך למחוק ?"><i class="glyphicon glyphicon-trash"></i> מחק</a>
+        </div>
+        <div class="col-md-3">
+            <input id="btn_updateuser" type="button" class="btn btn-primary btn-block" value="עדכן פרטים" />
+        </div>
+        @if (Model.CurrentCompany.UseSMS)
+        {
+            <div class="col-md-2">
+                <input id="btn_sendSMS" data-userid="@Model.Userid" type="button" class="btn btn-primary btn-block" value="שלח הודעת הצטרפות" />
+            </div>
+        }
+        <div class="col-md-2">
+            <input id="btn_ChangePass" type="button" class="btn btn-warning btn-block" value="עדכן סיסמא" />
+        </div>
+        @if (Model.SignedHealthTandC)
+        {
+            <div class="col-md-2">
+                <input id="btn_ShowHealthTandC" type="button" class="btn btn-primary btn-block" value="הצהרת בריאות" />
+            </div>
+        }
+    </div>
+</form>
+@*@Html.Partial("_ConfirmDelete")*@
+<div class="modal fade" id="ResetPassModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    @{ Html.RenderAction("ResetPass", "Account");}
+</div>
+<div class="modal fade" id="HealthTandCPrintModal" tabindex="-2" role="dialog" aria-labelledby="HealthTandCPrintModalLabel" aria-hidden="true">
+    @{ Html.RenderAction("HealthTandCPrint", "Account");}
+</div>
+
+@*<script type="text/javascript">
+        $(function () {
+            // Document.ready -> link up remove event handler
+            //$("#btn_updateuser").click(function () {
+            //    var isValid = $('#UserUpdate').validate().form();
+            //    if (!isValid) return false;
+            //    $.ajax({
+            //        type: "POST",
+            //        url: "/Account/UpdateUser",
+            //        data: $('#UserUpdate').serialize(),
+            //        datatype: "html",
+            //        success: function (data) {
+            //            $('#myModal .modal-title').html('ניהול משתמשים');
+            //            $('#myModal .modal-body').html(data.Message);
+            //            $('#myModal').modal('show', { backdrop: 'static' });
+            //        }
+            //    });
+            //});
+
+            $("#btn_sendSMS").click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Account/SendWelcomeSMS",
+                    data: {userId: '@Model.Userid' },
+                    datatype: "html",
+                    success: function (data) {
+                        $('#myModal .modal-title').html('ניהול משתמשים');
+                        $('#myModal .modal-body').html(data.Message);
+                        $('#myModal').modal('show', { backdrop: 'static' });
+                    }
+                });
+            });
+
+            $("#btn_ChangePass").click(function() {
+                $('#ResetPassModal').modal({ show: true });
+            });
+
+            $("#btn_ShowHealthTandC").click(function () {
+                $('#HealthTandCPrintModal').modal({ show: true });
+            });
+        });
+</script>*@
+

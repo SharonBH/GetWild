@@ -1,0 +1,5 @@
+﻿@using Utilities
+@model CompanyConfiguration
+@Model.Name (@Model.Address) (@Model.Id) - @Model.UseInstructors <br />
+local now = @DateTime.UtcNow.ToLocal() - User: @User.Identity.Name
+

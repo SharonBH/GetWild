@@ -1,0 +1,151 @@
+﻿@model GetWild.Models.GymCalanderViewModel
+
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-md-3" style="text-align:left;">
+                @if (@Model.WeekNo > @Model.CurrentWeekNo)
+                {
+                    <a class="glyphicon glyphicon-chevron-right CalPrevWeek"></a>
+                }
+            </div>
+            <div class="col-md-6" style="text-align:center;"><h3 class="panel-title">ל'וז שבועי לחודש @Model.Date.ToString("MMMM"), @Model.Date.ToString("dd/MM") - @Model.Date.AddDays(6).ToString("dd/MM")</h3></div>
+            <div class="col-md-3">
+                <a class="glyphicon glyphicon-chevron-left CalNextWeek"></a>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <table class="table CalanderTable">
+            <thead>
+                <tr class="CalanderTop">
+                    <th>
+                        יום א'
+                    </th>
+                    <th>
+                        יום ב'
+                    </th>
+                    <th>
+                        יום ג'
+                    </th>
+                    <th>
+                        יום ד'
+                    </th>
+                    <th>
+                        יום ה'
+                    </th>
+                    <th>
+                        יום ו'
+                    </th>
+                    <th>
+                        יום ש'
+                    </th>
+                </tr>
+            </thead>
+            <tr class="success cal-morning">
+                @for (int i = 0; i < 7; i++)
+                {
+                    if (Model.Classes.Exists(x => x.DayNo == i && x.TimeofDay == "Morning"))
+                    {
+                        <td>
+                            @foreach (var Class in Model.Classes.Where(x => x.DayNo == i && x.TimeofDay == "Morning").OrderBy(x => x.Date))
+                            {
+                                @Html.Partial("CalanderBoxPartial", Class)
+                            }
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+            </tr>
+            <tr class="info cal-midday">
+                @for (int i = 0; i < 7; i++)
+                {
+                    if (Model.Classes.Exists(x => x.DayNo == i && x.TimeofDay == "MidDay"))
+                    {
+                        <td>
+                            @foreach (var Class in Model.Classes.Where(x => x.DayNo == i && x.TimeofDay == "MidDay").OrderBy(x => x.Date))
+                            {
+                                @Html.Partial("CalanderBoxPartial", Class)
+
+                            }
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+            </tr>
+            <tr class="warning cal-evening">
+                @for (int i = 0; i < 7; i++)
+                {
+                    if (Model.Classes.Exists(x => x.DayNo == i && x.TimeofDay == "Evening"))
+                    {
+                        <td>
+                            @foreach (var Class in Model.Classes.Where(x => x.DayNo == i && x.TimeofDay == "Evening").OrderBy(x => x.Date))
+                            {
+                                @Html.Partial("CalanderBoxPartial", Class)
+                            }
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                }
+            </tr>
+        </table>
+    </div>
+<script>
+    jQuery(document).ready(function ($) {
+        $(".CalanderBox").click(function () {
+            var id = $(this).data("id");
+            $('#myModal .modal-body').load("/Gym/GetCalanderDetails?classId=" + id, function (response, status, xhr) {
+                if (status != "success") {
+                    $('#myModal .modal-body').html('תקלה, אנא נסה מאוחר יותר' + response);
+                }
+            });
+            $('#myModal').modal('show', { backdrop: 'static' });
+        });
+
+        var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+        $(".CalNextWeek").click(function () {
+            var roomid = @Model.RoomId;
+            var weekno = @Model.WeekNo+1;
+            $.ajax({
+                type: "POST",
+                url: "/Gym/GetCalanderTable",
+                data: { weekNo: weekno, roomId: roomid },
+                datatype: "text",
+                beforeSend: function()
+                {
+                    $('#CalanderWeeklyPanel').html(loaddingdiv);
+                },
+                success: function(data) {
+                    $('#CalanderWeeklyPanel').html(data);
+                }
+            });
+        });
+
+        $(".CalPrevWeek").click(function () {
+            var roomid = @Model.RoomId;
+            var weekno = @Model.WeekNo-1;
+            $.ajax({
+                type: "POST",
+                url: "/Gym/GetCalanderTable",
+                data: { weekNo: weekno, roomId: roomid },
+                datatype: "text",
+                beforeSend: function()
+                {
+                    $('#CalanderWeeklyPanel').html(loaddingdiv);
+                },
+                success: function(data) {
+                    $('#CalanderWeeklyPanel').html(data);
+                }
+            });
+        });
+
+    });
+</script>

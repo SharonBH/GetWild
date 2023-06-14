@@ -1,0 +1,374 @@
+﻿@model GetWild.Models.SubscriptionViewModel
+
+@Html.AntiForgeryToken()
+@*@Html.ValidationSummary("", new { @class = "text-danger" })*@
+
+@if (Model.Id > 0 && Model.Active)
+{
+<div class="row">
+    <div class="col-md-6">
+        <div class="col-md-12">
+            <div class="form-group">
+                @Html.LabelFor(model => model.SubscriptionType.Name, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-1 control-label">
+                    @Model.SubscriptionType.Name
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.CurrentBalance, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-1 control-label">
+                    @Model.CurrentBalance
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.NumClasses, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-1 control-label">
+                    @Model.NumClasses
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.DateSubscribed, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-1 control-label">
+                    @Model.DateSubscribed.ToShortDateString()
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.DateExpire, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-6 control-label">
+                    <div class="expiredate">
+                        @if (@Model.DateExpire.HasValue)
+                        {
+                            @Model.DateExpire.Value.ToShortDateString()
+                        }
+                        else
+                        {
+                            <span> אין תאריך תפוגה</span>
+                        }
+                        @*<a id="btn_editsubscriptiondexpire" class="btn btn-info"><i class="glyphicon glyphicon-edit"></i> ערוך</a>*@
+                    </div>
+                    @*<div class="editexpiredate" style="display:none;">
+                        @Html.TextBoxFor(m => m.DateExpire, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @placeholder = "יום/חודש/שנה" })
+                        <input id="btn_Updatesubscriptiondexpire" type="button" class="btn btn-info" data-id="@Model.Id" value="עדכן" />
+                    </div>*@
+                </div>
+            </div>
+            @*<div class="form-group">
+                @Html.LabelFor(model => model.AmountPaid, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-1 control-label">
+                    @Model.AmountPaid
+                </div>
+            </div>*@
+
+            <div class="form-group">
+                <div class="col-md-2">
+                    <input id="btn_subscriptiondetails" type="button" class="btn btn-info btn-block" data-id="@Model.Id" value="פרטים" />
+                </div>
+                <div class="col-md-2">
+                    @if (Model.Frozen)
+                    {
+                        <input id="btn_subscriptionUnfreeze" type="button" class="btn btn-danger btn-block" data-id="@Model.Id" data-userid="@Model.UserId" value="בטל הקפאה" />
+                    }
+                    else if (!Model.Frozen && Model.DateExpire.HasValue)
+                    {
+                        <input id="btn_subscriptionfreeze" type="button" class="btn btn-warning btn-block" value="הקפאה" />
+                    }
+                </div>
+
+                <div class="col-md-2">
+                    <a data-confirm="" onclick="DataConfirmClicked(event, this);" class="btn btn-default btn-danger btn-block" data-href="submitDelete" data-id="@Model.Id" data-userid="@Model.UserId"
+                       data-toggle="modal" data-target="#confirm-delete" data-title="ביטול מנוי" data-message="האם אתה בטוח שברצונך לבטל את המנוי ?">
+                        <i class="glyphicon glyphicon-trash"></i> ביטול מנוי </a>
+                </div>
+
+                @if (Model.LateCacelation > 0)
+                {
+                <div class="col-md-2">
+                    <a data-confirm="" onclick="DataConfirmClicked(event, this);" class="btn btn-default btn-danger btn-block" data-href="RemoveLateCacelation" data-id="@Model.Id" data-userid="@Model.UserId"
+                       data-toggle="modal" data-target="#confirm-delete" data-title="ביטול איחור" data-message="האם אתה בטוח שברצונך לבטל את האיחור ?">
+                        <i class="glyphicon glyphicon-adjust"></i> ביטול איחור (@Model.LateCacelation)</a>
+                </div>
+                }
+
+
+                    <div class="col-md-2">
+                        <input id="btn_sendSMS2" type="button" class="btn btn-primary btn-block" value="שלח הודעת הצטרפות" />
+                    </div>
+                </div>
+            @{ Html.RenderAction("GetFrozenSubscriptionDetails", "Account", new { subscriptionId = Model.Id, frozen = Model.Frozen, userid = Model.UserId }); }
+        </div>
+        @*<div class="col-md-6">
+                this is a test
+                @{ Html.RenderAction("GetSubsicriptionEdit", "Account", new { subscriptionId = Model.Id, userId = Model.UserId });}
+            </div>*@
+
+    </div>
+    <div class="col-md-6">
+        @{ Html.RenderAction("GetSubsicriptionEdit", "Account", new { subscriptionId = Model.Id, userId = Model.UserId });}
+    </div>
+</div>
+    //{ Html.RenderPartial("SubscriptionFreeze", Model);}
+}
+else
+{
+    <h4>
+        למשתמש אין מנוי פעיל
+    </h4>
+    <p>באפשרותך להוסיף מנוי חדש על ידי מילוי הטופס</p>
+    <hr />
+    <form id="UserSubscription">
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.UserId)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SubscriptionType.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.SubscriptionTypeId, new SelectList(Model.SubscriptionTypesList, "Id", "Name"), "בחר סוג מנוי", new { @class = "form-control", @id = "subscriptionTypeList" })
+                @Html.ValidationMessageFor(model => model.SubscriptionTypeId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.NumClasses, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.NumClasses, new { @class = "form-control", @id = "NumofClassesId" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.DateExpire, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.DateExpire, new { @class = "form-control datepicker", @id = "DateExpireId", @placeholder = "יום/חודש/שנה" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.AmountPaid, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.AmountPaid, new { @class = "form-control", @id = "AmountPaidId" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input id="btn_updatesubscription" type="button" class="btn btn-primary btn-block" value="הוסף מנוי" />
+            </div>
+        </div>
+    </form>
+}
+<hr />
+@*@Html.Partial("_ConfirmDelete")*@
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#btn_subscriptionUnfreeze").popConfirm({
+            title: "ביטול הקפאה",
+            content: "בטוח שברצונך לבטל?",
+            placement: "top"
+        });
+    });
+
+    //$('a[data-confirm]').click(function (ev) {
+    //    debugger;
+    //    var href = $(this).data('href');
+    //    var weekno = $(this).data('weekno');
+    //    var action = $(this).data('action');
+    //    var btn = $('#dataConfirmModal').find('.btn-ok');
+    //    btn.off("click");
+    //    var id = $(this).data('id');
+    //    var userid = $(this).data('userid');
+    //    btn.click(function () {
+    //        if (href == 'submitDelete') {
+    //            submitDelete(id, userid);
+    //            return false;
+    //        }
+    //        else if (href == 'RemoveLateCacelation') {
+    //            submitRemoveIsLate(id, userid);
+    //            return false;
+    //        }
+            
+    //    });
+    //    var msg = $(this).attr('data-message');
+    //    $('#dataConfirmModal').find('.modal-body').text(msg);
+    //    var title = $(this).attr('data-title');
+    //    $('#dataConfirmModal').find('.modal-header').text(title);
+
+    //    $('#dataConfirmModal').modal({ show: true });
+    //    ev.stopPropagation();
+    //});
+
+    //function submitDelete(subid, userid) {
+    //    $.ajax({
+    //        type: "GET",
+    //        url: "/Account/SubscriptionDeleteConfirmed?id=" + subid + "&userid=" + userid,
+    //        data: { id: subid, userId: userid },
+    //        datatype: "text",
+    //        success: function (data) {
+    //            $('#subsription-tab').html(data);
+    //            $('#dataConfirmModal').modal('hide');
+    //        }
+    //    });
+    //}
+
+    //function submitRemoveIsLate(subid, userid) {
+    //    debugger;
+    //    $.ajax({
+    //        type: "GET",
+    //        url: "/Account/RemoveLateCacelationSubscriptionConfirmed?id=" + subid + "&userid=" + userid,
+    //        data: { id: subid, userId: userid },
+    //        datatype: "text",
+    //        success: function (data) {
+    //            $('#subsription-tab').html(data);
+    //            $('#dataConfirmModal').modal('hide');
+    //        }
+    //    });
+    //}
+
+    $(function () {
+        // Document.ready -> link up remove event handler
+        // $('#myModal .modal-content').html("<div style=\"position:absolute;top:50%;left:50%;margin:20%;\"><img src=\"/images/loading-red.gif\" /></div>").load("/Account/GetSubsicriptionDetails?subscriptionId=" + id, function (response, status,
+        $("#btn_subscriptiondetails").click(function () {
+            var id = $(this).data("id");
+            $('#myTabbedModal #subdetails-tab').load("/Account/GetSubsicriptionDetails?subscriptionId=" + id, function (response, status, xhr) {
+                if (status != "success") {
+                    $('#myTabbedModal #subdetails-tab').html('תקלה, אנא נסה מאוחר יותר' + response);
+                }
+            });
+            $('#myTabbedModal #subfrozen-tab').load("/Account/GetFrozenSubsicriptionDetails?subscriptionId=" + id, function (response, status, xhr) {
+                if (status != "success") {
+                    $('#myTabbedModal #subfrozen-tab').html('תקלה, אנא נסה מאוחר יותר' + response);
+                }
+            });
+            $('#myTabbedModal').modal('show', { backdrop: 'static' });
+        });
+
+        $("#btn_subscriptionfreeze").click(function () {
+            $('#freezeModal').modal('show', { backdrop: 'static' });
+        });
+    });
+
+    $(function () {
+        $.validator.addMethod('date',
+            function(value, element) {
+                if (this.optional(element)) {
+                    return true;
+                }
+                var ok = true;
+                try {
+                    $.datepicker.parseDate('dd/mm/yy', value);
+                } catch (err) {
+                    ok = false;
+                }
+                return ok;
+            });
+        $('.datepicker').datepicker({ dateFormat: 'dd/mm/yy' });
+    });
+
+    $(function () {
+        // Document.ready -> link up remove event handler
+        $("#btn_updatesubscription").click(function () {
+            var isValid = $('#UserSubscription').validate().form();
+            if (!isValid) return false;
+            $.ajax({
+                type: "POST",
+                url: "/Account/UpdateSubscription",
+                data: $('#UserSubscription').serialize(),
+                datatype: "html",
+                success: function (data) {
+                    if ((data.Response) == 'Error') {
+                        $('#myModal .modal-title').html('ניהול משתמשים');
+                        $('#myModal .modal-body').html(data.Message);
+                        $('#myModal').modal('show', { backdrop: 'static' });
+                    } else {
+                        $('#subsription-tab').html(data);
+                    }
+                    //$('#subsription-tab').load('/Account/ManageSubscriptions');
+                }
+            });
+        });
+    });
+
+    $('#btn_editsubscriptiondexpire').click(function () {
+        $('.expiredate').hide();
+        $('.editexpiredate').show();
+    });
+
+
+    $("#btn_subscriptionUnfreeze").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Account/UpdateUnfreeze",//?subscriptionId=" + subid + "&userId=" + userid + "&toDate=" + todate,
+            data: { subscriptionId: @Model.Id, userId: '@Model.UserId' },
+            datatype: "text",
+            success: function(data) {
+                $('#subsription-tab').html(data);
+            }
+        });
+    });
+
+    $("#btn_sendSMS2").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Account/SendWelcomeSMS",
+            data: {userId: '@Model.UserId' },
+            datatype: "html",
+            success: function (data) {
+                $('#myModal .modal-title').html('ניהול משתמשים');
+                $('#myModal .modal-body').html(data.Message);
+                $('#myModal').modal('show', { backdrop: 'static' });
+            }
+        });
+    });
+
+    $(function () {
+        // Document.ready -> link up remove event handler
+        $("#btn_Updatesubscriptiondexpire").click(function () {
+            var id = $(this).data("id");
+            var date = $('#DateExpire').val();
+            $.ajax({
+                type: "POST",
+                url: "/Account/UpdateSubscriptionExpire",
+                data: { subscriptionId : id, newExpireDate : date },
+                success: function (data) {
+                    if ((data.Response) == 'Error') {
+                        $('#myModal .modal-title').html('ניהול משתמשים');
+                        $('#myModal .modal-body').html(data.Message);
+                        $('#myModal').modal('show', { backdrop: 'static' });
+                    } else {
+                        $('.expiredate').html(date);
+                        $('.expiredate').show();
+                        $('.editexpiredate').hide();
+                    }
+                    //$('#subsription-tab').load('/Account/ManageSubscriptions');
+                }
+            });
+        });
+    });
+
+    var SubscriptionList = @Html.Raw(Json.Encode(Model.SubscriptionTypesList));
+
+    $(function() {
+        $('#subscriptionTypeList').on('change', function() {
+            var id = $(this).val();
+            var sub = getByValue(SubscriptionList, id);
+            $('#NumofClassesId').val(sub.NumClasses);
+            $('#AmountPaidId').val(sub.Price);
+            if (sub.PeriodMonths > 0) {
+                //var CurrentDate = new Date();
+                //var month = CurrentDate.getMonth() + 1 + sub.PeriodMonths;
+                var CurrentDate = moment().add(sub.PeriodMonths, 'M');
+                //$('#DateExpireId').val(CurrentDate.date() + "/" + CurrentDate.month() + "/" + CurrentDate.year());
+                $('#DateExpireId').val(CurrentDate.format('DD/MM/YYYY'));
+            } else {
+                $('#DateExpireId').val(null);
+            }
+            //alert(sub);
+        });
+
+        function getByValue(arr, value) {
+
+            for (var i=0, iLen=arr.length; i<iLen; i++) {
+
+                if (arr[i].Id == value) return arr[i];
+            }
+        }
+    });
+
+
+</script>

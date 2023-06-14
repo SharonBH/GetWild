@@ -1,0 +1,37 @@
+﻿@model GetWild.Models.RegisterViewModel
+@{
+    ViewBag.Title = "ניהול משתמש";
+}
+<h2>ניהול משתמש.</h2>
+<div class="form-horizontal">
+    <hr />
+    <div id="tabs">
+            <ul>
+                <li><a href="#user-tab"><span>פרטי משתמש</span></a></li>
+                <li><a href="#profile-tab"><span>פרופיל כושר</span></a></li>
+                <li><a href="#subsription-tab"><span>מנוי</span></a></li>
+                <li><a href="#enrollmets-tab"><span>אימונים</span></a></li>
+            </ul>
+            <div id="user-tab">
+                @{Html.RenderAction("ManageUser", "Account");}
+            </div>
+
+            <div id="profile-tab">
+                @{Html.RenderAction("ManageProfile", "Account");}
+            </div>
+        <div id="subsription-tab">
+            @{Html.RenderAction("ManageSubscriptions", "Account");}
+        </div>
+        <div id="enrollmets-tab">
+            @{Html.RenderAction("ManageUserEnrollment", "StudioClass");}
+        </div>
+        </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    $("#tabs").tabs();
+</script>
+
+@Html.Partial("_PopupPartial")

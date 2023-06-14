@@ -1,0 +1,79 @@
+﻿@using InShapeModels
+@using Utilities
+@model IEnumerable<InShapeModels.SmsLog>
+
+
+@if (Model.Any())
+{
+    <div class="panel panel-info">
+        @*<div class="panel-heading">
+                        <h3 class="panel-title">רשימת האימונים</h3>
+                    </div>*@
+        <div class="panel-body">
+            <div id="update-message">
+            </div>
+            <table class="table table-striped table-hover ">
+                <thead>
+                <tr>
+                    <th style="text-align: right;">
+                        שם
+                    </th>
+                    <th style="text-align: right;">
+                        תאריך
+                    </th>
+                    <th style="text-align: right;">
+                        סוג
+                    </th>
+                    <th style="text-align: right;">
+                        הודעה
+                    </th>
+                    <th style="text-align: right;">
+                        סטטוס
+                    </th>
+                    <th style="text-align: right;"></th>
+                </tr>
+                </thead>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullName)
+                        </td>
+                        <td>
+                            @item.Date.ToShortDateString()
+                        </td>
+                        <td>
+                            @item.MessageType.GetDisplayName()
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SMS)
+                        </td>
+                        <td>
+                            @item.Response
+                        </td>
+                    </tr>
+                }
+                <tr class="info" style="text-align: right;">
+                    <td>
+                        סה"כ הודעות:
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td id="cart-total">
+                        @Model.Count()
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div>
+        <p>
+            לא נמצאו הודעות.
+        </p>
+    </div>
+}
+

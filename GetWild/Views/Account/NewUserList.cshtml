@@ -1,0 +1,90 @@
+﻿@using InShapeModels
+@using Utilities
+@model List<UserWithSubscription>
+
+@if (Model.Any())
+{
+ 
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th style="text-align: right;">
+                            שם
+                        </th>
+                        <th style="text-align: right;">
+                            סוג
+                        </th>
+                        <th style="text-align: right;">
+                            תאריף תחילת מנוי
+                        </th>
+                        @*<th style="text-align: right;">
+                            תאריך הצטרפות
+                        </th>*@
+                        <th style="text-align: right;">
+                            טלפון
+                        </th>
+                        <th style="text-align: right;">
+                            אימון הבא
+                        </th>
+                        @*<th style="text-align: right;"></th>*@
+                    </tr>
+                </thead>
+                @{ int i = 0; }
+                @foreach (var item in Model.OrderByDescending(x=> x.SubscriptionStartDate))
+                {
+                    i = i + 1;
+                    <tr class="Manageclick-row @item.CssClass" data-id="@item.UserId" style="cursor: pointer;">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullName)
+                        </td>
+                        <td>@item.UserType.GetDisplayName()</td>
+                        <td>
+                                @item.SubscriptionStartDate.GetValueOrDefault().ToShortDateString()
+                        </td>
+                        @*<td>
+                            @item.JoinDate.ToShortDateString()
+                        </td>*@
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                        </td>
+                        <td>
+                            @if (item.NextClassDate != null)
+                            {
+                                @item.NextClassDate.Value.ToShortDateString()<br />
+                                <text>שעה: </text>
+                                @item.NextClassDate.Value.ToShortTimeString()<br />
+                                <text>סוג: </text>
+                                @item.NextClassType
+                            }
+                        </td>
+                        @*<td>
+                            <a data-confirm="" class="btn btn-xs btn-danger" data-href="/Account/DeleteConfirmed?UserId=@item.UserId" data-toggle="modal" data-target="#confirm-delete" data-title="מחק משתמש" data-message="האם אתה בטוח שברצונך למחוק ?"><i class="glyphicon glyphicon-trash"></i> מחק</a>
+                        </td>*@
+                    </tr>
+                }
+                    <tr class="success" style="text-align: right;">
+                        <td>
+                            סה"כ משתמשים:
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        @*<td></td>
+                        <td></td>*@
+                        <td id="cart-total">
+                            @Model.Count()
+                        </td>
+                    </tr>
+            </table>
+}
+else
+{
+    <div>
+        <p>
+                <text> לא נמצאו משתמשים חדשים.</text>
+        </p>
+    </div>
+}
+    
+@Html.Partial("_ConfirmDelete")

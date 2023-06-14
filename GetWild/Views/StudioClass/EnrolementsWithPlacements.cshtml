@@ -1,0 +1,181 @@
+﻿@model List<InShapeModels.AvailablePlacementsModel>
+@{
+    ViewBag.Title = "אימון מקומות";
+    var cls = Model.FirstOrDefault(c => c.ClassEnrollment.Class != null);
+}
+<div id="PrintPage">
+    <h1 class="">@cls.ClassEnrollment.Class.Name | @cls.ClassEnrollment.Class.Date.ToString("g")</h1>
+    @foreach (var placementId in Model.Select(x => x.StudioPlacementId).Distinct())
+    {
+        <div class="row">
+            @foreach (var item in Model.Where(s => s.StudioPlacementId == placementId))
+            {
+                @*@Html.HiddenFor(m => item.Id)
+                    @Html.HiddenFor(m => item.ClassId)
+                    @Html.HiddenFor(m => item.StudioPlacementId)
+                    @Html.HiddenFor(m => item.StudioPlacementName)
+                    @Html.HiddenFor(m => item.IsInUse)
+                    @Html.HiddenFor(m => item.ClassPlacementNumber)*@
+                <div class="col-md-1">
+                    @*<div class="panel @(!item.IsDeleted ? item.ClassEnrollment.Id > 0 && !item.ClassEnrollment.IsDeleted ? "panel-primary" : "panel-success" : "panel-danger")">*@
+                    <div class="panel @(!item.IsDeleted ? item.ClassEnrollment.Id > 0 && !item.ClassEnrollment.IsDeleted ? "panel-"+item.ClassEnrollment.CSSClass : "panel-default" : "panel-danger")">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p class="small">
+                                            @item.DisplyName<br /> @if (item.ClassEnrollment.CommentBy != null)
+                                            {<span><i class="glyphicon glyphicon-info-sign EnrollComment @(item.ClassEnrollment.CommentByAdmin ? "EnrollCommentAdmin" : "EnrollComment")" rel="tooltip" title="@item.ClassEnrollment.Commentformated"></i></span>}
+                                            @if (item.ClassEnrollment.Id > 0 && item.ClassEnrollment.Class.IsStarted)
+                                            {
+                                                if (item.ClassEnrollment.IsVerified)
+                                                {
+                                                    <a class="btn btn-xs btn-success btn-MarkNoShow" data-id="@item.ClassEnrollment.Id" data-value="false"><i class="glyphicon glyphicon-thumbs-up"></i></a>
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-xs btn-warning btn-MarkNoShow" data-id="@item.ClassEnrollment.Id" data-value="true"><i class="glyphicon glyphicon-thumbs-down"></i></a>
+                                                }
+                                            }
+                                            <a class="btn btn-xs btn-SetComment btn-comment" data-enrolmentid="@item.ClassEnrollment.Id" data-userid="@item.ClassEnrollment.UserSubscription.UserId"
+                                               data-classid="@item.ClassId" data-title="@item.ClassEnrollment.UserSubscription.FullName" data-value="true"><i class="glyphicon glyphicon-comment"></i></a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div id="RemoveParticipants@(item.Id)" class="nopadding @(item.ClassEnrollment.Id > 0 ? "" : "hidden")">
+                                <a class="btn btn-xs btn-danger btn-RemoveParticipants" data-divid="@item.Id" data-id="@item.ClassEnrollment.SubscriptionId" data-wr="@ViewBag.WeeklyReport" data-classid="@item.ClassEnrollment.ClassId" data-name="@item.ClassEnrollment.UserSubscription.FullName"><i class="glyphicon glyphicon-remove-circle"></i></a>
+                                <span class="@(item.ClassEnrollment.CSSClass)">@item.ClassEnrollment.UserSubscription.FullName</span>
+                            </div>
+
+
+                            <div id="addParticipants@(item.Id)" class="btn-AddParticipants nopadding @(!item.IsDeleted && item.ClassEnrollment.Id == 0 ? "" : "hidden")">
+                                <a class="btn btn-xs btn-success btn-AddParticipants" data-divid="@item.Id" data-id="@item.ClassId" data-placementid="@item.Id"><i class="glyphicon glyphicon-plus-sign"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+<a class="btn btn-success" id="btn_PrintClass"><span class="glyphicon glyphicon-ok"></span>הדפס</a>
+<div id="CommentPopupDiv"></div>
+@Html.Partial("_ConfirmDelete")
+@Html.Partial("BOEnrollToClassPartial-holder")
+@*@Html.Partial("_CommentPopup")*@
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.btn-AddParticipants').click(function (ve) {
+            //var title = $(this).data('name');
+            var id = $(this).data('id');
+            var placementid = $(this).data('placementid');
+            //$('#BoClassEnrollModal .modal-title').html('רישום לאימון: ' + title);
+            //$('#BoClassEnrollModal').find('.btn-reg').data('id', id);
+            //$('#BoClassEnrollModal').modal('show', { backdrop: 'static' });
+            var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+
+            $('#BoClassEnrollModal .modal-content').html(loaddingdiv).load("GetClassById?classId=" + id + "&selectedPlacement=" + placementid, function (response, status, xhr) {
+                if (status != "success") {
+                    $('#BoClassEnrollModal .modal-body').html('תקלה, אנא נסה מאוחר יותר' + response);
+                }
+            });
+            $('#BoClassEnrollModal').modal('show', { backdrop: 'static' });
+            ve.stopPropagation();
+        });
+
+
+        $(".btn-RemoveParticipants").click(function () {
+            //debugger;
+            var classId = $(this).data('classid');
+            var subscriptionId = $(this).data('id');
+            var divid = $(this).data('divid');
+            var weeklyreport = $(this).data('wr');
+            $.ajax({
+                type: "POST",
+                url: "/StudioClass/AdminOutrollFromClassParticipants",
+                data: { classId: classId, subscriptionId: subscriptionId, WeeklyReport: weeklyreport },
+                datatype: "text",
+                success: function (data) {
+                    var result = data.Response;
+                    if (result == 'Error') {
+                        $('#enroll-result').html(data.Message);
+                    } else {
+                        //$('#myModal').modal('hide');
+                        //$('body').removeClass('modal-open');
+                        //$('.modal-backdrop').remove();
+                        //$('#ClassesTable').html(data);
+                        $('#RemoveParticipants' + divid).addClass('hidden');
+                        $('#addParticipants' + divid).removeClass('hidden');
+                        $('#addParticipants' + divid).closest('.panel').removeClass('panel-primary').addClass('panel-success');
+                    }
+                }
+            });
+        });
+
+        $(".btn-MarkNoShow").click(function () {
+            var id = $(this).data('id');
+            var value = $(this).data('value');
+            var icon = $(this);
+            $.ajax({
+                type: "POST",
+                url: "/StudioClass/AdminMarkNoShow",
+                data: { EnrollmentId: id, Value: value },
+                datatype: "text",
+                success: function (data) {
+                    var result = data.Response;
+                    if (result == 'Error') {
+                        $('#enroll-result').html(data.Message);
+                    } else {
+                        if (value == false) {
+                            icon.removeClass("btn-success");
+                            icon.children().removeClass("glyphicon-thumbs-up");
+                            icon.addClass("btn-warning");
+                            icon.children().addClass("glyphicon-thumbs-down");
+                            icon.data('value', true);
+                        } else {
+                            icon.removeClass("btn-warning");
+                            icon.children().removeClass("glyphicon-thumbs-down");
+                            icon.addClass("btn-success");
+                            icon.children().addClass("glyphicon-thumbs-up");
+                            icon.data('value', false);
+                        }
+                    }
+                }
+            });
+        });
+
+        $(".btn-RemoveParticipants").popConfirm({
+            title: "ביטול רישום",
+            content: "בטוח שברצונך לבטל?",
+            placement: "bottom"
+        });
+
+    });
+
+    $("#btn_PrintClass").click(function () {
+        $("#PrintPage").printThis({
+            debug: false,
+            importCSS: true,
+            importStyle: true,
+            printContainer: true,
+            loadCSS: "/content/@Utilities.App.DefaultCompany.CSSFileName",
+            pageTitle: "אימון מקומות",
+            removeInline: false,
+            printDelay: 333,
+            header: null,
+            formValues: true
+        });
+    });
+
+</script>
+
+@section Scripts {
+    <script src="~/Scripts/printThis.js"></script>
+    <script src="~/Scripts/tooltipMobile.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

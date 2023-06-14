@@ -1,0 +1,26 @@
+﻿@using Utilities
+@model List<InShapeModels.CalendarClassEnrollmentModel>
+
+<div class="panel-body">
+    @if (Model.Any()) //x => x.Class.Date > DateTime.UtcNow.ToLocal()))
+    {
+        <table class="table table-striped table-hover ">
+            @foreach (var item in Model) //.Where(x => x.Class.Date > DateTime.UtcNow.ToLocal()))
+            {
+                <tr>
+                    <td>
+                        <span style="font-size: 100%"> @item.ClassName <span class="badge@(item.PlacementDisplyName == null ? " hidden" : "")">@(item.PlacementDisplyName == null ? "" : item.PlacementDisplyName)</span> - @item.ClassDate.ToString("f")</span>
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <div>
+            <p>
+                אין אימונים קרובים.
+            </p>
+        </div>
+    }
+</div>

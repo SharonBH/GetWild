@@ -1,0 +1,121 @@
+﻿@model GetWild.Models.HealthTandCViewModel
+
+<div class="modal-dialog model-wide ">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            @*<button type="button" class="close" data-dismiss="modal">&times;</button>*@
+            <h3 class="modal-title">הצהרת בריאות @Utilities.App.DefaultCompany.SiteName</h3>
+        </div>
+        <div class="modal-body-high text-right">
+            <h4>פרטים אישיים:</h4>
+            <div class="row">
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.FirstName, new {@class = "control-label"}): @Model.FirstName
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.LastName, new {@class = "control-label"}): @Model.LastName
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.CitizenId, new {@class = "control-label"}): @Model.CitizenId
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.DOB, new {@class = "control-label"}): @if (Model.DOB.HasValue) {@Model.DOB.Value.ToShortDateString()}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.PhoneNumber, new { @class = "control-label" }): @Model.PhoneNumber
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.Email, new { @class = "control-label" }): @Model.Email
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.Address, new {@class = "control-label"}): @Model.Address
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.Occupation, new { @class = "control-label" }): @Model.Occupation
+                </div>
+            </div>
+            
+                <hr />
+                <div class="text-primary">
+                    <h3>הצהרת בריאות:</h3>
+                    <h4>
+                        אני מצהיר/ה כי ידוע לי שאימון כושר כרוך במאמץ פיזי וכי אני מצהיר/ה שמצבי הגופני תקין וכשיר לפעילות זו.<br />
+                        מצבי הבריאותי בעת חתימת מסמך זה הינו תקין לחלוטין ואיני חולה במחלה כלשהי או פציעה אורטופדית המונעת ממני להתאמן עם מאמן כושר ו/או בחדר כושר.<br />
+                        במידה וקיימת בעיה רפואית עלי להביא אישור מרופא.<br />
+                        אני מאשר/ת כי הפרטים הנ"ל שמסרתי נכונים ומדוייקים ואני מתחייב/ת להודיע על כל שינוי בהתייחס לאמור לעיל.<br />
+                    </h4>
+                    <div class="text-info">
+                        תדריך בטיחות מתאמן בסטודיו "פולס" רחוב מנחם בגין 42, גדרה (להלן: "הסטודיו"):<br />
+                        אני הח"מ מצהיר כדלקמן:<br />
+                        1.	מאמני הסטודיו נותנים את הפלטפורה לאימון , ידוע למתאמנים כי המאמנים מנהלים שיעור קבוצתי ולא פרטני. משכך אחריות המתאמן לעוצמת האימון הנכונה היא באחריותו בהתאם להרגשתו האינדבידואלית הרלוונטית למתאמן ו/או למצהיר.
+                        <br />2.	אין להפעיל את המכשיר כאשר מתאמן אחר  עומד על מסילת הריצה.
+                        <br />3.	העליה והירידה מהליכונים רק כאשר ההליכון בעצירה מוחלטת .
+                        <br />4.	עליה וירידה מהליכונים עם בגדי ונעלי ספורט .
+                        <br />5.	לפני עליה או ירידה מהמסילה הנעה יש לעמוד כשהרגליים על 2 מדרכי הפלסטיק הארוכים שמשני צידי המסילה הנעה. יש לנהוג כך בתחילת האימון (לפני הפעלת המסילה) ובסיומו (לאחר עצירת המסילה).
+                        <br />6.	אין להכניס אורחים/ילדים למתחם האימונים .
+                        <br />7.	הפעילות בסטודיו תבוצע על פי הוראות המדריך בלבד . כל פעילות שתבוצע אחרת אסורה ותוצאותה על אחריות המתאמן .
+                        <br />8.	יש לדווח על צוות המתאמנים על כל פציעה ו/או אירוע בריאותי המתרחש במהלך האימון .
+                        <br />9.	אין להסתובב לאחור בעת הפעילות על המכשיר , יש להתמיד כשהגוף והראש פונים תמיד קדימה .
+                        <br />10.	יש להיזהר מאמץ יתר בעת האימון , יש להפסיק את האימון בעקבות כאב או חוסר נוחות, ליידע את המאמנים בזמן האמון ולהיתייעץ מייד ברופא .
+                        <br />11.	בכל אימון אין לבצע אימון בלי נוכחות מדריך .
+                        <br />12.	אין לעבור את פס הזהירות בשעת פעילות ההליכון .
+                        <br />13.	יש לקחת את המשקולות בזהירות ולאחוז בהם ב - 2 הידיים .
+                        <br />14.	יציבות המדרגות, על המתאמן לוודא לפני עליה או ירידה מהמדרגה שהמדרגה יציבה ולא מתנדנדת , במידה והיא לא יציבה לפנות ישר למדריך .
+                        <br />15.	יש להיזהר לא למתוח חזק את הגומי.
+                        <br />16.	אחריות עליה וירידה מהליכון היא על המתאמן עצמו.
+
+                    </div>
+                    <div class="row-topbuffer align-bottom" style="margin-top: 100px;">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-2 bottom-align-text">
+                            @if (Model.SignedDate.HasValue)
+                            {@Model.SignedDate.Value.ToShortDateString()}
+                        </div>
+                        <div class="col-md-2  bottom-align-text">
+                            <img src="@Model.SignatureIMGPath" />
+
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-2 col-md-offset-2 align-bottom" style="border-top: solid 1px black;">
+                            @Html.LabelFor(m => m.SignedDate, new { @class = "control-label" })
+                        </div>
+                        <div class="col-md-3 col-md-offset-1 align-bottom" style="border-top: solid 1px black;">
+                            @Html.LabelFor(m => m.Signature, new { @class = "control-label" })
+                    </div>
+                </div>
+
+                </div>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-success" id="btn_PrintHtandc"><span class="glyphicon glyphicon-ok"></span> הדפס הצהרת בריאות</a>
+            <button type="button" id="closetandc" class="btn btn-warning" data-dismiss="modal">סגור</button>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Scripts/printThis.js"></script>
+<script>
+    $("#btn_PrintHtandc").click(function () {
+        $("#HealthTandCPrintModal").printThis({
+            debug: false,
+            importCSS: true,
+            importStyle: true,
+            printContainer: true,
+            loadCSS: "/content/site.css",
+            pageTitle: "הצהרת בריאות",
+            removeInline: false,
+            printDelay: 333,
+            header: null,
+            formValues: true
+        });
+    });
+</script>

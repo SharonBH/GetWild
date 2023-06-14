@@ -1,0 +1,50 @@
+﻿@model GetWild.Models.UserImageUpload
+<div class="modal-dialog">
+    <div class="modal-content">
+        @using (@Html.BeginForm("UploadProfileIMG", "Gym", FormMethod.Post, new {enctype = "multipart/form-data"}))
+        {
+            <div class="modal-header">
+                תמונת פרופיל
+            </div>
+            <div class="modal-body">
+                @*<form action="/Gym/UploadProfileIMG" method="post" enctype="multipart/form-data">*@
+                
+                <div class="form-group">
+                    @Html.HiddenFor(model => model.UserId)
+                    @Html.HiddenFor(model => model.ImageType)
+                    @Html.LabelFor(model => model.ImageUpload, htmlAttributes: new {@class = "control-label col-md-2"})
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <span class="btn btn-primary btn-file">
+                                    בחר תמונה @Html.TextBoxFor(model => model.ImageUpload, new { type = "file" })
+                                </span>
+                            </span>
+                            <input class="form-control" id="InputFileName" readonly="" type="text">
+                        </div>
+                        @Html.ValidationMessageFor(model => model.ImageUpload, "", new {@class = "text-danger"})
+                    </div>
+                </div>
+                
+
+                    
+
+                @*</form>*@
+            </div>
+            <div class="modal-footer">
+                <input type="submit" value="שמור" class="btn btn-primary" />
+                <button type="button" class="btn btn-danger" data-dismiss="modal">ביטול</button>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    $(document).on('change', '.btn-file :file', function () {
+        var input = $(this),
+            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [numFiles, label]);
+        $('#InputFileName').val(label);
+    });
+</script>

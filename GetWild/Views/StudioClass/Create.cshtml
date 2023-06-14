@@ -1,0 +1,319 @@
+﻿@using InShapeModels
+@model GetWild.Models.ClassViewModel
+<link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" />
+<link rel="stylesheet" href="~/Content/MultiSelect.css" />
+@{
+    ViewBag.Title = "ניהול סטודיו";
+}
+
+@if (@Model.Id > 0)
+{
+    <h2>ערוך אימון</h2>
+}
+else
+{
+    <h2>הוסף אימון חדש</h2>
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Participants)
+    @Html.HiddenFor(model => model.SourcePage)
+    @Html.HiddenFor(model => model.ShortURL)
+    @Html.HiddenFor(model => model.WaitingList)
+    @Html.HiddenFor(model => model.IsFull)
+    if (Model.CurrentCompany.AutoPublish)
+    {
+        @Html.HiddenFor(model => model.Published)
+    }
+    @Html.HiddenFor(model => model.ExtraParticipants)
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClassTypeId, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.ClassTypeId, new SelectList(Model.ClassTypes, "Id", "Name"), "בחר סוג אימון", new { @class = "form-control", @id = "classtypeddl" })
+                @Html.ValidationMessageFor(model => model.ClassTypeId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @if (Model.CurrentCompany.UseClassTypeDetails)
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.ClassTypeDetailsId, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.ClassTypeDetailsId, new SelectList(Model.ClassTypesDetails, "Id", "Name"), new { @class = "form-control", @id = "classtypedetailsddl" })
+                    @*@Html.ValidationMessageFor(model => model.ClassTypeDetailsId, "", new {@class = "text-danger"})*@
+                </div>
+            </div>
+        }
+        @if (!Model.CurrentCompany.UseClassNamefromType)
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @id = "txtClassName" } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        else
+        {
+            @Html.HiddenFor(model => model.Name, new { @id = "txtClassName" })
+        }
+        <div class="form-group">
+            @Html.LabelFor(model => model.Date, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "יום/חודש/שנה" } })
+                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.DailySlotId, new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.DropDownListFor(m => m.DailySlotId, new SelectList(Model.TimeSlots, "Id", "Name"), "בחר שעה", new { @class = "form-control", @id = "dailyslotddl" })
+                @Html.ValidationMessageFor(model => model.DailySlotId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group hidden othertime">
+            @Html.LabelFor(model => model.Time, new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Time, new { htmlAttributes = new { @class = "form-control timepicker ipothertime" } })
+                @Html.ValidationMessageFor(model => model.Time, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group hidden othertime">
+            @Html.LabelFor(model => model.Duration, new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.Duration, new { htmlAttributes = new { @class = "form-control ipothertime", @placeholder = "זמן האימון (בדקות)" } })
+                @Html.ValidationMessageFor(model => model.Duration, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @if (Model.CurrentCompany.UseInstructors)
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.InstructorIds, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.InstructorIds, new SelectList(Model.Instructors, "InstructorId", "FullName"), new { @class = "listbox", @id = "instructorMulti", @multiple = "multiple" })
+                    @Html.ValidationMessageFor(model => model.InstructorIds, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StudioRoomId, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.StudioRoomId, new SelectList(Model.StudioRooms, "Id", "Name"), "בחר " + @Model.CurrentCompany.StudioRoomName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.StudioRoomId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.IsMultiRoom, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(m => m.IsMultiRoom, new { @class = "form-control" })
+            </div>
+        </div>
+
+        @*@if (Utilities.App.CurrentCompany.UsePlacements)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PlacementIds, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(m => m.PlacementIds, new SelectList(Model.Placements, "Id", "Name"), new { @class = "listbox", @id = "placementsMulti", @multiple = "multiple" })
+                        @Html.ValidationMessageFor(model => model.InstructorIds, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-2 control-label"></div>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ClassPlacements, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+            }*@
+        <div class="form-group">
+            @Html.LabelFor(model => model.MaxParticipants, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MaxParticipants, new { htmlAttributes = new { @class = "form-control", @id = "MaxParticipantstxt" } })
+                @Html.ValidationMessageFor(model => model.MaxParticipants, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Gender, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <label class="radio-inline">@Html.RadioButtonFor(model => model.Gender, Gender.נקבה)@Html.Label(Gender.נקבה.ToString())</label>
+                <label class="radio-inline">@Html.RadioButtonFor(model => model.Gender, Gender.זכר)@Html.Label(Gender.זכר.ToString())</label>
+                <label class="radio-inline">@Html.RadioButtonFor(model => model.Gender, Gender.מעורב)@Html.Label(Gender.מעורב.ToString())</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.AgeGroup, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.AgeGroup, AgeGroup.ילדים)@Html.Label(AgeGroup.ילדים.ToString())</label>
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.AgeGroup, AgeGroup.נוער)@Html.Label(AgeGroup.נוער.ToString())</label>
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.AgeGroup, AgeGroup.מבוגרים)@Html.Label(AgeGroup.מבוגרים.ToString())</label>
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.MinAge, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.MinAge, new { htmlAttributes = new { @class = "form-control", @id = "MinAgetxt" } })
+                    @Html.ValidationMessageFor(model => model.MinAge, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @if (!Model.CurrentCompany.AutoPublish)
+                {
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @*@Html.LabelFor(m => m.Published, new { @class = "col-md-2 control-label" })*@
+                            <div class="col-md-2"><label class="control-label">לפרסם?</label></div>
+                            <div class="col-md-4">
+                                @Html.CheckBoxFor(m => m.Published, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (@Model.Id > 0)
+                {<input type="submit" id="btn_addclass" value="שמור שינויים" class="btn btn-primary btn-block" />}
+                else
+                { <input type="submit" id="btn_addclass" value="הוסף" class="btn btn-primary btn-block" />}
+            </div>
+        </div>
+    </div>
+}
+<div>
+    @(Model.SourcePage == "WeeklySummaryReport" ? Html.ActionLink("חזרה לניהול", "WeeklySummaryReport", "Report") : Html.ActionLink("חזרה לניהול", "Index"))
+</div>
+<script type="text/javascript">
+    //$(function () { // will trigger when the document is ready
+    //    $('.timepicker').datetimepicker({
+    //        format: 'LT',
+    //        locale: 'he'
+    //    }); //Initialise any date pickers
+    //});
+    jQuery(document).ready(function($) {
+        //$('.timepicker').timepicker({
+        //    stepMinute: 15,
+        //    timeOnlyTitle: 'שעת תחילת האימון',
+        //    timeText: '',
+        //    hourText: 'שעה',
+        //    minuteText: 'דקות',
+        //    currentText: 'עכשיו',
+        //    closeText: 'סגור',
+        //    isRTL: 'true'
+        //});
+        var otime = @Model.DailySlotId == -1;
+        if (otime) {
+            $('.othertime').removeClass("hidden");}
+
+        //$("#classtypeddl").change(function () {
+        //    $("#txtClassName").val($(this).find("option:selected").text());
+        //    $.getJSON('/ClassTypeDetails/GetClassTypesDetailsByType?typeid='+$(this).val(), function(result) {
+        //        var ddl = $('#classtypedetailsddl');
+        //        ddl.empty();
+        //        $(result).each(function() {
+        //            $(document.createElement('option'))
+        //                .attr('value', this.Id)
+        //                .text(this.Name)
+        //                .appendTo(ddl);
+        //        });
+        //    });
+        //    //$("#classtypedetailsddl")
+        //});
+
+
+
+        //$("#dailyslotddl").change(function () {
+        //    //if ($("#dailyslotddl").find("option:selected").val() == '')
+        //    //    $('#dailyslotddl').attr("data-val", "true");
+        //    if ($(this).find("option:selected").val() == -1) {
+        //        $('.othertime').removeClass("hidden");
+        //        //$('.othertime').attr("data-val", "true");
+        //        //$('.othertime').attr("data-val-required", "msfd");
+        //    } else {
+        //        $('.othertime').addClass("hidden");
+        //        //$('.othertime').attr("data-val", "false");
+        //    }
+        //});
+
+        $("#btn_addclass").click(function () {
+            //debugger;
+            //var r = $(".ipothertime").val();
+            if ($("#dailyslotddl").find("option:selected").text() == 'זמן אחר' && $(".ipothertime").val() == '') {
+                $(".othertime").removeClass('has-success');
+                $(".othertime").addClass('has-error');
+                return false;
+            } else {
+                $(".othertime").removeClass('has-error');
+                $(".othertime").addClass('has-success');
+            }
+        });
+
+        $(document).on('submit', 'form', function () {
+            var buttons = $(this).find('[type="submit"]');
+            if ($(this).valid()) {
+                buttons.each(function () {
+                    $(this).prop('value', 'שומר שינויים...');
+                    $(this).prop('disabled', true);
+                });
+                //buttons.each(function (btn) {
+                //    debugger;
+                //    $(buttons[btn]).prop('disabled', true);
+                //    $(buttons[btn]).value('המתן...');
+                //});
+            } else {
+                buttons.each(function (btn) {
+                    $(buttons[btn]).prop('disabled', false);
+                });
+            }
+        });
+
+        //$("#btn_addclass").click(function () {
+        //    //debugger;
+        //    var r = $(".ipothertime").val();
+        //    if ($("#dailyslotddl").find("option:selected").val() == -1 && $(".ipothertime").val() == '') {
+        //        $(".othertime").removeClass('has-success');
+        //        $(".othertime").addClass('has-error');
+        //        return false;
+        //    } else {
+        //        $(".othertime").removeClass('has-error');
+        //        $(".othertime").addClass('has-success');
+        //    }
+        //});
+
+        //$(".btn-group").addClass("btn-control");
+        //$(".btn-group>button").addClass("form-control");
+
+
+        @if (Model.Id > 0)
+        {
+            var s = @Html.Raw(string.Join("', '", Model.InstructorIds));
+
+            //var selected = Server.UrlDecode(string.Join(",", Model.InstructorIds.Select(item => "'" + item + "'")));
+           <text> $('#instructorMulti').multiselect('select', ['@s']);</text>
+
+        }
+
+    });
+</script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @*<script src="~/Scripts/bootstrap-multiselect.js"></script>*@
+}

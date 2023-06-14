@@ -1,0 +1,225 @@
+﻿@using InShapeModels
+@model GetWild.Models.HealthTandCViewModel
+
+<div>
+    @*<div class="logo"><img src="~/images/logo-GW.png" /></div>*@
+    <h3 class="modal-title">הצהרת בריאות Pulse</h3>
+    <form action="" method="post" enctype="multipart/form-data">
+        <div class="form-horizontal">
+            <div class="row row-topbuffer">
+                <h4>פרטים אישיים:</h4>
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.Userid)
+                @Html.HiddenFor(m => m.Email)
+                <div class="form-group">
+                    @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.LastName, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.CitizenId, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.CitizenId, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.CitizenId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.PhoneNumber, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.DOB, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.DOB, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker", @placeholder = "DD/MM/YYYY" })
+                        @Html.ValidationMessageFor(m => m.DOB, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Address, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @*<div class="form-group">
+                        @Html.LabelFor(m => m.Occupation, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.Occupation, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Occupation, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Gender, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        <label class="radio-inline">@Html.RadioButtonFor(m => m.Gender, Gender.נקבה)@Html.Label(Gender.נקבה.ToString())</label>
+                        <label class="radio-inline">@Html.RadioButtonFor(m => m.Gender, Gender.זכר)@Html.Label(Gender.זכר.ToString())</label>
+                    </div>
+                </div>
+                @*<div class="form-group">
+                        @Html.LabelFor(m => m.Email, new {@class = "col-md-2 control-label"})
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.Email, new {@class = "form-control"})
+                        </div>
+                    </div>*@
+                <hr />
+                <div class="text-primary">
+                    <h3>הצהרת בריאות:</h3>
+                    <h4>
+                        אני מצהיר/ה כי ידוע לי שאימון כושר כרוך במאמץ פיזי וכי אני מצהיר/ה שמצבי הגופני תקין וכשיר לפעילות זו.<br />
+                        מצבי הבריאותי בעת חתימת מסמך זה הינו תקין לחלוטין ואיני חולה במחלה כלשהי או פציעה אורטופדית המונעת ממני להתאמן עם מאמן כושר ו/או בחדר כושר.<br />
+                        במידה וקיימת בעיה רפואית עלי להביא אישור מרופא.<br />
+                        אני מאשר/ת כי הפרטים הנ"ל שמסרתי נכונים ומדוייקים ואני מתחייב/ת להודיע על כל שינוי בהתייחס לאמור לעיל.<br />
+                    </h4>
+                </div>
+                <div class="text-info">
+                    תדריך בטיחות מתאמן בסטודיו "פולס" רחוב מנחם בגין 42, גדרה (להלן: "הסטודיו"):<br />
+                    אני הח"מ מצהיר כדלקמן:<br />
+                    1.	מאמני הסטודיו נותנים את הפלטפורה לאימון , ידוע למתאמנים כי המאמנים מנהלים שיעור קבוצתי ולא פרטני. משכך אחריות המתאמן לעוצמת האימון הנכונה היא באחריותו בהתאם להרגשתו האינדבידואלית הרלוונטית למתאמן ו/או למצהיר.
+                    <br />2.	אין להפעיל את המכשיר כאשר מתאמן אחר  עומד על מסילת הריצה.
+                    <br />3.	העליה והירידה מהליכונים רק כאשר ההליכון בעצירה מוחלטת .
+                    <br />4.	עליה וירידה מהליכונים עם בגדי ונעלי ספורט .
+                    <br />5.	לפני עליה או ירידה מהמסילה הנעה יש לעמוד כשהרגליים על 2 מדרכי הפלסטיק הארוכים שמשני צידי המסילה הנעה. יש לנהוג כך בתחילת האימון (לפני הפעלת המסילה) ובסיומו (לאחר עצירת המסילה).
+                    <br />6.	אין להכניס אורחים/ילדים למתחם האימונים .
+                    <br />7.	הפעילות בסטודיו תבוצע על פי הוראות המדריך בלבד . כל פעילות שתבוצע אחרת אסורה ותוצאותה על אחריות המתאמן .
+                    <br />8.	יש לדווח על צוות המתאמנים על כל פציעה ו/או אירוע בריאותי המתרחש במהלך האימון .
+                    <br />9.	אין להסתובב לאחור בעת הפעילות על המכשיר , יש להתמיד כשהגוף והראש פונים תמיד קדימה .
+                    <br />10.	יש להיזהר מאמץ יתר בעת האימון , יש להפסיק את האימון בעקבות כאב או חוסר נוחות, ליידע את המאמנים בזמן האמון ולהיתייעץ מייד ברופא .
+                    <br />11.	בכל אימון אין לבצע אימון בלי נוכחות מדריך .
+                    <br />12.	אין לעבור את פס הזהירות בשעת פעילות ההליכון .
+                    <br />13.	יש לקחת את המשקולות בזהירות ולאחוז בהם ב - 2 הידיים .
+                    <br />14.	יציבות המדרגות, על המתאמן לוודא לפני עליה או ירידה מהמדרגה שהמדרגה יציבה ולא מתנדנדת , במידה והיא לא יציבה לפנות ישר למדריך .
+                    <br />15.	יש להיזהר לא למתוח חזק את הגומי.
+                    <br />16.	אחריות עליה וירידה מהליכון היא על המתאמן עצמו.
+
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Signature, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(m => m.Signature, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="row row-topbuffer">
+                <div class="col-md-2 col-md-offset-1">
+                    <button type="submit" class="btn btn-success" id="btn_confirmHtandc"><span class="glyphicon glyphicon-ok"></span> אשר הצהרת בריאות</button>
+                </div>
+            </div>
+            <div id="errormsg" class="row text-danger"></div>
+        </div>
+    </form>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script src="~/Scripts/signature_pad.min.js"></script>
+@*<script src="~/Scripts/SignaturePadInit.js"></script>*@
+<script>
+    $('.datepicker').datepicker({
+        changeMonth: true,
+        changeYear: true, dateFormat: 'dd/mm/yy', zIndexOffset: 10000, yearRange: '@DateTime.UtcNow.AddYears(-65).Year:@DateTime.UtcNow.AddYears(-4).Year' });
+    var errorExists = false;
+    var signaturePadWrapper = document.querySelector('.signature-pad');
+    var canvas = signaturePadWrapper.querySelector('canvas');
+    var clearButton = signaturePadWrapper.querySelector('.btn-clear-canvas');
+    var hiddenInput = signaturePadWrapper.querySelector('input[type="hidden"]');
+
+    var signaturePad = new SignaturePad(canvas);
+
+    // Read base64 string from hidden input
+    var base64str = hiddenInput.value;
+
+    if (base64str) {
+        // Draws signature image from data URL
+        signaturePad.fromDataURL('data:image/png;base64,' + base64str);
+    }
+
+    if (hiddenInput.disabled) {
+        signaturePad.off();
+        clearButton.classList.add('hidden');
+    } else {
+        signaturePad.onEnd = function () {
+            // Returns signature image as data URL and set it to hidden input
+            base64str = signaturePad.toDataURL().split(',')[1];
+            hiddenInput.value = base64str;
+        };
+
+        clearButton.addEventListener('click', function () {
+            // Clear the canvas and hidden input
+            signaturePad.clear();
+            hiddenInput.value = '';
+        });
+    }
+
+    $("#btn_confirmHtandc").click(function () {
+        if (signaturePad.isEmpty()) {
+            if (errorExists === false) {
+                $("#signature-pad").append("<div class='text-danger' id='sig-error'>חובה לחתום</div>");
+                $("#signature-pad").parent().parent().addClass('has-error');
+                errorExists = true;
+                return false;
+            }
+        } else if (!signaturePad.isEmpty()) {
+            if (errorExists === true) {
+                $('#sig-error').remove();
+                $("#signature-pad").parent().parent().removeClass('has-error');
+                errorExists = false;
+            }
+        }
+        //var isValid = $('#HealthTandC').validate().form();
+        //if (!isValid) return false;
+        //$.ajax({
+        //    type: "POST",
+        //    url: "/Account/SignHealthTandC",
+        //    data: $('#HealthTandC').serialize(),
+        //    datatype: "html",
+        //    success: function(data) {
+        //        var result = data.Response;
+        //        debugger;
+        //        if (result == 'Success') {
+        //            $('#HealthTandCModal').modal('hide');
+        //            $('body').removeClass('modal-open');
+        //            $('.modal-backdrop').remove();
+        //        } else {
+        //            $('#errormsg').html(data.Message);
+        //        }
+        //    }
+        //});
+    });
+
+    $(function () {
+        $.validator.addMethod('date',
+            function (value, element) {
+                if (this.optional(element)) {
+                    return true;
+                }
+                var ok = true;
+                try {
+                    $.datepicker.parseDate('dd/mm/yy', value);
+                } catch (err) {
+                    ok = false;
+                }
+                return ok;
+            });
+        //$.validator.addMethod("signature", function (value, element, options) {
+        //    if (signaturePad.isEmpty()) {
+        //        return false;
+        //    }
+        //    return true;
+        //}, "Your signature is required");
+        $('.datepicker').datepicker({ dateFormat: 'dd/mm/yy' });
+    });
+
+</script>
+

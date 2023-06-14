@@ -1,0 +1,84 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+    @Html.AntiForgeryToken()
+
+<ul class="nav navbar-nav navbar-reg navbar-right">
+    @if (User.IsInRole("admin") || User.IsInRole("Instructor"))
+    {
+        @*<li>@Html.ActionLink("משתמש חדש", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>*@
+        @*<li>@Html.ActionLink("משתמשים", "GetUsersByRole", "Account", routeValues: new {roleId = "2"}, htmlAttributes: new {id = "UserListLink"})</li>*@
+        <li>@Html.ActionLink("ראשי", "Index", "Admin")</li>
+        <li>@Html.ActionLink("סיכום שבועי", "WeeklySummaryReport", "Report", routeValues: null, htmlAttributes: new { id = "WeeklySummaryReport" })</li>
+        <li>@Html.ActionLink("משתמשים", "GetUsers", "Account", routeValues: null, htmlAttributes: new { id = "UserListLink" })</li>
+        if (Utilities.App.DefaultCompany.UseInstructors)
+        {
+            <li>@Html.ActionLink("מאמנים", "GetInstructors", "Account", routeValues: null, htmlAttributes: new { id = "InstructorListLink" })</li>
+        }
+        <li>@Html.ActionLink(@Utilities.App.DefaultCompany.StudioRoomName, "Index", "Studio", routeValues: null, htmlAttributes: new { id = "StudioLink" })</li>
+
+        <li>@Html.ActionLink("סוגי אימון", "Index", "ClassType", routeValues: null, htmlAttributes: new { id = "ClassTypeLink" })</li>
+        if (Utilities.App.DefaultCompany.UseClassTypeDetails)
+        {
+            <li>@Html.ActionLink("מערכי אימון", "Index", "ClassTypeDetails", routeValues: null, htmlAttributes: new { id = "ClassTypeDetailsLink" })</li>
+        }
+        <li>@Html.ActionLink("סוגי מנוי", "Index", "SubscriptionType", routeValues: null, htmlAttributes: new { id = "SubscriptionTypeLink" })</li>
+        <li>@Html.ActionLink("לו''ז אימונים", "Index", "StudioClass", routeValues: null, htmlAttributes: new { id = "StudioClassLink" })</li>
+        if (Utilities.App.DefaultCompany.UseSMS)
+        {
+            <li>@Html.ActionLink("SMS", "Index", "Sms", routeValues: null, htmlAttributes: new { id = "SmsLink" })</li>
+        }
+        <li>@Html.ActionLink(Utilities.App.DefaultCompany.TipsName, "Index", "Tip", routeValues: null, htmlAttributes: new { id = "TipLink" })</li>
+        <li>
+            <a class="dropdown-toggle" data-toggle="dropdown">דוחות <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                @if (!Utilities.App.DefaultCompany.RemoveMarked)
+                {
+                    <li>@Html.ActionLink("דוח משתמשים", "UserReport", "Report", routeValues: null, htmlAttributes: new { id = "UserReport" })</li>
+}
+                <li>@Html.ActionLink("דוח כרטסיות", "GetUsersTickets", "Account", routeValues: null, htmlAttributes: new { id = "UsersTickets" })</li>
+                @if (Utilities.App.DefaultCompany.UseInstructors)
+                {
+                    <li>@Html.ActionLink("דוח מאמנים", "InstructorMonthlyReport", "Report", routeValues: null, htmlAttributes: new { id = "InstructorMonthlyReport" })</li>
+                }
+                <li>@Html.ActionLink("דוח שבועי", "WeeklyReport", "Account", routeValues: null, htmlAttributes: new { id = "WeeklyReport" })</li>
+                <li>@Html.ActionLink("סיכום שבועי", "WeeklySummaryReport", "Report", routeValues: null, htmlAttributes: new { id = "WeeklySummaryReport" })</li>
+                <li>@Html.ActionLink("דוח עצלנים", "NoEnrollmentReport", "Account", routeValues: null, htmlAttributes: new { id = "NoEnrollmentReport" })</li>
+                <li>@Html.ActionLink("דוח קפואים", "FrozenReport", "Report", routeValues: null, htmlAttributes: new { id = "FrozenReport" })</li>
+                @if (Utilities.App.DefaultCompany.UseSMS)
+                {
+                    <li>@Html.ActionLink("דוח שליחת הודעות", "SMSSendReport", "Report", routeValues: null, htmlAttributes: new { id = "SMSSendReport" })</li>
+                }
+                @if (Utilities.App.DefaultCompany.UseExpenses)
+                {
+                    <li>@Html.ActionLink("דוח הוצאות", "ExpensesMonthlyReport", "Report", routeValues: null, htmlAttributes: new { id = "ExpensesMonthlyReport" })</li>
+                }
+
+                @*<li>@Html.ActionLink("ממוצעים חודשיים", "MonthlySummaryReport", "Report", routeValues: null, htmlAttributes: new { id = "MonthlySummaryReport" })</li>*@
+            </ul>
+        </li>
+        @*<li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
+            <li>@Html.ActionLink("דוחות", "UserReport", "Report", routeValues: null, htmlAttributes: new { @class ="dropdown-toggle", @data-toggle="dropdown", id = "ReportLink" })</li>*@
+    }
+    else if (User.IsInRole("ClassInstructor"))
+    {
+        <li>@Html.ActionLink("לו''ז אימונים", "Index", "StudioClass", routeValues: null, htmlAttributes: new { id = "StudioClassLink" })</li>
+        <li>@Html.ActionLink("סיכום שבועי", "WeeklySummaryReport", "Report", routeValues: null, htmlAttributes: new { id = "WeeklySummaryReport" })</li>
+    }
+    else /*if (User.IsInRole("User"))*/
+    {
+        <li>@Html.ActionLink("קיוסק מידע אישי", "UserInfo", "Gym", routeValues: null, htmlAttributes: new { id = "UserListLink" })</li>
+        <li>@Html.ActionLink("לוז אימונים", "GetCalander", "Gym", routeValues: null, htmlAttributes: new { id = "StudioLink" })</li>
+    }
+    <li><a href="javascript:document.getElementById('logoutForm').submit()" class="btn-logout"><span class="glyphicon glyphicon-off"></span> יציאה</a></li>
+</ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-reg navbar-right">
+        @*<li><span class="glyphicon glyphicon-user"></span> @Html.ActionLink("כניסה למנויים", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class="btn-info" })</li>*@
+        <li><a href="@Url.Action("Login", "Account")" class="btn-info"><span class="glyphicon glyphicon-user"></span> כניסה למנויים</a></li></ul>
+}

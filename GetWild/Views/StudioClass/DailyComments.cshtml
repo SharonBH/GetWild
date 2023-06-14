@@ -1,0 +1,22 @@
+﻿@using InShapeModels
+@model DailyClassEnrollmentModel
+
+    @foreach (var cls in Model.Classes.Where(x=>x.Enrollments.Any()).OrderBy(x=>x.Date))
+    {
+        <h4>@cls.Name, @cls.Date.ToString("g")</h4>
+        <ol class="list-group">
+            @foreach (var u in cls.Enrollments)
+            {
+
+                <li class='list-group-item @(!u.IsVerified ? "list-group-item-danger" : "")'>
+                    @u.UserSubscription.FullName: @(Model.IsReactive? "" : u.DateEnrolled.ToShortDateString()), טלפון: @u.UserSubscription.PhoneNumber
+                    @if (u.Comment != null)
+                    {<br /><sub class="label label-danger">@u.CommentBy: @u.Comment</sub>}
+                </li>
+            }
+        </ol>
+        <div class="alert-info hidden">
+            סה"כ מתאמנים רשומים: @cls.Enrollments.Count() (הבריזו: @cls.Enrollments.Count(x => !x.IsVerified))
+        </div>
+    }
+

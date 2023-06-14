@@ -1,0 +1,23 @@
+﻿@using InShapeModels
+@model UsersList
+
+@{
+    ViewBag.Title = "משתמשים רשומים";
+}
+
+@if (ViewBag.showHeader != 0)
+{
+    <h2>ניהול משתמשים</h2>
+}
+<div class="row row-bottombuffer">
+    <div class="col-md-2">
+        @Html.EnumDropDownListFor(m => m.UserType, "כולם (בחר לסינון)", new { @class = "form-control ddlUserTypesTickets" })
+    </div>
+    <div class="col-md-2">
+        <button id="btn-export-users" type="button" class="btn btn-info" style="float:right;">יצוא</button>
+    </div>
+</div>
+    <div id="UserListTable">
+        @Html.Partial("UserListTicketsTable", Model)
+    </div>
+    @Html.Partial("_ConfirmDelete")

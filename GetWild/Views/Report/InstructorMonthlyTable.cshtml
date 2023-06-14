@@ -1,0 +1,245 @@
+﻿@model InShapeModels.InstructorReport
+<div class="panel panel-info">
+    <div class="panel-heading">
+        @*<div class="row">
+            <div style="text-align:left; width: 25%; float: right;">
+                <a class="btn btn-info glyphicon glyphicon-chevron-right CalanderChangeDate" data-date="@(Model.StartDate.Date.AddMonths(-1))"></a> 
+            </div>
+            <div style="text-align:center;width: 50%; float: right;"><h3 class="panel-title">דוח חודשי ממוצעים - @Model.StartDate.Date.ToString("Y")</h3></div>
+            <div style="text-align:right; width: 25%; float: right;">
+                <a class="btn btn-info glyphicon glyphicon-chevron-left CalanderChangeDate" data-date="@(Model.StartDate.Date.AddMonths(1))"></a>
+            </div>
+        </div>*@
+       
+        
+        
+        
+    </div>
+    <div class="panel-body">
+        <div id="update-message">
+        </div>
+        <table class="table table-striped table-hover ">
+            <thead>
+                <tr>
+                    <th style="text-align: right; width: 40px;">
+                    </th>
+                    <th style="text-align: right;">
+                        שם
+                    </th>
+                    <th style="text-align: right;">
+                        אימונים
+                    </th>
+                    @*<th style="text-align: right;">
+            שכר לאימון
+        </th>*@
+                    <th style="text-align: right;">
+                        נסיעות
+                    </th>
+                    @*<th style="text-align: right;">
+            שכר החודש
+        </th>*@
+                    <th style="text-align: right;">
+                        תאריך הצטרפות
+                    </th>
+                    <th style="text-align: right;">
+                        אימון אחרון
+                    </th>
+                    <th style="text-align: right;">
+                        אימון הבא
+                    </th>
+                    @*<th style="text-align: right;">
+            משכורת
+        </th>
+        <th style="text-align: right;"></th>
+        <th style="text-align: right;"></th>*@
+                </tr>
+            </thead>
+            @{ int i = 0; }
+            @foreach (var item in Model.InstructorReportList)
+            {
+                i = i + 1;
+            <tr>
+                <td><h3>@i</h3></td>
+                <td>
+                    @item.FullName
+                </td>
+                <td>
+                    @if (item.CurrentNumClasses > 0)
+                    {
+                        <button type="button" class="btn btn-xs btn-info btn-Classes" data-id="@item.UserId" data-name="@item.FullName (@Model.ReportDate.ToString("Y"))" data-footer="@item.CurrentNumClasses">@item.CurrentNumClasses <i class="glyphicon glyphicon-th-list"></i></button>
+                    }
+                </td>
+
+                @*<td>
+                    @item.Rate
+                </td>*@
+                <td>
+                    @item.CurrentDays
+                </td>
+                @*<td>
+                    @item.CurrentEarnings
+                </td>*@
+
+                <td>
+                    @item.JoinDate.ToShortDateString()
+                </td>
+                <td>
+                    @if (item.LastClassDate != null)
+                    {
+                        @item.LastClassDate.Value.ToShortDateString()<br />
+                        <text>שעה: </text>
+                        @item.LastClassDate.Value.ToShortTimeString()<br />
+                        <text>סוג: </text>
+                        @item.LastClassType
+                    }
+                </td>
+                <td>
+                    @if (item.NextClassDate != null)
+                    {
+                        @item.NextClassDate.Value.ToShortDateString()<br />
+                        <text>שעה: </text>
+                        @item.NextClassDate.Value.ToShortTimeString()<br />
+                        <text>סוג: </text>
+                        @item.NextClassType
+                    }
+                </td>
+                @*<td>
+                    @if (item.Confirmed)
+                    {
+                        @item.AmountSalary <text> ש"ח  </text>
+                    }
+                    else
+                    {<text>---</text>}
+                </td>
+                <td>
+                    @if (!item.Confirmed)
+                    {
+                        if (item.CurrentEarnings > 0)
+                        {
+                            <a class="btn btn-xs btn-primary btn-processSalary" data-id="@item.UserId" data-name="@item.FullName" data-amount="@item.CurrentEarnings" data-toggle="modal" data-title="אשר" data-message="האם לאשר משכורת ?"><i class="glyphicon glyphicon-ok"></i>אשר משכורת</a>
+                        }
+                    }
+                    else
+                    {
+                        <span class="text-info glyphicon glyphicon-info-sign" data-toggle="tooltip" title="@item.Note"></span>
+                        @item.DateConfirmed.Value.ToShortDateString()
+                        <text>(אושר</text>
+                        @item.UserConfirmed
+                        <text>)</text>
+
+                    }
+                </td>*@
+
+
+
+            </tr>
+            }
+            <tr class="info" style="text-align: right;">
+                <td colspan="2">
+                    סה"כ: @Model.InstructorReportList.Count() מאמנים
+                </td>
+                <td>@Model.InstructorReportList.Sum(x=>x.CurrentNumClasses)</td>
+                <td></td>
+                @*<td>@Model.InstructorReportList.Sum(x => x.Expenses)</td>
+                <td>@Model.InstructorReportList.Sum(x => x.CurrentEarnings)</td>*@
+                <td></td>
+                <td></td>
+                <td></td>
+                @*<td>@Model.InstructorReportList.Sum(x => x.AmountSalary)</td>*@
+                <td id="cart-total">
+                    
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+
+</div>
+
+<script>
+    $(function() {
+        var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+        $("#SearchFromDate").val('@Model.ReportDate.ToString("MM/yyyy")');
+        $(".CalanderChangeDate").click(function() {
+            var fromdate = $(this).data("date");
+            var todate = $(this).data("date");
+            $.ajax({
+                type: "POST",
+                url: "/Report/GetMonthlyTable",
+                data: { fromdate: fromdate, todate: todate },
+                datatype: "text",
+                beforeSend: function() {
+                    $('#ClassesTable').html(loaddingdiv);
+                },
+                success: function(data) {
+                    $('#ClassesTable').html(data);
+                }
+            });
+        });
+
+        $('.btn-Classes').click(function (ve) {
+            var title = $(this).data('name');
+            var footer = $(this).data('footer');
+            var id = $(this).data('id');
+            $('#myModal .modal-title').html('מאמן: ' + title);
+            //$('#myModal .modal-footer-inner').html('סה"כ מתאמנים רשומים: ' + footer);
+            $('#myModal .modal-body').html(loaddingdiv);
+            $('#myModal .modal-body').load('/StudioClass/GetClassByInstructor?id=' + id + '&month=' + $("#SearchFromDate").val(), function (response, status, xhr) {
+                if (status != "success") {
+                    $('#IMGUploadContainer').html('תקלה, אנא נסה מאוחר יותר' + response);
+                }
+            });
+            $('#myModal').modal('show', { backdrop: 'static' });
+            //$('#myModal').find('.btn-RemoveParticipants').data('wr', true);
+            ve.stopPropagation();
+        });
+
+        jQuery(document).ready(function($) {
+            $('[data-toggle="tooltip"]').tooltip();
+            var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+            $('.btn-processSalary').click(function (ev) {
+                var userid = $(this).data('id');
+                var name = $(this).data('name');
+                var amount = $(this).data('amount');
+                var btn = $('#btn_UpdateSalary');
+                btn.attr('data-userid', userid);
+                btn.attr('data-name', name);
+                btn.attr('data-amount', amount);
+                btn.attr('data-date', '@Model.ReportDate.ToShortDateString()');
+                $('#UserReportModal').find('.modal-title').text(name + ' (משכורת: ' + amount +' שח) ');
+                //var msg = $(this).attr('data-message');
+                //$('#dataConfirmModal').find('.modal-body').text(msg);
+                //var title = $(this).attr('data-title');
+                //$('#dataConfirmModal').find('.modal-header').text(title);
+
+                $('#UserReportModal').modal('show', { backdrop: 'static' });
+                ev.stopPropagation();
+            });
+
+            $('#btn_UpdateSalary').click(function() {
+
+                var userid = $(this).data('userid');
+                var date = $(this).data('date');
+                var adjustment = $('#AdjustmentAmount').val();
+                var note = $('#UserReportNote').val();
+                    $.ajax({
+                        type: "POST",
+                        url: "/Report/ProcessInstructorSalary",
+                        data: {
+                            UserId: userid, Date: date, Note: note, Adjustment: adjustment },
+                    datatype: "text",
+                    beforeSend: function() {
+                        $('#ClassesTable').html(loaddingdiv);
+                    },
+                    success: function(data) {
+                        $('#ClassesTable').html(data);
+                        $('#UserReportModal').modal('hide');
+                    }
+                });
+            });
+        });
+    });
+
+</script>
+

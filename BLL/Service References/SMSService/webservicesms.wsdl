@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="apiItnewsletter" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="apiItnewsletter" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="apiItnewsletter">
+      <s:element name="getSmsCount">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="un" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pw" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="accid" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="sysPW" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="t" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getSmsCountResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getSmsCountResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="sendSMSrecipients">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="un" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pw" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="accid" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="sysPW" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="t" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="txtUserCellular" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="destination" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="txtSMSmessage" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dteToDeliver" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="sendSMSrecipientsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sendSMSrecipientsResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="rSms">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="cellSender" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="txtCell_SIM_id" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="message" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="rSmsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="rSmsResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getSmsDeliveryStatuses">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="un" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pw" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="accid" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="sysPW" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="DAY" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="MONTH" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="YEAR" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorEx" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="t" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getSmsDeliveryStatusesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getSmsDeliveryStatusesResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+                  <s:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorEx" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getSmsDeliveryStatuses_winf">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="un" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pw" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="accid" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="sysPW" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="DAY" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="MONTH" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="YEAR" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorEx" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="t" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getSmsDeliveryStatuses_winfResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getSmsDeliveryStatuses_winfResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+                  <s:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorEx" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="sendSMSrecipients_winf">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="un" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pw" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="accid" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="sysPW" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="t" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="txtUserCellular" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="destination" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="txtSMSmessage" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dteToDeliver" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="txtAddInf" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="sendSMSrecipients_winfResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sendSMSrecipients_winfResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="sendSMSrecipients_winf_debug">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="un" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pw" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="accid" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="sysPW" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="t" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="txtUserCellular" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="destination" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="txtSMSmessage" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dteToDeliver" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="txtAddInf" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="sendSMSrecipients_winf_debugResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sendSMSrecipients_winf_debugResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="sendSMSrecipients_winf_wac">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="un" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pw" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="accid" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="sysPW" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="t" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="txtUserCellular" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="destination" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="txtSMSmessage" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dteToDeliver" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="txtAddInf" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="anc" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="sendSMSrecipients_winf_wacResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sendSMSrecipients_winf_wacResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getSmsResponses">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="un" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pw" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="accid" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="sysPW" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="DAY" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="MONTH" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="YEAR" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorEx" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="t" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getSmsResponsesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getSmsResponsesResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+                  <s:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+            <s:element minOccurs="0" maxOccurs="1" name="ErrorEx" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="getSmsCountSoapIn">
+    <wsdl:part name="parameters" element="tns:getSmsCount" />
+  </wsdl:message>
+  <wsdl:message name="getSmsCountSoapOut">
+    <wsdl:part name="parameters" element="tns:getSmsCountResponse" />
+  </wsdl:message>
+  <wsdl:message name="sendSMSrecipientsSoapIn">
+    <wsdl:part name="parameters" element="tns:sendSMSrecipients" />
+  </wsdl:message>
+  <wsdl:message name="sendSMSrecipientsSoapOut">
+    <wsdl:part name="parameters" element="tns:sendSMSrecipientsResponse" />
+  </wsdl:message>
+  <wsdl:message name="rSmsSoapIn">
+    <wsdl:part name="parameters" element="tns:rSms" />
+  </wsdl:message>
+  <wsdl:message name="rSmsSoapOut">
+    <wsdl:part name="parameters" element="tns:rSmsResponse" />
+  </wsdl:message>
+  <wsdl:message name="getSmsDeliveryStatusesSoapIn">
+    <wsdl:part name="parameters" element="tns:getSmsDeliveryStatuses" />
+  </wsdl:message>
+  <wsdl:message name="getSmsDeliveryStatusesSoapOut">
+    <wsdl:part name="parameters" element="tns:getSmsDeliveryStatusesResponse" />
+  </wsdl:message>
+  <wsdl:message name="getSmsDeliveryStatuses_winfSoapIn">
+    <wsdl:part name="parameters" element="tns:getSmsDeliveryStatuses_winf" />
+  </wsdl:message>
+  <wsdl:message name="getSmsDeliveryStatuses_winfSoapOut">
+    <wsdl:part name="parameters" element="tns:getSmsDeliveryStatuses_winfResponse" />
+  </wsdl:message>
+  <wsdl:message name="sendSMSrecipients_winfSoapIn">
+    <wsdl:part name="parameters" element="tns:sendSMSrecipients_winf" />
+  </wsdl:message>
+  <wsdl:message name="sendSMSrecipients_winfSoapOut">
+    <wsdl:part name="parameters" element="tns:sendSMSrecipients_winfResponse" />
+  </wsdl:message>
+  <wsdl:message name="sendSMSrecipients_winf_debugSoapIn">
+    <wsdl:part name="parameters" element="tns:sendSMSrecipients_winf_debug" />
+  </wsdl:message>
+  <wsdl:message name="sendSMSrecipients_winf_debugSoapOut">
+    <wsdl:part name="parameters" element="tns:sendSMSrecipients_winf_debugResponse" />
+  </wsdl:message>
+  <wsdl:message name="sendSMSrecipients_winf_wacSoapIn">
+    <wsdl:part name="parameters" element="tns:sendSMSrecipients_winf_wac" />
+  </wsdl:message>
+  <wsdl:message name="sendSMSrecipients_winf_wacSoapOut">
+    <wsdl:part name="parameters" element="tns:sendSMSrecipients_winf_wacResponse" />
+  </wsdl:message>
+  <wsdl:message name="getSmsResponsesSoapIn">
+    <wsdl:part name="parameters" element="tns:getSmsResponses" />
+  </wsdl:message>
+  <wsdl:message name="getSmsResponsesSoapOut">
+    <wsdl:part name="parameters" element="tns:getSmsResponsesResponse" />
+  </wsdl:message>
+  <wsdl:portType name="WebServiceSMSSoap">
+    <wsdl:operation name="getSmsCount">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">get number of current sms, return the sms count number if exists</wsdl:documentation>
+      <wsdl:input message="tns:getSmsCountSoapIn" />
+      <wsdl:output message="tns:getSmsCountSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="sendSMSrecipients">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">send SMS to recipients, return the number of sms credits charged</wsdl:documentation>
+      <wsdl:input message="tns:sendSMSrecipientsSoapIn" />
+      <wsdl:output message="tns:sendSMSrecipientsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="rSms">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">r sms</wsdl:documentation>
+      <wsdl:input message="tns:rSmsSoapIn" />
+      <wsdl:output message="tns:rSmsSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="getSmsDeliveryStatuses">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">get Sms Delivery Statuses , return data table for requested date</wsdl:documentation>
+      <wsdl:input message="tns:getSmsDeliveryStatusesSoapIn" />
+      <wsdl:output message="tns:getSmsDeliveryStatusesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="getSmsDeliveryStatuses_winf">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">get Sms Delivery Statuses , return data table for requested date</wsdl:documentation>
+      <wsdl:input message="tns:getSmsDeliveryStatuses_winfSoapIn" />
+      <wsdl:output message="tns:getSmsDeliveryStatuses_winfSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="sendSMSrecipients_winf">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">send SMS to recipients, return the number of sms credits charged</wsdl:documentation>
+      <wsdl:input message="tns:sendSMSrecipients_winfSoapIn" />
+      <wsdl:output message="tns:sendSMSrecipients_winfSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="sendSMSrecipients_winf_debug">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">send SMS to recipients for debuging, return the parameters</wsdl:documentation>
+      <wsdl:input message="tns:sendSMSrecipients_winf_debugSoapIn" />
+      <wsdl:output message="tns:sendSMSrecipients_winf_debugSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="sendSMSrecipients_winf_wac">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">send SMS to recipients, return the number of sms credits charged</wsdl:documentation>
+      <wsdl:input message="tns:sendSMSrecipients_winf_wacSoapIn" />
+      <wsdl:output message="tns:sendSMSrecipients_winf_wacSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="getSmsResponses">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">get Sms Responses , return data table for requested date</wsdl:documentation>
+      <wsdl:input message="tns:getSmsResponsesSoapIn" />
+      <wsdl:output message="tns:getSmsResponsesSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WebServiceSMSSoap" type="tns:WebServiceSMSSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="getSmsCount">
+      <soap:operation soapAction="apiItnewsletter/getSmsCount" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sendSMSrecipients">
+      <soap:operation soapAction="apiItnewsletter/sendSMSrecipients" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="rSms">
+      <soap:operation soapAction="apiItnewsletter/rSms" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSmsDeliveryStatuses">
+      <soap:operation soapAction="apiItnewsletter/getSmsDeliveryStatuses" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSmsDeliveryStatuses_winf">
+      <soap:operation soapAction="apiItnewsletter/getSmsDeliveryStatuses_winf" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sendSMSrecipients_winf">
+      <soap:operation soapAction="apiItnewsletter/sendSMSrecipients_winf" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sendSMSrecipients_winf_debug">
+      <soap:operation soapAction="apiItnewsletter/sendSMSrecipients_winf_debug" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sendSMSrecipients_winf_wac">
+      <soap:operation soapAction="apiItnewsletter/sendSMSrecipients_winf_wac" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSmsResponses">
+      <soap:operation soapAction="apiItnewsletter/getSmsResponses" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WebServiceSMSSoap12" type="tns:WebServiceSMSSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="getSmsCount">
+      <soap12:operation soapAction="apiItnewsletter/getSmsCount" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sendSMSrecipients">
+      <soap12:operation soapAction="apiItnewsletter/sendSMSrecipients" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="rSms">
+      <soap12:operation soapAction="apiItnewsletter/rSms" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSmsDeliveryStatuses">
+      <soap12:operation soapAction="apiItnewsletter/getSmsDeliveryStatuses" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSmsDeliveryStatuses_winf">
+      <soap12:operation soapAction="apiItnewsletter/getSmsDeliveryStatuses_winf" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sendSMSrecipients_winf">
+      <soap12:operation soapAction="apiItnewsletter/sendSMSrecipients_winf" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sendSMSrecipients_winf_debug">
+      <soap12:operation soapAction="apiItnewsletter/sendSMSrecipients_winf_debug" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sendSMSrecipients_winf_wac">
+      <soap12:operation soapAction="apiItnewsletter/sendSMSrecipients_winf_wac" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getSmsResponses">
+      <soap12:operation soapAction="apiItnewsletter/getSmsResponses" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WebServiceSMS">
+    <wsdl:port name="WebServiceSMSSoap" binding="tns:WebServiceSMSSoap">
+      <soap:address location="http://api.itnewsletter.co.il/webservices/webservicesms.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WebServiceSMSSoap12" binding="tns:WebServiceSMSSoap12">
+      <soap12:address location="http://api.itnewsletter.co.il/webservices/webservicesms.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

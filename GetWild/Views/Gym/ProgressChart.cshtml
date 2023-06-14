@@ -1,0 +1,83 @@
+﻿@model IEnumerable<GetWild.Models.ProfileViewModel>
+@*<script src="https://code.highcharts.com/modules/exporting.js"></script>*@
+
+@if (Model.Any())
+{
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    
+    <div id="container" style="height:400px; margin: 0 auto"></div>
+    <script>
+        $(function() {
+            Highcharts.setOptions({
+                global: {
+                    useUTC: false
+                }
+            });
+        });
+        var dates = '@HttpUtility.HtmlDecode(string.Join(",", @Model.Select(x => x.datestr).ToArray()))';
+        //var res = "'" + dates.replace(/,/g, "\',\'") + "'";
+        var res2 = dates.split(",");
+        //alert(res);
+        $(function() {
+            $('#container').highcharts({
+                chart: {
+                    type: 'spline'
+                },
+                title: {
+                    text: 'גרף התקדמות',
+                    x: -20 //center
+                },
+                subtitle: {
+                    text: '',
+                    x: -20
+                },
+                xAxis: {
+                    //type: 'datetime',
+                    //dateTimeLabelFormats: { day: '%b %m, %Y'},
+                    //categories: ['10/11/15','11/11/15','13/11/15','29/11/15','30/11/15','02/12/15','03/12/15','05/12/15']
+                    categories: res2
+
+                },
+                yAxis: {
+                    title: {
+                        text: 'התקדמות'
+                    },
+                    plotLines: [
+                        {
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }
+                    ]
+                },
+                tooltip: {
+                    valueSuffix: '',
+                    useHTML: true
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    useHTML: true,
+                    borderWidth: 0
+                },
+                colors: ['#1e90ff', '#0066FF', '#00CCFF', '#233D7F'],
+                series: [
+                {
+                    name: 'משקל',
+                    data: [@string.Join(",", @Model.Select(x => x.Weight.HasValue ? x.Weight.Value : 0).ToArray())]
+                }, {
+                    name: 'BMI',
+                    data: [@string.Join(",", @Model.Select(x => x.BMI.HasValue ? x.BMI.Value : 0).ToArray())]
+                }, {
+                    name: 'מסת שריר',
+                    data: [@string.Join(",", @Model.Select(x => x.Mucsle.HasValue ? x.Mucsle.Value : 0).ToArray())]
+                }, {
+                    name: 'אחוזי שומן',
+                    data: [@string.Join(",", @Model.Select(x => x.Fat.HasValue ? x.Fat.Value : 0).ToArray())]
+                    }
+                ]
+            });
+        });
+    </script>
+}

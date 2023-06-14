@@ -1,0 +1,9 @@
+﻿.multiselect-container > li > a > label {
+    float: right !important;
+    /*padding: 0;*/
+    color: #00bfff;
+}
+    .btn-control {
+        width: 280px;
+    
+}

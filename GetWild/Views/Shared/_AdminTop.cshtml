@@ -1,0 +1,8 @@
+﻿@model GetWild.Models.UserWithCompany
+<div class="navbar-header">
+    <div class="smallpadding">
+        <div>משתמש: </div><a class="label label-info" href="/account/Manage?userid=@Model.CurrentUser.Id">@Model.CurrentUser.FullMame</a>
+        <div>סטודיו: </div><span class="label label-primary">@Model.CurrentCompany.Address</span>
+    </div>
+</div>
+

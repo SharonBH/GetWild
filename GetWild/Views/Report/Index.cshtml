@@ -1,0 +1,44 @@
+﻿@using InShapeModels
+@model InShapeModels.ReportByClassModel
+@{
+    ViewBag.Title = "דוחות";
+}
+
+<h2>ניהול הסטודיו - דוחות</h2>
+<div class="row">
+    <div class="col-md-10 col-md-offset-2">
+        @Html.DropDownListFor(m => m.SelectedRoom, new SelectList(Model.StudioRooms, "Id", "Name"), "בחר חדר סטודיו", new { @class = "form-controll ChangeRoomDDL" })
+    </div>
+</div>
+<div class="row row-topbuffer">
+    <div class="col-md-12 col">
+        <div id="ReportClasses" style="min-height: 300px;">
+            @Html.Partial("ClassReportList", new List<StudioClassModel>())
+        </div>
+    </div>
+</div>
+@Html.Partial("_ConfirmDelete")
+    <script>
+        jQuery(document).ready(function ($) {
+            var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+
+            $(".ChangeRoomDDL").change(function () {
+                var roomid = $(this).val();
+                if (roomid == null || roomid == '') roomid = -1;
+                $.ajax({
+                    type: "POST",
+                    url: "/Report/GetClassesForRoom",
+                    data: { roomId: roomid },
+                    datatype: "text",
+                    beforeSend: function () {
+                        $('#ReportClasses').html(loaddingdiv);
+                    },
+                    success: function (data) {
+                        $('#ReportClasses').html(data);
+                    }
+                });
+            });
+        });
+    </script>
+
+

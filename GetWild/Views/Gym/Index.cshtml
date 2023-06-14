@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+
+}
+<div class="row gym-row">
+    <div class="col-md-3 gymnav">
+        @{ Html.RenderAction("GetRightNav", "Gym");}
+    </div>
+    <div class="col-md-7">
+        <div>
+            <h1>ברוכים הבאים לאיזור האישי שלכם!</h1>
+            <p>
+                כאן תוכלו לראות את הנתונים האישיים שלכם:גובה משקל אחוזי שומן והיקפים.<br />
+בנוסף תוכלו לצלם את עצמכם אחת ל10 אימונים ותקבלו תמונה לפני ואחרי במטרה לראות התקדמות ויזואלית!<br />
+בלחצן הלוז תראו את הלוז השבועי של האימונים. בכדי לשבץ את עצמכם לאימון לחצו על היום שאתם רוצים לאחר מכן על האימון שתרצו ולחצו הירשם!<br />
+ניתן לבטל הרשמה עד שעתיים לפני האימון!<br />
+שימו לב ישנן אימונים שפתוחים רק לבנים,רק לבנות ואימונים מעורבים<br />
+בהצלחה מחכים לראותכם!</p>
+            <div class="col-md-5 button-img-large">
+                <a href="/Gym/UserInfo"><img src="~/images/Profile-big.png" /></a>
+                <h4>כניסה לקיוסק המידע האישי</h4>
+            </div>
+            <div class="col-md-5 button-img-large">
+                <a href="/Gym/GetCalander"><img src="~/images/calander-big.png" /></a>
+                <h4>לוז אימונים</h4>
+            </div>
+        </div>
+        <div>
+            @*<img src='@Url.Action("GetGraph", "Gym")' />*@
+        </div>
+    </div>
+    <div class="col-md-2 col-img">
+        <img src="@ViewBag.ProfileIMG?@DateTime.Now.ToString("yyyyMMddHHmm")" class="img-responsive col-img" />
+    </div>
+</div>
+@Html.Partial("_PopupPartial")
+
+@*@if (ViewBag.ShowTandC)
+{*@
+    @Html.Partial("TandCPopup")
+@*{ Html.RenderAction("GetHealthTandCPopup", "Gym");}*@
+@*}*@
+
+<script>
+    jQuery(document).ready(function ($) {
+        if ('@ViewBag.ShowTandC' == 'True') {
+            $('#TandCModal').modal({ backdrop: 'static', keyboard: false });
+        }
+        //else if ('@ViewBag.ShowHealthTandC' == 'True') {
+            //$('#HealthTandCModal').modal({ backdrop: 'static', keyboard: false });
+        //}
+
+        if ('@ViewBag.ShowPopup' == 'True') {
+            $('#myModal .modal-title').html('הודעת מערכת');
+            $('#myModal .modal-body').html('@ViewBag.PopupMSG');
+            $('#myModal').modal('show', { backdrop: 'static' });
+        }
+    });
+</script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

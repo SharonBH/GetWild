@@ -1,0 +1,75 @@
+﻿@model InShapeModels.FrozenSubscriptionModel
+
+@if (Model.Id > 0)
+{
+    <div>
+        @Model.FrozenDetails
+    </div>
+}
+<!-- Modal -->
+<div id="freezeModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">הקפאת מנוי</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-11">
+                    <div class="form-group">
+                        @Html.TextBox("FreezeToDate", string.Empty, "{0:dd/MM/yyyy}", new { @id = "FreezeDate", @style = "z-index:10000;", @class = "form-control datepicker", @placeholder = "בחר תאריך או השאר ריק, ללא הגבלה" })
+                    </div>
+                    <div class="form-group">
+                        @Html.TextArea("FreezeNote", new { @rows = "5", @id = "FreezeNote", @class = "form-control", @placeholder = "הוסף הערה להקפאת המנוי" })
+                    </div>
+                </div>
+            </div>
+                <div class="modal-footer">
+                    <div class="modal-footer-inner"></div>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">ביטול</button>
+                    <a class="btn btn-danger btn-save-freeze" data-id="@Model.SubscriptionId" data-userid="@Model.SubscriptionUser">שמור</a>
+                </div>
+            </div>
+    </div>
+</div>
+
+<script>
+    $(function() {
+        $.validator.addMethod('date',
+            function(value, element) {
+                if (this.optional(element)) {
+                    return true;
+                }
+                var ok = true;
+                try {
+                    $.datepicker.parseDate('dd/mm/yy', value);
+                } catch (err) {
+                    ok = false;
+                }
+                return ok;
+            });
+        $('.datepicker').datepicker({ dateFormat: 'dd/mm/yy', zIndexOffset: 10000 });
+
+        $(".btn-save-freeze").click(function () {
+            var subid = $(this).data('id');
+            var userid = $(this).data('userid');
+            var note = $('#FreezeNote').val();
+            var todate = $('#FreezeDate').datepicker({ dateFormat: 'yyyy-mm-dd' }).val(); //.datepicker("getDate");
+            $.ajax({
+                type: "POST",
+                url: "/Account/SubscriptionFreeze",//?subscriptionId=" + subid + "&userId=" + userid + "&toDate=" + todate,
+                data: { subscriptionId: subid, userId: userid, toDate: todate, Note: note },
+                datatype: "text",
+                success: function(data) {
+                    $('#subsription-tab').html(data);
+                    $('#dataConfirmModal').modal('hide');
+                    $('.modal-backdrop').remove();
+                    $('body').removeClass('modal-open');
+                }
+            });
+        });
+    });
+
+</script>

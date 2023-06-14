@@ -1,0 +1,72 @@
+﻿@model InShapeModels.EnrollmentCommentModel
+<div id="CommentModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body" style="padding:15px;">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(model => model.Id)
+                    @Html.HiddenFor(model => model.ClassId)
+                    @Html.HiddenFor(model => model.UserId)
+                    @Html.HiddenFor(model => model.EnrollmentId)
+                    <div class="form-horizontal">
+                        @if (Model.Id > 0)
+                        {
+                            <div class="form-group">
+                                <div class="control-label col-md-2">נכתב ע"י:</div>
+                                <div class="col-md-9">
+                                    @Model.CommentBy
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="control-label col-md-2">בתאריך:</div>
+                                <div class="col-md-9">
+                                    @Model.CreateDate.Value.ToLongDateString()
+                                </div>
+                            </div>
+                        }
+                        <div class="form-group">
+                            <div class="control-label col-md-2">הערה:</div>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(m => m.Comment, new { @class = "form-control", @id = "UserComment", style = "height: 100px;" }) 
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btn_UpdateComment" class="btn btn-primary">שמור</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">סגור</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#btn_UpdateComment').click(function () {
+        var userid = '@Model.UserId';
+        var commentid = @Model.Id;
+        var classid = @Model.ClassId;
+        var enrollmentid = @Model.EnrollmentId;
+        //var note = @Model.Comment;
+        var note = $('#UserComment').val();
+
+        $.ajax({
+            type: "POST",
+            url: "/StudioClass/SaveUserComment",
+            data: { UserId: userid, Note: note, Classid: classid, EnrollmentId: enrollmentid, CommentId: commentid },
+            datatype: "text",
+            success: function (data) {
+                $('#CommentModal').modal('hide');
+
+            }
+        });
+    });
+</script>

@@ -1,0 +1,13 @@
+﻿@using InShapeModels
+@model List<StudioClassModel>
+<ol class="list-group">
+    @foreach (var u in Model)
+    {
+        <li class="list-group-item">
+            @u.Date.ToShortDateString() : @u.Name (מתאמנים: @u.AllParticipants)
+        </li>
+    }
+</ol>
+<div class="alert alert-info">
+    סה"כ אימונים: @Model.Count (סה"כ מתאמנים: @Model.Sum(x=> x.AllParticipants))
+</div>

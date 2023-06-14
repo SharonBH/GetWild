@@ -1,0 +1,190 @@
+﻿@model GetWild.Models.AdvancedSmsViewModel
+
+@{
+    ViewBag.Title = "ניהול - SMS";
+}
+
+<h2>SMS - שליחה</h2>
+
+
+@if (Model != null)
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.ListType)
+        @Html.HiddenFor(x => x.RefId)
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-horizontal">
+                    <h4>ניהול הודעות</h4>
+                    <hr/>
+                    @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Sender, htmlAttributes: new {@class = "control-label col-md-4"})
+                        <div class="col-md-8">
+                            @Html.EditorFor(x => x.Sender, new {htmlAttributes = new {@class = "form-control"}})
+                            @Html.ValidationMessageFor(x => x.Sender, "", new {@class = "text-danger"})
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.SmsMessage, htmlAttributes: new {@class = "control-label col-md-4"})
+                        <div class="col-md-8">
+                            @Html.EditorFor(x => x.SmsMessage, new {htmlAttributes = new {@class = "form-control", @id = "smstextarea"}})
+                            @Html.ValidationMessageFor(x => x.SmsMessage, "", new {@class = "text-danger"})
+
+                        </div>
+                        <div class="col-md-8 col-md-offset-4"><span id="characters">0</span> תווים הוקלדו</div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.SendDate, htmlAttributes: new {@class = "control-label col-md-4"})
+                        <div class="col-md-8">
+                            @Html.EditorFor(x => x.SendDate, new {htmlAttributes = new {@class = "form-control datepicker", @placeholder = "השאר ריק לשליחה מיידית"}})
+                            @Html.ValidationMessageFor(x => x.SendDate, "", new {@class = "text-danger"})
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Time, new {@class = "control-label col-md-4"})
+                        <div class="col-md-8">
+                            @Html.EditorFor(x => x.Time, new {htmlAttributes = new {@class = "form-control timepicker"}})
+                            @Html.ValidationMessageFor(x => x.Time, "", new {@class = "text-danger"})
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-offset-4 col-md-8">
+                            <input type="submit" value="שלח" class="btn btn-default btn-primary"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8" style="height: 500px; overflow: auto;">
+                <div class="panel panel-info">
+                    <div class="panel-heading" style="height: 40px;">
+                        <div class="col-md-2">
+                            <h3 class="panel-title">רשימת משתמשים</h3>
+                        </div>
+                        <div class="col-md-8"><label><input type="checkbox" id="checkAll"/> בחר הכל</label>
+                        </div>
+                        <div class="col-md-2">סה"כ: @Model.Users.Count() (סה"כ נבחרו: <span class="Numselected">0</span>)
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div id="update-message">
+                        </div>
+                        <table class="table table-striped table-hover ">
+                            <thead>
+                            <tr>
+                                <th style="text-align: right; width: 40px;">
+                                </th>
+                                <th style="text-align: right;">
+                                </th>
+                                <th style="text-align: right;">
+                                    שם
+                                </th>
+                                <th style="text-align: right;">
+                                    תאריף תפוגת מנוי
+                                </th>
+                                <th style="text-align: right;">
+                                    טלפון
+                                </th>
+
+                            </tr>
+                            </thead>
+                            @for (int i = 0; i < Model.Users.Count; i++)
+                            {
+                                @Html.HiddenFor(x => x.Users[i].Id)
+                                @Html.HiddenFor(x => x.Users[i].UserId)
+                                @Html.HiddenFor(x => x.Users[i].FirstName)
+                                @Html.HiddenFor(x => x.Users[i].LastName)
+                                @Html.HiddenFor(x => x.Users[i].Active)
+                                @Html.HiddenFor(x => x.Users[i].ClassesDone)
+                                @Html.HiddenFor(x => x.Users[i].CurrentBalance)
+                                @Html.HiddenFor(x => x.Users[i].JoinDate)
+                                @Html.HiddenFor(x => x.Users[i].LastClassDate)
+                                @Html.HiddenFor(x => x.Users[i].NextClassDate)
+                                @Html.HiddenFor(x => x.Users[i].NumClasses)
+                                @Html.HiddenFor(x => x.Users[i].PhoneNumber)
+                                @Html.HiddenFor(x => x.Users[i].SubscriptionExpireDate)
+                                @Html.HiddenFor(x => x.Users[i].SubscriptionStartDate)
+                                @Html.HiddenFor(x => x.Users[i].WeeklyClasses)
+                                <tr>
+                                    <td>
+                                        <b>@{ var n = i + 1; } @n</b>
+                                    </td>
+                                    <td>
+                                        @Html.CheckBoxFor(x => x.Users[i].Selected)
+                                        @*@Html.CheckBox("model.Users[" + (@i) + "].Selected", Model.Users[i].Selected)*@
+                                        @*@Html.CheckBoxFor("Users[" + (@i) + "].Selected", Model.Users[i].Selected, new {@class = "control-label col-md-2"})*@
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(x => x.Users[i].FullName)
+                                        @*@Model.Users[i].FullName*@
+                                    </td>
+                                    <td>
+                                        @if (Model.Users[i].SubscriptionExpireDate != null)
+                                        {
+                                            @Model.Users[i].SubscriptionExpireDate.Value.ToShortDateString()
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(x => x.Users[i].PhoneNumber)
+                                        @*@Model.Users[i].PhoneNumber Html.DisplayFor(modelItem => item.PhoneNumber)*@
+                                    </td>
+                                </tr>
+                            }
+                            <tr class="info" style="text-align: right;">
+                                <td colspan="5">
+                                    סה"כ משתמשים: @Model.Users.Count() (סה"כ נבחרו: <span class="Numselected">0</span>)
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    @*@Html.Partial("SmsUserList", @Model.Users)*@
+    }
+}
+else
+{<h4>
+     @ViewBag.Message
+ </h4>
+}
+
+@section Scripts {
+    <script>
+        
+            $('#smstextarea').keyup(updateCount);
+            $('#smstextarea').keydown(updateCount);
+
+            function updateCount() {
+                var cs = $(this).val().length;
+                $('#characters').text(cs);
+            }
+
+            $('input[type="checkbox"]:not("#checkAll")').click(function () {
+                updatecounter();
+            });
+
+            $("#checkAll").change(function(e) {
+                $("input:checkbox").prop('checked', $(this).prop("checked"));
+                //e.stopPropagation();
+                //e.preventDefault();
+                updatecounter();
+            });
+
+            function updatecounter() {
+                var l = $('input[type="checkbox"]:not("#checkAll"):checked').length;
+                $('.Numselected').html(l);
+            }
+
+    </script>
+    @Scripts.Render("~/bundles/jqueryval")
+}

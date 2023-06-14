@@ -1,0 +1,106 @@
+﻿@using InShapeModels
+@model List<InShapeModels.UserReportModel>
+@{
+    ViewBag.Title = "דוחות";
+}
+
+<h2>ניהול הסטודיו - דוחות</h2>
+@*<div class="row">
+    <div class="col-md-10 col-md-offset-2">
+        <div class="input-group">
+            @Html.TextBox("SearchString", null, new { @class = "form-control form-control-rounded autocomplete-with-hidden", @id = "userddl", data_url = Url.Action("GetUsersSearch", "Account") })
+            <span class="input-group-addon btn-rounded" style="background-color: #39B3D7; color: #fff;">
+                <i class="glyphicon glyphicon-search"></i>
+            </span>
+        </div>
+    </div>
+</div>*@
+<div class="row-bottombuffer">
+    <div class="col-md-4 col-md-offset-4">
+        <div class="col-md-5">
+            @Html.TextBox("DateSearchFrom", null, new { @class = "form-control datepicker", @id = "SearchFromDate" })
+        </div>
+        <div class="col-md-5">
+            @Html.TextBox("DateSearchTo", null, new { @class = "form-control datepicker", @id = "SearchFromTo" })
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary" type="button" id="btn_searchUsersByDate" value="חפש"><i class="glyphicon glyphicon-refresh"></i></button>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12" id="UsersGraph">
+        @{ Html.RenderAction("GetGraph", "Report");}
+    </div>
+</div>
+<hr />
+<div class="row row-topbuffer">
+    <div class="col-md-12 col">
+        <div id="ReportClasses" style="min-height: 300px;">
+            @Html.Partial("UserReportList", @Model)
+        </div>
+    </div>
+</div>
+@Html.Partial("_ReportUserPopup")
+
+@*<script>
+    jQuery(document).ready(function($) {
+        //$(".clickable-row").click(function() {
+        //    window.document.location = "/account/Manage?userid=" + $(this).data("id");
+        //});
+
+        //$(function() {
+        //    $('#userddl').autocomplete({
+        //        minLength: 3,
+        //        source: function(request, response) {
+        //            var url = $(this.element).data('url');
+
+        //            $.getJSON(url, { term: request.term }, function(data) {
+        //                response(data);
+        //            });
+        //        },
+        //        select: function(event, ui) {
+        //            $(event.target).next('input[type=hidden]').val(ui.item.id);
+        //            window.document.location = "Manage?userid=" + ui.item.id;
+        //        },
+        //        change: function(event, ui) {
+        //            if (!ui.item) {
+        //                $(event.target).val('').next('input[type=hidden]').val('');
+        //            }
+        //        }
+        //    });
+        //});
+
+        //var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+
+        //$('#btn_searchUsersByDate').click(function () {
+        //    var fromdate = $('#SearchFromDate').val();
+        //    var todate = $('#SearchFromTo').val();
+        //    $('#UsersGraph').html(loaddingdiv).load('/Report/GetGraph?fromdate=' + fromdate + '&todate=' + todate);
+
+        //});
+
+
+        //$(function() {
+        //    $.validator.addMethod('date',
+        //        function(value, element) {
+        //            if (this.optional(element)) {
+        //                return true;
+        //            }
+        //            var ok = true;
+        //            try {
+        //                $.datepicker.parseDate('dd/mm/yy', value);
+        //            } catch (err) {
+        //                ok = false;
+        //            }
+        //            return ok;
+        //        });
+        //    $('.datepicker').datepicker({ dateFormat: 'dd/mm/yy' });
+        //});
+    });
+</script>*@
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+<script src="https://code.highcharts.com/highcharts.js"></script>
+}

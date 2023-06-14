@@ -1,0 +1,55 @@
+﻿@model GetWild.Models.GymCalanderViewModel
+@{
+    ViewBag.Title = "לו'ז אימונים";
+}
+<div class="row gym-row">
+    @{ Html.RenderAction("GEtRightNav", "Gym");}
+    <div class="col-md-9">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>לו"ז שבועי</h2>
+            </div>
+            <div class="col-md-6">
+                @Html.DropDownListFor(m => m.RoomId, new SelectList(Model.AvailableRooms, "Id", "Name"), "בחר חדר סטודיו", new { @class = "form-controll ChangeRoomDDL" })
+            </div>
+        </div>
+        <div class="panel panel-info" id="CalanderWeeklyPanel">
+            @Html.Partial("CalanderWeekly", @Model)
+        </div>
+    </div>
+</div>
+@Html.Partial("_PopupPartial")
+@Html.Partial("_ConfirmEnroll")
+
+<script>
+    jQuery(document).ready(function($) {
+        var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+
+        $(".ChangeRoomDDL").change(function () {
+            var roomid = $(this).val();
+            var weekno = @Model.WeekNo;
+            $.ajax({
+                type: "POST",
+                url: "/Gym/GetCalanderTable",
+                data: { weekNo: weekno, roomId: roomid },
+                datatype: "text",
+                beforeSend: function()
+                {
+                    $('#CalanderWeeklyPanel').html(loaddingdiv);
+                },
+                success: function(data) {
+                    $('#CalanderWeeklyPanel').html(data);
+                }
+            });
+        });
+        $("#CalanderClassBox").click(function () {
+            var id = $(this).data("id");
+            $('#myModal .modal-body').html(loaddingdiv).load("/Gym/GetCalanderDetails?classId=" + id, function (response, status, xhr) {
+                if (status != "success") {
+                    $('#myModal .modal-body').html('תקלה, אנא נסה מאוחר יותר' + response);
+                }
+            });
+            $('#myModal').modal('show', { backdrop: 'static' });
+        });
+    });
+</script>

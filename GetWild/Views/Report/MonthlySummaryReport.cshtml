@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewBag.Title = "דוחות";
+}
+
+<h2>ניהול הסטודיו - דוחות</h2>
+<div class="row-bottombuffer">
+    <div class="col-md-4 col-md-offset-4">
+        <div class="col-md-5">
+            @Html.TextBox("DateSearchFrom", null, new { @class = "form-control datepicker", @id = "SearchFromDate" })
+        </div>
+        <div class="col-md-5">
+            @Html.TextBox("DateSearchTo", null, new { @class = "form-control datepicker", @id = "SearchFromTo" })
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary" type="button" id="btn_GetavgByDate" value="חפש"><i class="glyphicon glyphicon-refresh"></i></button>
+        </div>
+    </div>
+</div>
+<div class="" id="ClassesTable">
+    @{
+        Html.RenderAction("GetMonthlyTable","Report");
+    }
+</div>
+<script>
+    jQuery(document).ready(function ($) {
+        var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+
+        $("#btn_GetavgByDate").click(function () {
+            var fromdate = $('#SearchFromDate').val();
+            var todate = $('#SearchFromTo').val();
+            $.ajax({
+                type: "POST",
+                url: "/Report/GetMonthlyTable",
+                data: { fromdate: fromdate, todate: todate },
+                datatype: "text",
+                beforeSend: function () {
+                    $('#ClassesTable').html(loaddingdiv);
+                },
+                success: function (data) {
+                    $('#ClassesTable').html(data);
+                }
+            });
+        });
+
+
+        $(function () {
+            $.validator.addMethod('date',
+                function (value, element) {
+                    if (this.optional(element)) {
+                        return true;
+                    }
+                    var ok = true;
+                    try {
+                        $.datepicker.parseDate('dd/mm/yy', value);
+                    } catch (err) {
+                        ok = false;
+                    }
+                    return ok;
+                });
+            $('.datepicker').datepicker({ dateFormat: 'dd/mm/yy' });
+        });
+    });
+</script>
+@Html.Partial("_PopupPartial")
+@section Scripts {
+@Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript" src="~/scripts/jquery.popconfirm.js"></script>
+}
+

@@ -1,0 +1,21 @@
+﻿@using InShapeModels
+@model List<InShapeModels.FrozenSubscriptionModel>
+@{
+    ViewBag.Title = "דוחות";
+}
+
+<h2>ניהול הסטודיו - דוחות</h2>
+<h4>דו"ח מנויים קפואים!</h4>
+<div class="row row-bottombuffer">
+    <div class="col-md-2">
+        <a class="btn btn-primary btn-smsSend" data-smstype="@SmsListType.Frozen"><i class="glyphicon glyphicon-phone"></i> שלח הודעה</a>
+    </div>
+    <div class="col-md-2">
+        <a class="btn btn-info btn-export" href="~/export/ExportFrozenUsers"><i class="glyphicon glyphicon-export"></i> יצוא </a>
+    </div>
+</div>
+<div id="FrozenReportList" style="min-height: 300px;">
+    @Html.Partial("_FrozenList", Model)
+</div>
+    @*@Html.Partial("_ReportUserPopup")*@
+

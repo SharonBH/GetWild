@@ -1,0 +1,166 @@
+﻿@using InShapeModels
+@model UsersList
+
+@if (Model.UserWithSubscriptions.Any())
+{
+    <div class="panel panel-info">
+        <div class="panel-heading" style="height: 40px;">
+            <div class="col-md-10"><h3 class="panel-title">רשימת משתמשים</h3></div>
+            <div class="col-md-2">סה"כ: @Model.UserWithSubscriptions.Count() (פעילים: @Model.UserWithSubscriptions.Count(x => x.Active.HasValue && x.Active.Value))</div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-1"></div>
+                <div class="col-md-1">שם</div>
+                <div class="col-md-1">סוג</div>
+                <div class="col-md-1">תאריף תפוגת מנוי</div>
+                <div class="col-md-1">ניצול מנוי</div>
+                <div class="col-md-1">תאריך הצטרפות</div>
+                <div class="col-md-1">טלפון</div>
+                <div class="col-md-1">אימון אחרון</div>
+                <div class="col-md-1">אימון הבא</div>
+                <div class="col-md-1"></div>
+                <div class="col-md-1"></div>
+            </div>
+            
+                @{ int i = 0; }
+                @foreach (var item in Model.UserWithSubscriptions)
+                {
+                    i = i + 1;
+                    <div class="row-table clickable-row @item.CssClass" data-id="@item.UserId" style="cursor: pointer;">
+                        <div class="col-md-1 table-cell"><h3>@i</h3></div>
+                        <div class="col-md-1 table-cell">
+                            <img src="@item.ProfileIMGPath" class="img-responsive table-img"/>
+                        </div>
+                        <div class="col-md-1 table-cell">
+                            @Html.DisplayFor(modelItem => item.FullName)
+                        </div>
+                        <div class="col-md-1 table-cell">@item.UserType.ToFriendlyString()</div>
+                        <div class="col-md-1 table-cell">
+                            @if (item.SubscriptionExpireDate != null)
+                            {
+                                @item.SubscriptionExpireDate.Value.ToShortDateString()
+                            }
+                        </div>
+
+                        <div class="col-md-1 table-cell">
+                            @if (@item.Active.HasValue && @item.Active.Value)
+                            {
+                                @item.SubscriptionType
+                                <br/>
+                                @item.NumClasses
+                                <text>/</text>
+                                @item.ClassesDone
+                                <text>(@item.WeeklyClasses)</text>
+                                <br/><text>הבריז: @item.ClassesMissed</text>
+                            }
+                        </div>
+                        <div class="col-md-1 table-cell">
+                            @item.JoinDate.ToShortDateString()
+                        </div>
+
+                        <div class="col-md-1 table-cell">
+                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                        </div>
+                        <div class="col-md-1 table-cell">
+                            @if (item.LastClassDate != null)
+                            {
+                                @item.LastClassDate.Value.ToShortDateString()<br/>
+                                <text>שעה: </text>
+                                @item.LastClassDate.Value.ToShortTimeString()<br/>
+                                <text>סוג: </text>
+                                @item.LastClassType
+                            }
+                        </div>
+                        <div class="col-md-1 table-cell">
+                            @if (item.NextClassDate != null)
+                            {
+                                @item.NextClassDate.Value.ToShortDateString()<br/>
+                                <text>שעה: </text>
+                                @item.NextClassDate.Value.ToShortTimeString()<br/>
+                                <text>סוג: </text>
+                                @item.NextClassType
+                            }
+                        </div>
+                        <div class="col-md-1 table-cell">
+                            @if (item.Ticked)
+                            {
+                                <i class="glyphicon text-primary glyphicon-ok-sign" style="font-size: 20px;"></i>
+                            }
+                            else
+                            {
+                                <a class="btn btn-xs btn-primary btn-process" data-id="@item.UserId" data-toggle="modal" data-title="סימון" data-message="האם לסמן יומי ?"><i class="glyphicon glyphicon-ok"></i> סמן</a>
+                            }
+                        </div>
+
+                        <div class="col-md-1 table-cell">
+                            <a data-confirm="" class="btn btn-xs btn-danger" data-href="/Account/DeleteConfirmed?UserId=@item.UserId" data-toggle="modal" data-target="#confirm-delete" data-title="מחק משתמש" data-message="האם אתה בטוח שברצונך למחוק ?"><i class="glyphicon glyphicon-trash"></i> מחק</a>
+                        </div>
+                    </div>
+                }
+                <div class="row info">
+                    <div class="col-md-2">
+                        סה"כ משתמשים:
+                    </div>
+                    <div id="col-md-2 cart-total">
+                        @Model.UserWithSubscriptions.Count() (פעילים: @Model.UserWithSubscriptions.Count(x => x.Active.HasValue && x.Active.Value))
+                    </div>
+                </div>
+        </div>
+    </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <p>
+                                @if (ViewBag.showHeader != 0)
+                                {
+                                    <text> לא נמצאו משתמשים במערכת, אנא הוסף משתמש חדש.</text>
+                                }
+                                else
+                                {
+                                    <text> לא נמצאו משתמשים.</text>
+                                }
+                            </p>
+                        </div>
+                    }
+
+@Html.Partial("_ConfirmDelete")
+<script>
+    jQuery(document).ready(function ($) {
+        $(".clickable-row").click(function () {
+            window.document.location = "Manage?userid=" + $(this).data("id");
+        });
+
+        $('a[data-confirm]').click(function (ev) {
+            var href = $(this).data('href');
+            $('#dataConfirmModal').find('.btn-ok').attr('href', href);
+            var msg = $(this).attr('data-message');
+            $('#dataConfirmModal').find('.modal-body').text(msg);
+            var title = $(this).attr('data-title');
+            $('#dataConfirmModal').find('.modal-header').text(title);
+
+            $('#dataConfirmModal').modal({ show: true });
+            ev.stopPropagation();
+        });
+
+        $('.btn-process').click(function (ev) {
+            var userid = $(this).data('id');
+            var btn = $(this);
+            $.ajax({
+                type: "POST",
+                url: "/Account/TickUser",
+                data: { UserId: userid },
+                datatype: "text",
+                success: function (data) {
+                    if (data.Response == 'Success') {
+                        btn.parent().html('<i class="glyphicon glyphicon-ok-sign"></i>');
+                    }
+                }
+            });
+            ev.stopPropagation();
+        });
+
+    });
+</script>

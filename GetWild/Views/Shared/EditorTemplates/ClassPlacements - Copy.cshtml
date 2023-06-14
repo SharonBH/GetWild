@@ -1,0 +1,10 @@
+﻿@model List<InShapeModels.ClassPlacementModel>
+@for (var i = 0; i < Model.Count(); i++)
+{
+    @Html.HiddenFor(model => Model[i].Id)
+    @Html.HiddenFor(model => Model[i].StudioPlacementId)
+    <div class="row StudioPlacementId_@Model[i].StudioPlacementId @(Model[i].ClassId == 0 ? "hidden" : "")">
+        <div class="col-md-1">@Model[i].StudioPlacementName</div>
+        <div class="col-md-1">@Html.EditorFor(x => Model[i].ClassPlacementNumber, new { htmlAttributes = new { @class = "form-control placmentinput" } })</div>
+    </div>
+}

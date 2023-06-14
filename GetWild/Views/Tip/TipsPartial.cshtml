@@ -1,0 +1,20 @@
+﻿@model List<InShapeModels.TipModel>
+<link rel="stylesheet" href="/Content/tips-@Utilities.App.DefaultCompany.CSSFileName">      
+<div class="ticker-container">
+    <div class="ticker-caption">
+        <p>@Utilities.App.DefaultCompany.TipsName</p>
+    </div>
+    <ul>
+        @foreach (var tip in Model)
+        {
+            <div>
+                <li><span>@tip.Tip</span></li>
+            </div>
+        }
+    </ul>
+</div>
+
+@if (Model.Count > 1)
+{
+    <script src="/Scripts/ticker.js"></script>
+}

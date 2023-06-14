@@ -1,0 +1,172 @@
+﻿<div class="modal fade" id="dataConfirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                ...
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">ביטול</button>
+                <a class="btn btn-danger btn-ok">אני בטוח, מחק</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    //$('a[data-confirm]').click(function (ev) {
+    function DataConfirmClicked(ev, clicked) {
+        debugger;
+            var href = clicked.dataset.href;
+            var weekno = clicked.dataset.weekno;
+        var action = clicked.dataset.action;
+        var btn = $('#dataConfirmModal').find('.btn-ok');
+        btn.off("click");
+            if (href == 'submitDelete') {
+                var id = clicked.dataset.id;
+                var userid = clicked.dataset.userid;
+                btn.click(function () {
+                    submitDelete(id, userid);
+                    return false;
+                });
+            }
+            else if (action == 'DuplicateCal') {
+                btn.click(function () {
+                    DuplicateCal(href, weekno);
+                    return false;
+                });
+                btn.text('שכפל לוז');
+            }
+            else if (action == 'PublishCal') {
+                btn.click(function () {
+                    PublishCal(href, weekno);
+                    return false;
+                });
+                btn.text('פרסם לוז');
+            }
+                else if (action == 'ProcessMarked') {
+                btn.click(function () {
+                    ProcessMarked(href);
+                    return false;
+                });
+                btn.text('סמן');
+            }
+            else if (action == 'UpdateClassLinks') {
+                btn.click(function () {
+                    UpdateClassLinks();
+                    return false;
+                });
+                btn.text('עדכן');
+            }
+            else if (href == 'RemoveLateCacelation') {
+                var id = clicked.dataset.id;
+                var userid = clicked.dataset.userid;
+                btn.click(function () {
+                    submitRemoveIsLate(id, userid);
+                    return false;
+                });
+            }
+            else {
+                href = href + "&source=" + clicked.dataset.source;
+                btn.attr('href', href);
+            }
+        var msg = clicked.dataset.message;
+            $('#dataConfirmModal').find('.modal-body').text(msg);
+        var title = clicked.dataset.title;
+            $('#dataConfirmModal').find('.modal-header').text(title);
+
+            $('#dataConfirmModal').modal({ show: true });
+            ev.stopPropagation();
+        }
+
+    function submitDelete(subid, userid) {
+        $.ajax({
+            type: "GET",
+            url: "/Account/SubscriptionDeleteConfirmed?id=" + subid + "&userid="+ userid,
+            data:{id: subid, userId: userid},
+            datatype: "text",
+            success: function (data) {
+                $('#subsription-tab').html(data);
+                $('#dataConfirmModal').modal('hide');
+            }
+        });
+    }
+
+    function DuplicateCal(url, weekno) {
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: { weekno: weekno },
+            datatype: "text",
+            success: function (data) {
+                $('#dataConfirmModal').modal('hide');
+                $('#ConfirmEnrollMSG').html(data.Message);
+                $("#ConfirmEnrollModal").fadeTo(4000, 500).slideUp(500, function () {
+                    $("#ConfirmEnrollModal").alert('close');
+                });
+            }
+        });
+    }
+
+    function PublishCal(url, weekno) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: { weekno: weekno},
+                success: function (data) {
+                    $('#dataConfirmModal').modal('hide');
+                    $('#ConfirmEnrollMSG').html(data.Message);
+                    $("#ConfirmEnrollModal").fadeTo(4000, 500).slideUp(500, function () {
+                        $("#ConfirmEnrollModal").alert('close');
+                    });
+                }
+            });
+    }
+
+        function ProcessMarked(url) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: { },
+                success: function (data) {
+                    $('#dataConfirmModal').modal('hide');
+                    $('#ConfirmEnrollMSG').html(data.Message);
+                    $("#ConfirmEnrollModal").fadeTo(4000, 500).slideUp(500, function () {
+                        $("#ConfirmEnrollModal").alert('close');
+                    });
+                }
+            });
+    }
+
+    function UpdateClassLinks() {
+        $.ajax({
+            type: "POST",
+            url: "/StudioClass/UpdateClassLinks",
+            success: function (data) {
+                $('#dataConfirmModal').modal('hide');
+                $('#ConfirmEnrollMSG').html(data.Message);
+                $("#ConfirmEnrollModal").fadeTo(4000, 500).slideUp(500, function () {
+                    $("#ConfirmEnrollModal").alert('close');
+                });
+            }
+        });
+    }
+
+    function submitRemoveIsLate(subid, userid) {
+        debugger;
+        $.ajax({
+            type: "GET",
+            url: "/Account/RemoveLateCacelationSubscriptionConfirmed?id=" + subid + "&userid=" + userid,
+            data: { id: subid, userId: userid },
+            datatype: "text",
+            success: function (data) {
+                $('#subsription-tab').html(data);
+                $('#dataConfirmModal').modal('hide');
+            }
+        });
+    }
+
+</script>

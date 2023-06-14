@@ -1,0 +1,16 @@
+﻿@using System.Web.UI.WebControls
+@model IEnumerable<GetWild.Models.ProfileViewModel>
+
+    @{
+        var myChart = new Chart(width: 800, height: 300, theme: ChartTheme.Blue )
+            .AddTitle("גרף התקדמות - משקל")
+            .AddSeries(
+                name: "משקל", chartType: "Line",
+                xValue: Model.Select(x => x.Date.Value.ToString("dd-MM-yy")).ToArray(),
+                yValues: Model.Select(x => x.Weight.ToString()).ToArray())
+                .AddSeries(
+                name: "BMI", chartType: "Line",
+                xValue: Model.Select(x => x.Date.Value.ToString("dd-MM-yy")).ToArray(),
+                yValues: Model.Select(x => x.BMI.ToString()).ToArray())
+            .Write();
+    }

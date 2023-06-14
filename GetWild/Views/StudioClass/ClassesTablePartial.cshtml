@@ -1,0 +1,253 @@
+﻿@using InShapeModels
+@using Utilities
+@model InShapeModels.ClassesList
+@if (Model.Classes.Any())
+{
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">יומן אימונים</h3>
+        </div>
+        <div class="panel-body">
+            <div id="update-message">
+            </div>
+            <div>
+                <table class="table table-striped table-hover ">
+                    <thead>
+                        <tr>
+                            <th style="text-align: right;">
+                                סוג אימון
+                            </th>
+                            @if (Model.CurrentCompany.UseClassTypeDetails)
+                            {
+                                <th style="text-align: right;">
+                                    מערך אימון
+                                </th>
+                            }
+                            <th style="text-align: right;">
+                                מתי
+                            </th>
+                            @if (Model.CurrentCompany.UseInstructors)
+                            {
+                                <th style="text-align: right;">
+                                    מאמן
+                                </th>
+                            }
+                            <th style="text-align:right;">
+                                ממוצע רבעון
+                            </th>
+                            <th style="text-align:right;">
+                                ממוצע חודש
+                            </th>
+                            <th style="text-align:right;">
+                                משתתפים
+                            </th>
+                            <th style="text-align:right;">
+                                מקומות פנויים
+                            </th>
+                            <th style="text-align:right;">
+
+                            </th>
+                        </tr>
+                    </thead>
+                    @foreach (var item in Model.Classes)
+                    {
+                        <tr class="clickable-row" data-id="@item.Id" style="cursor:pointer;">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name) (@item.StudioRoomName)
+                            </td>
+                            @if (Model.CurrentCompany.UseClassTypeDetails)
+                            {
+                                <td>@item.ClassTypeDetailsName</td>
+                            }
+                            <td>
+                                @item.Date.ToString("f")
+                            </td>
+                            @if (Model.CurrentCompany.UseInstructors)
+                            {
+                                <td>
+                                    @item.ClassInstructors
+                                </td>
+                            }
+                            <td>@item.AvgParticipants3M.ToString("N")</td>
+                            <td>@item.AvgParticipants1M.ToString("N")</td>
+                            <td>
+                                @if (item.AllParticipants > 0)
+                                {
+                                    if (Model.CurrentCompany.UsePlacements && item.UsePlacements)
+                                    {
+                                        <a class="btn btn-xs btn-info btn-Participantsplc" data-id="@item.Id" data-name="@item.Name (@item.Date.ToString("g"))" data-footer="@item.AllParticipants">@item.AllParticipants <i class="glyphicon glyphicon-th-list"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a class="btn btn-xs btn-info btn-Participants" onclick="classParticipants($(this), event);" data-id="@item.Id" data-name="@item.Name (@item.Date.ToString("g"))" data-footer="@item.AllParticipants">@item.AllParticipants <i class="glyphicon glyphicon-th-list"></i></a>
+                                    }
+                                    <a class="btn btn-xs btn-primary btn-smsSend" onclick="smsSendParticipants($(this), event);" data-smstype="@SmsListType.ByClass" data-refid="@item.Id"><i class="glyphicon glyphicon-phone"></i></a>
+                                }
+                                else
+                                { <text>אין</text>}
+
+                            </td>
+                            <td>
+                                @if (item.SpacesLeft > 0)
+                                {
+                                    <a class="btn btn-xs btn-success btn-AddParticipants" data-id="@item.Id" data-name="@item.Name (@item.Date.ToString("g"))" data-footer="@item.SpacesLeft">@item.SpacesLeft <i class="glyphicon glyphicon-plus-sign"></i></a>
+                                }
+                                @if (Model.CurrentCompany.WaitingListEnabled && (item.IsFull || item.WaitingList > 0))
+                                {
+                                    <a class="btn btn-xs btn-warning btn-Waitlist" data-id="@item.Id" data-name="@item.Name (@item.Date.ToString("g"))" data-footer="@item.WaitingList">@item.WaitingList <i class="glyphicon glyphicon-list"></i></a>
+                                }
+                            </td>
+                            <td>
+                                @if (item.Date.Date >= DateTime.UtcNow.ToLocal().Date)
+                                {
+                                    <a data-confirm="" onclick="DataConfirmClicked(event, this);" class="btn btn-xs btn-danger" data-source="Index" data-href="/StudioClass/DeleteConfirmed?id=@item.Id" data-toggle="modal" data-target="#confirm-delete" data-title="מחק אימון" data-message="האם אתה בטוח שברצונך למחוק ?"><i class="glyphicon glyphicon-trash"></i> מחק</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    <tr class="info" style="text-align:right;">
+                        <td>
+                            סה"כ אימונים ביומן:
+                        </td>
+                        <td></td>
+                        @if (Model.CurrentCompany.UseInstructors)
+                        {
+                            <td></td>
+                        }
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td id="cart-total">
+                            @Model.Classes.Count()
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div>
+        <p>
+            לא נמצאו אימונים במערכת, אנא הוסף אימון חדש.
+        </p>
+    </div>
+}
+@*<script>
+        jQuery(document).ready(function ($) {
+
+                function openInNewTab(url) {
+                    var win = window.open(url, '_blank');
+                    win.focus();
+                }
+            var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+            $(".clickable-row").click(function () {
+                window.document.location = '/studioclass/Create?id=' + $(this).data("id"); //+ '&withPlacements=' + $(this).data("withplacements");
+            });
+
+            $('.btn-Participants').click(function (ve) {
+                var title = $(this).data('name');
+                var footer = $(this).data('footer');
+                var id = $(this).data('id');
+                $('#myModal .modal-title').html('רשומים לאימון: ' + title);
+                //$('#myModal .modal-footer-inner').html('סה"כ מתאמנים רשומים: ' + footer);
+                $('#myModal .modal-body').load('studioclass/GetClassEnrollment?id=' + id, function (response, status, xhr) {
+                    if (status != "success") {
+                        $('#IMGUploadContainer').html('תקלה, אנא נסה מאוחר יותר' + response);
+                    }
+                });
+                $('#myModal').modal('show', { backdrop: 'static' });
+                ve.stopPropagation();
+            });
+
+            $(".btn-Participantsplc").click(function (ve) {
+                //$('#myModal').modal('hide');
+                //$('#ClassplacementsModal').modal('show');
+                var id = $(this).data('id');
+                window.location.replace("/studioclass/manageplacements?classid=" + id);
+                //openInNewTab("/studioclass/manageplacements?classid=" +id);
+            //$('#ClassplacementsModal').modal({ show: true });
+                ve.stopPropagation();
+        });
+
+            $('.btn-Waitlist').click(function (ve) {
+                $('#myModal .modal-body').html(loaddingdiv);
+                var title = $(this).data('name');
+                var footer = $(this).data('footer');
+                var id = $(this).data('id');
+                $('#myModal .modal-title').html('רשימת המתנה לאימון: ' + title);
+                //$('#myModal .modal-footer-inner').html('סה"כ מתאמנים רשומים: ' + footer);
+                $('#myModal .modal-body').load('studioclass/GetClassWaitListEnrollment?id=' + id, function (response, status, xhr) {
+                    if (status != "success") {
+                        $('#IMGUploadContainer').html('תקלה, אנא נסה מאוחר יותר' + response);
+                    }
+                });
+                $('#myModal').modal('show', { backdrop: 'static' });
+                ve.stopPropagation();
+            });
+
+            $('.btn-AddParticipants').click(function (ve) {
+                //var title = $(this).data('name');
+                var id = $(this).data('id');
+                //$('#BoClassEnrollModal .modal-title').html('רישום לאימון: ' + title);
+                //$('#BoClassEnrollModal').find('.btn-reg').data('id', id);
+                //$('#BoClassEnrollModal').modal('show', { backdrop: 'static' });
+                var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+
+                $('#BoClassEnrollModal .modal-content').html(loaddingdiv).load("studioclass/GetClassById?classId=" + id, function (response, status, xhr) {
+                        if (status != "success") {
+                            $('#BoClassEnrollModal .modal-body').html('תקלה, אנא נסה מאוחר יותר' + response);
+                        }
+                    });
+                $('#BoClassEnrollModal').modal('show', { backdrop: 'static' });
+                ve.stopPropagation();
+            });
+
+            $('a[data-confirm]').click(function(ev) {
+                var href = $(this).data('href');
+                $('#dataConfirmModal').find('.btn-ok').attr('href', href);
+                var msg = $(this).attr('data-message');
+                $('#dataConfirmModal').find('.modal-body').text(msg);
+                var title = $(this).attr('data-title');
+                $('#dataConfirmModal').find('.modal-header').text(title);
+
+                $('#dataConfirmModal').modal({ show: true });
+                ev.stopPropagation();
+            });
+
+            $('#btn_searchClassByDate').click(function() {
+                var date = $('#SearchByDate').val();
+                $('#ClassesTable').html(loaddingdiv).load('studioclass/GetClassesbydate?date='+date);
+
+            });
+
+            $(".btn-smsSend").click(function (ev) {
+                window.document.location = "/Sms/SmsSender?smsType=" + $(this).data("smstype") + "&refid=" + $(this).data("refid");
+                ev.stopPropagation();
+            });
+        });
+
+        $(function () {
+            $.validator.addMethod('date',
+                function (value, element) {
+                    if (this.optional(element)) {
+                        return true;
+                    }
+                    var ok = true;
+                    try {
+                        $.datepicker.parseDate('dd/mm/yy', value);
+                    } catch (err) {
+                        ok = false;
+                    }
+                    return ok;
+                });
+            $('.datepicker').datepicker({ dateFormat: 'dd/mm/yy' });
+        });
+
+    </script>*@
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

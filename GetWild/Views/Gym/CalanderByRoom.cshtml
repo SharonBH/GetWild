@@ -1,0 +1,72 @@
+﻿@using System.Globalization
+@using InShapeModels
+@model GetWild.Models.GymCalanderViewModel
+
+   @{
+       ViewBag.Title = "לו'ז אימונים";
+
+}
+<div class="row gym-row">
+
+    <div class="col-md-9 col-md-pull-3">
+        <h2>לו"ז אימונים</h2>
+        <div class="panel-heading">
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(m => m.RoomId, new SelectList(Model.AvailableRooms, "Id", "Name"), "בחר קבוצת אימון", new { @class = "form-control", @id = "calanderRoomddl" })
+                        @Html.ValidationMessageFor(model => model.RoomId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-info" id="CalanderRoomPanel">
+            @Html.Partial("CalanderWeekly", @Model)
+        </div>
+    </div>
+    <div class="col-md-3 col-md-push-9 gymnav">
+        @{ Html.RenderAction("GetRightNav", "Gym");}
+    </div>
+</div>
+@Html.Partial("_PopupPartial")
+@Html.Partial("_ConfirmEnroll")
+
+    @*<div class="form-group">
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.RoomId, new SelectList(Model.AvailableRooms, "Id", "Name"), "בחר חדר סטודיו", new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.RoomId, "", new { @class = "text-danger" })
+        </div>
+    </div>*@
+
+
+
+
+
+   
+
+
+
+<script>
+    jQuery(document).ready(function ($) {
+        var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+        $("#calanderRoomddl").change(function () {
+            //debugger;
+            var id = this.value;
+            if (id == "") id = -1;
+            $.ajax({
+                type: "POST",
+                url: "/Gym/GetCalanderByRoom",
+                data: { Roomid: id },
+                datatype: "text",
+                beforeSend: function () {
+                    $('#CalanderRoomPanel').html(loaddingdiv);
+                },
+                success: function (data) {
+                    $('#CalanderRoomPanel').html(data);
+                }
+            });
+        });
+            
+
+    });
+</script>

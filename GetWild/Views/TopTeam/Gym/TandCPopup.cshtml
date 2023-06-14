@@ -1,0 +1,63 @@
+﻿<!-- Modal -->
+<div id="TandCModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<button type="button" class="close" data-dismiss="modal">&times;</button>*@
+                <h3 class="modal-title">אישור תנאים לשימוש באתר TOP TEAM</h3>
+            </div>
+            <div class="modal-body">
+                <p>מתאמנים יקרים ברוכים הבאים לאתר האינטרנט של TOP TEAM. על מנת לעשות שימוש באתר יש לקרוא ולאשר את תנאי השימוש ותקנון ההשתתפות באימונים. נודה לכם על תשומת הלב. בברכה, אלמוג וצוות המדריכים.</p>
+                <p>השתתפות באימונים תותר רק לאחר מילוי הצהרת בריאות/ הגשת אישור רפואי ואישור התקנון.</p>
+                <p>על מנת לקחת חלק באימונים יש לבצע הרשמה מראש דרך אתר האינטרנט. מספר המקומות בכל אימון מוגבל ולכן מתאמן שלא ירשם לאימון יוכל להשתתף על בסיס מקום פנוי בלבד.</p>
+                <p>שימו לב! הרשמה לאימון מבטיחה את מקומכם על חשבון מתאמן אחר, לכן במקרה הצורך הקפידו על ביטול הרשמה בזמן. לאימוני בוקר ניתן להירשם עד השעה 22:00 בלילה יום קודם. אימון בוקר יתקיים בהרשמת מינימום 5 מתאמנים. במידה ולא ירשמו 5 משתתפים האימון ייסגר ולא תתאפשר הצטרפות גם בבוקר של אותו היום.</p>
+                <p>משך כל שיעור 45-55 דקות.</p>
+                <p>יש להגיע לאימון 5 דקות לפני תחילת השיעור. לא תותר כניסה לשיעור 5 דקות לאחר תחילתו.</p>
+                <p>יש להגיע בלבוש ספורטיבי ולהצטייד במגבת ובקבוק מים.</p>
+                <p>אנא הקפידו על נוכחות מלאה בשיעור והימנעו מיציאה טרם סיומו.</p>
+                <p>ניתן להישקל ולהימדד לפני תחילת השיעור בתיאום מראש בלבד.</p>
+                <p>אופן התשלום: בצ'קים עם תאריך פירעון שלא יאוחר מה 10 לכל חודש, או במזומן. מתאמן שרוצה להנות מעלות האימונים במסגרת התחייבות ולשלם במזומן, ישלם את מלוא הסכום מראש.</p>
+                <p>ניתן להקפיא את המנוי מכל סיבה, גם שאינה רפואית, ובלבד שניתנה על כך הודעה להנהלת החברה שבוע מראש. משך ההקפאה המינימלי 14 ימים. הקפאת המנוי תאריך את תוקפו בפרק זמן זהה למשך ההקפאה. במקרה של העידרות מהאימונים עקב מצב בריאותי שאינו מאפשר פעילות גופנית ינתן זיכוי מלא על תקופת ההיעדרות בהצגת אישור רפואי בלבד, במקרה של הפסקת האימונים (ביטול מנוי)  מסיבה רפואית יתקבל החזר כספי מלא על יתרת המנוי מתאריך המצאת האישור הרפואי.</p>
+                <p>למנויים ל 3 חודשים ומעלה ניתן לבטל את ההתחייבות. ביטול זה יגרור חיוב בתעריף מלא עבור החודשים שחלפו, על היתרה ינתן החזר כספי.</p>
+                <p>במהלך האימונים יצולמו תמונות אשר יופיעו באתר ובדף הפייסבוק של TOP TEAM, חתימה על התקנון מהווה את אישורכם לפרסום תמונות בהן אתם מופיעים.</p>
+                <p>מלבד אתר האינטרנט יתקיים קשר באמצעות קבוצות וואטסאפ בהן ימסרו הודעות חשובות לקריאה בלבד. לכל שאלה ניתן לפנות באופן פרטי להנהלה או לצוות המדריכים.</p>
+                <p>מודים לכם על שיתוף הפעולה.</p>
+                <p>מאחלים לכולכם הנאה, אתגר והצלחה גדולה ועומדים מאחוריכם לאורך כל הדרך!!</p>
+                <p>בברכה,<br />TOP TEAM</p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-success" data-dismiss="modal" id="btn_confirmtandc"><span class="glyphicon glyphicon-ok"></span> אני מסכים לתנאי האתר</a>
+                <button type="button" id="closetandc" class="btn btn-primary hidden" data-dismiss="modal">סגור</button>
+                @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-left" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @*<button type="button" class="btn btn-danger" data-dismiss="modal" id="btn_logout">לא מסכים, התנתק</button>*@
+                    <a id="btn_logouttandc" href="javascript:document.getElementById('logoutForm').submit()" class="btn btn-danger" style="margin: 0 6px;"><span class="glyphicon glyphicon-remove"></span> לא מסכים, התנתק</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(document).ready(function ($) {
+
+        $("#btn_confirmtandc").click(function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            $.ajax({
+                type: "POST",
+                url: "/Account/ConfirmTandC",
+                success: function(data) {
+                    var result = data.Response;
+                    if (result == 'Success') {
+                        $('#TandCModal').modal('hide');
+                        $('body').removeClass('modal-open');
+                        $('.modal-backdrop').remove();
+                    }
+                }
+            });
+        });
+
+    });
+</script>

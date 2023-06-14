@@ -1,0 +1,33 @@
+﻿@using InShapeModels
+@model List<InstructorDetailsModel>
+
+@{
+    ViewBag.Title = "מאמנים";
+}
+
+@if (ViewBag.showHeader != 0)
+{
+    <h2>ניהול משתמשים</h2>
+
+    <div class="row row-bottombuffer">
+        <div class="col-md-6">
+            @Html.ActionLink("הוסף מאמן חדש", "RegisterInstructor", null, new { @class = "btn btn-info" })
+            
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                @Html.TextBox("SearchString", null, new { @class = "form-control form-control-rounded autocomplete-with-hidden", @id = "userddl", data_type = "admin", data_url = Url.Action("GetUsersSearch", "Account") })
+                <span class="input-group-addon btn-rounded" style="background-color: #39B3D7; color: #fff;">
+                    <i class="glyphicon glyphicon-search"></i>
+                </span>
+                @*<span class="input-group-btn">
+                        <button class="btn btn-info btn-rounded" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                    </span>*@
+            </div>
+        </div>
+    </div>
+}
+<div id="InstructorListTable">
+    @Html.Partial("InstructorListTable", Model)
+</div>
+@Html.Partial("_ConfirmDelete")

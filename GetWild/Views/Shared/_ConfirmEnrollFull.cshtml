@@ -1,0 +1,97 @@
+﻿<!-- modal -->
+<div id="ConfirmEnrollModal"
+     class="modal fsmodal animated bounceIn"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="myModalLabel"
+     aria-hidden="true">
+
+    <!-- dialog -->
+    <div class="fsmodal-dialog">
+
+        <!-- content -->
+        <div id="fsmodal-content" class="fsmodal-content alert alert-dismissable alert-success">
+
+            <!-- header -->
+            <div class="fsmodal-header">
+                <span id="fsmodal-title"
+                    class="fsmodal-title">
+                    רישום לאימון
+                </span>
+            </div>
+            <!-- header -->
+            <!-- body -->
+            <div class="fsmodal-body">
+                <span id="ConfirmEnrollMSG"></span><br />
+                <span id="fsmodal-subMSG" class="text-danger" style="font-size: smaller;">* שם לב, ניתן לבטל עד שעתיים לפני תחילת האימון</span>
+            </div>
+            <!-- body -->
+            <!-- footer -->
+            @*<div class="modal-footer">
+                <button class="btn btn-secondary"
+                        data-dismiss="modal">
+                    close
+                </button>
+                <button class="btn btn-default">
+                    Default
+                </button>
+                <button class="btn btn-primary">
+                    Primary
+                </button>
+            </div>*@
+            <!-- footer -->
+
+        </div>
+        <!-- content -->
+
+    </div>
+    <!-- dialog -->
+
+</div>
+<!-- modal -->
+
+<script>
+    function SetConfirmPopup(data, action) {
+        var result = data.Response;
+        if (result == 'Error') {
+            $('#myModal').modal('hide');
+            $('#fsmodal-content').removeClass('alert-success');
+            $('#fsmodal-content').addClass('alert-danger');
+            $('#fsmodal-title').html('אופס!');
+            $('#ConfirmEnrollMSG').html(data.Message);
+            $('#fsmodal-subMSG').addClass('hidden');
+            $("#ConfirmEnrollModal").fadeTo(5000, 500).slideUp(500, function () {
+                $("#ConfirmEnrollModal").alert('close');
+            });
+        }
+        else {
+            if (action == 'enroll') {
+                $('#fsmodal-title').html('רישום לאימון');
+                $('#ConfirmEnrollMSG').html('הינך רשום/ה לאימון, בהצלחה.');
+                $('#fsmodal-subMSG').html('* שם לב, ניתן לבטל עד שעתיים לפני תחילת האימון');
+                $('#fsmodal-subMSG').removeClass('hidden');
+            } else if (action == 'late') {
+                $('#fsmodal-content').removeClass('alert-success');
+                $('#fsmodal-content').addClass('alert-warning');
+                $('#fsmodal-title').html('ביטול מאוחר');
+                $('#ConfirmEnrollMSG').html('ביטול מאוחר נשמר בהצלחה');
+                $('#fsmodal-subMSG').html('שים לב , באימון הבא שתרצה להירשם אליו תוכל להירשם בהרשמה מאוחרת');
+            }
+            else {
+                $('#fsmodal-title').html('ביטול אימון');
+                $('#ConfirmEnrollMSG').html('השינויים נשמרו בהצלחה.');
+                $('#fsmodal-subMSG').addClass('hidden');
+            }
+            $('#CalanderDailyPanel').html(data);
+            $('#myModal').modal('hide');
+            $('#fsmodal-content').removeClass('alert-danger');
+            $('#fsmodal-content').addClass('alert-success');
+            
+            $("#ConfirmEnrollModal").fadeTo(5000, 500).slideUp(500, function () {
+                $("#ConfirmEnrollModal").alert('close');
+            });
+            $('#RightNav').load("/Gym/GetRightNav");
+        }
+    }
+
+</script>

@@ -1,0 +1,74 @@
+﻿@model IEnumerable<InShapeModels.StudioRoomModel>
+
+@{
+    ViewBag.Title = "סטודיו כושר";
+}
+
+<h2>ניהול הסטודיו - @Utilities.App.DefaultCompany.StudioRoomName</h2>
+
+<p>
+    @Html.ActionLink("הוסף " + @Utilities.App.DefaultCompany.StudioRoomName, "Create", null, new { @class = "btn btn-info" })
+</p>
+@if (Model.Any())
+{
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">רשימת @Utilities.App.DefaultCompany.StudioRoomName</h3>
+        </div>
+        <div class="panel-body">
+            <div id="update-message">
+            </div>
+            <table class="table table-striped table-hover ">
+                <thead>
+                    <tr>
+                        <th style="text-align:right;">
+                            שם
+                        </th>
+                        <th style="text-align:right;">
+                            מספר משתתפים
+                        </th>
+                        <th style="text-align:right;">
+
+                        </th>
+                        <th style="text-align:right;"></th>
+                    </tr>
+                </thead>
+                @foreach (var item in Model)
+                {
+                    <tr class="clickable-row" data-id="@item.Id" style="cursor:pointer;">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @item.MaxParticipants
+                        </td>
+                        <td>
+                            <a data-confirm="" onclick="DataConfirmClicked(event, this);" class="btn btn-xs btn-danger" data-href="/studio/DeleteConfirmed?id=@item.Id" data-toggle="modal" data-target="#confirm-delete" data-title="מחק חדר סטודיו" data-message="האם אתה בטוח שברצונך למחוק ?"><i class="glyphicon glyphicon-trash"></i> מחק</a>
+                        </td>
+                        <td></td>
+                    </tr>
+                }
+                <tr class="info" style="text-align:right;">
+                    <td>
+                        סה"כ @Utilities.App.DefaultCompany.StudioRoomName:
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td id="cart-total">
+                        @Model.Count()
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div>
+        <p>
+            לא נמצאו @Utilities.App.DefaultCompany.StudioRoomName במערכת, אנא הוסף @Utilities.App.DefaultCompany.StudioRoomName חדש.
+        </p>
+    </div>
+}
+
+@Html.Partial("_ConfirmDelete")

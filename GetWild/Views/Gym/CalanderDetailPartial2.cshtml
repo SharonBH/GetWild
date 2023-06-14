@@ -1,0 +1,108 @@
+﻿@model GetWild.Models.ClassViewModel
+<div class="row">
+    <div class="col-md-8">
+        <h2>@Model.Name - @Model.Date.Value.ToShortDateString()</h2>
+        <h4>שעת האימון: @Model.Time.Value.AddMinutes(@Model.Duration.Value).ToShortTimeString() - @Model.Time.Value.ToShortTimeString()</h4>
+        <p>@Model.Description</p>
+        <div class="col-md-6">
+            @if (Model.IsUserEnrolled)
+            {
+                if (Model.CanCancel)
+                {
+                    <a id="btn_outrolltoClass" data-id="@Model.Id" class="btn btn-default btn-danger btn-block">ביטול | <span class="glyphicon glyphicon-chevron-left"></span></a>
+                    <div id="enroll-result"></div>
+                }
+                else
+                {
+                    <a id="btn_outrolltoClass" data-id="@Model.Id" class="btn btn-default btn-danger btn-block disabled">ביטול | <span class="glyphicon glyphicon-chevron-left"></span></a>
+                    <div id="enroll-result"></div>
+                }
+            }
+            else
+            {
+                if (Model.IsFull || Model.Date < DateTime.Now || !Model.IsUserGender || Model.SpaceLeft == 0)
+                {
+                    <a class="btn btn-default btn-reg btn-block disabled">הרשמה | <span class="glyphicon glyphicon-chevron-left"></span></a>
+                }
+                else
+                {
+                    <a id="btn_enrolltoClass" data-id="@Model.Id" class="btn btn-default btn-reg btn-block">הרשמה | <span class="glyphicon glyphicon-chevron-left"></span></a>                }
+            } 
+        </div>
+        <div class="col-md-6">
+            @if (Model.IsFull)
+            {
+                <text>אין כרגע מקומות פנויים לאימון</text>
+            }
+            else
+            {
+                <text> מקומות פנויים: <span class="badge badge-notify2" id="EnrollSpaceLeft">@Model.SpaceLeft</span></text>
+            }
+
+        </div>
+        
+    </div>
+    <div class="col-md-4">
+        <img src="@Model.Picture"/>
+    </div>
+    </div>
+<div class="alert-danger" id="enroll-result"></div>
+<script type="text/javascript">
+    $(function () {
+        // Document.ready -> link up remove event handler
+        $("#btn_enrolltoClass").click(function () {
+            $(this).attr("disabled", true);
+            var id = $(this).data("id");
+            $.ajax({
+                type: "POST",
+                url: "/Gym/EnrollToClass",
+                data: { classid: id },
+                datatype: "text",
+                success: function (data) {
+                    var result = data.Response;
+                    if (result == 'Error') {
+                        $('#enroll-result').html(data.Message);
+                    } else {
+                        $('#CalanderRoomPanel').html(data);
+                        $('#myModal').modal('hide');
+                        $('#ConfirmEnrollMSG').html('השינויים נשמרו בהצלחה.');
+                        $("#ConfirmEnrollModal").fadeTo(4000, 500).slideUp(500, function() {
+                            $("#ConfirmEnrollModal").alert('close');
+                        });
+                        $('#RightNav').load("/Gym/GetRightNav");
+                    }
+                }
+            });
+        });
+    });
+
+    $(function() {
+        // Document.ready -> link up remove event handler
+        $("#btn_outrolltoClass").click(function () {
+            $(this).attr("disabled", true);
+            var id = $(this).data("id");
+            $.ajax({
+                type: "POST",
+                url: "/Gym/OutrollFromClass",
+                data: { classid: id },
+                datatype: "text",
+                success: function(data) {
+                    var result = data.Response;
+                    if (result == 'Error') {
+                        $('#enroll-result').html(data.Message);
+                    } else {
+                        var msg = '@ViewBag.Message';
+                        $('#CalanderRoomPanel').html(data);
+                        $('#myModal').modal('hide');
+                        $('#ConfirmEnrollMSG').html('השינויים נשמרו בהצלחה.');
+                        $("#ConfirmEnrollModal").fadeTo(4000, 500).slideUp(500, function() {
+                            $("#ConfirmEnrollModal").alert('close');
+                        });
+                        $('#RightNav').load("/Gym/GetRightNav");
+                    }
+                }
+            });
+        });
+    });
+</script>
+

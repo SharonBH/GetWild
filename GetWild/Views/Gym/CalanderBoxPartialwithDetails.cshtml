@@ -1,0 +1,39 @@
+﻿@using InShapeModels
+@using Utilities
+@model GetWild.Models.ClassViewModel
+<div class="Class0 CalanderBox @Model.CssClass @(Model.IsUserEnrolled ? " Enroll" : "") @(Model.Date < DateTime.UtcNow.ToLocal() || Model.ClassTypeId == 999 ? " Disabled" : "")" data-id="@Model.Id" style="cursor:pointer; background-color: @Model.BGColor2;">
+    <div class="row smallpadding">
+        <div class="col-md-1">
+
+            @*@if (Model.ClassTypeId < 999)
+            {*@
+            @switch (Model.Gender)
+            {
+                case Gender.זכר:
+                    <img src="/images/Gender_male.png" alt="גבר" />
+                    break;
+                case Gender.נקבה:
+                    <img src="/images/Gender_female.png" alt="אישה" />
+                    break;
+                default:
+                    <img src="/images/Gender_both.png" alt="מעורב" />
+                break;
+            }
+            @*}*@
+        </div>
+
+        <div class="col-md-11">
+            @if (@Model.IsUserEnrolled)
+            {
+                <span class="glyphicon glyphicon-ok"></span>
+            } @Model.ClassTypeName (@Model.Name - @Model.StudioRoomName)
+            <br/>
+            @Model.Time.Value.AddMinutes(@Model.Duration.Value).ToShortTimeString() - @Model.Time.Value.ToShortTimeString()
+        </div>
+
+    </div>
+    
+     
+
+</div>
+

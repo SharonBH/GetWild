@@ -1,0 +1,135 @@
+﻿@using InShapeModels
+@model GetWild.Models.RegisterViewModel
+@{
+    ViewBag.Title = "רישום";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <h4>טופס הצטרפות.</h4>
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.Fname, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Fname, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Lname, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Lname, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.mobile, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.mobile, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Gender, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            <label class="radio-inline">@Html.RadioButtonFor(m => m.Gender, Gender.נקבה)@Html.Label(Gender.נקבה.ToString())</label>
+            <label class="radio-inline">@Html.RadioButtonFor(m => m.Gender, Gender.זכר)@Html.Label(Gender.זכר.ToString())</label>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.DOB, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.DOB, new { @class = "form-control", @placeholder = "DD/MM/YYYY" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.AgeGroup, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            <label class="radio-inline">@Html.RadioButtonFor(m => m.AgeGroup, AgeGroup.ילדים)@Html.Label(AgeGroup.ילדים.ToString())</label>
+            <label class="radio-inline">@Html.RadioButtonFor(m => m.AgeGroup, AgeGroup.נוער)@Html.Label(AgeGroup.נוער.ToString())</label>
+            <label class="radio-inline">@Html.RadioButtonFor(m => m.AgeGroup, AgeGroup.מבוגרים)@Html.Label(AgeGroup.מבוגרים.ToString())</label>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Address, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ReceiveSMS, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.CheckBoxFor(m => m.ReceiveSMS, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Marked, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.CheckBoxFor(m => m.Marked, new { @class = "form-control" })
+        </div>
+    </div>
+    @*<div class="form-group">
+            @Html.LabelFor(m => m.UserType, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.UserType, UserType.User)@Html.Label(UserType.User.ToFriendlyString())</label>
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.UserType, UserType.FreeUser)@Html.Label(UserType.FreeUser.ToFriendlyString())</label>
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.UserType, UserType.TrailUser)@Html.Label(UserType.TrailUser.ToFriendlyString())</label>
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.UserType, UserType.DemoUser)@Html.Label(UserType.DemoUser.ToFriendlyString())</label>
+            </div>
+        </div>*@
+    <div class="form-group">
+        @Html.LabelFor(m => m.UserType, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.EnumDropDownListFor(m => m.UserType, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="הרשם!" />
+        </div>
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    jQuery(function ($) {
+        $.validator.addMethod('date',
+            function (value, element) {
+                if (this.optional(element)) {
+                    return true;
+                }
+
+                var ok = true;
+                try {
+                    $.datepicker.parseDate('dd/mm/yy', value);
+                }
+                catch (err) {
+                    ok = false;
+                }
+                return ok;
+            });
+    });
+</script>
+

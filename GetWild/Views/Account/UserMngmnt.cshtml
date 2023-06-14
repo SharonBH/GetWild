@@ -1,0 +1,47 @@
+﻿@model GetWild.Models.RegisterViewModel
+@{
+    ViewBag.Title = "ניהול משתמש";
+}
+<h2>ניהול משתמש.</h2>
+<div class="form-horizontal" style="min-height: 400px;">
+    <hr />
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#user-tab">פרטי משתמש</a></li>
+        <li><a data-toggle="tab" href="#profile-tab">פרופיל כושר</a></li>
+        <li><a data-toggle="tab" href="#subsription-tab">מנוי</a></li>
+        <li><a data-toggle="tab" href="#enrollmets-tab">אימונים</a></li>
+        <li><a data-toggle="tab" href="#oldenrollmets-tab">אימונים ישנים</a></li>
+    </ul>
+    <div class="tab-content">
+        <div id="user-tab" class="tab-pane fade in active">
+            @Html.Action("ManageUser", "Account", new { userid = Model.Userid })
+        </div>
+
+        <div id="profile-tab" class="tab-pane fade">
+            @*@Html.Action("ManageProfile", "Account", new { userid = Model.Userid })*@
+        </div>
+        <div id="subsription-tab" class="tab-pane fade">
+            @Html.Action("ManageSubscriptions", "Account", new { userid = Model.Userid })
+        </div>
+        <div id="enrollmets-tab" class="tab-pane fade">
+            @*@Html.Action("ManageUserEnrollment", "StudioClass", new { userid = Model.Userid })*@
+        </div>
+        <div id="oldenrollmets-tab" class="tab-pane fade">
+            @*@Html.Action("ManageUserOldEnrollment", "StudioClass", new { userid = Model.Userid })*@
+        </div>
+    </div>
+</div>
+@Html.Partial("_ConfirmDelete")
+@Html.Partial("_PopupPartial")
+@Html.Partial("_TabbedPopupPartial")
+<script>
+    $(document).ready(function () {
+        getUserDetails('@Model.Userid');
+    });
+
+</script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+

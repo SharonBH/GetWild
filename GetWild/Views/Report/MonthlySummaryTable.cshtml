@@ -1,0 +1,125 @@
+﻿@model InShapeModels.WeeklyReportModel
+<div class="panel panel-info">
+    <div class="panel-heading">
+        @*<div class="row">
+            <div style="text-align:left; width: 25%; float: right;">
+                <a class="btn btn-info glyphicon glyphicon-chevron-right CalanderChangeDate" data-date="@(Model.StartDate.Date.AddMonths(-1))"></a> 
+            </div>
+            <div style="text-align:center;width: 50%; float: right;"><h3 class="panel-title">דוח חודשי ממוצעים - @Model.StartDate.Date.ToString("Y")</h3></div>
+            <div style="text-align:right; width: 25%; float: right;">
+                <a class="btn btn-info glyphicon glyphicon-chevron-left CalanderChangeDate" data-date="@(Model.StartDate.Date.AddMonths(1))"></a>
+            </div>
+        </div>*@
+       
+        
+        
+        
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th style="width: 6%;"></th>
+                    @foreach (var day in Model.WeeklyDates.GroupBy(x => x.Date.DayOfWeek).OrderBy(x => x.Key))
+                    {
+
+                        <th style="text-align: center;">
+                            @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.DayNames[(int)day.Key]
+                        </th>
+
+                    }
+                    <th colspan="2" style="text-align: center;">סה"כ</th>
+                </tr>
+                @*<tr style="font-size: small;">
+                    <th></th>
+                    @foreach (var day in Model.WeeklyDates)
+                    {
+                        foreach (var room in Model.StudioRooms)
+                        {
+
+                            <th>
+                                @room.Name
+                            </th>
+
+                        }
+                    }
+                    <th colspan="2" style="text-align: center;"></th>
+                </tr>*@
+            <tbody>
+                @foreach (var DailySlot in Model.DailySlots)
+                {
+                    <tr style="font-size: smaller;">
+                        <td>@DailySlot.Name </td>
+                                                @foreach (var day in Model.WeeklyDates.GroupBy(x => x.Date.DayOfWeek).OrderBy(x => x.Key))
+                                                {
+
+                                                    <td class="@Model.GetBGClass(day.Key)">
+                                                        @{
+                                                    var total = Model.WeeklyReportDetails.Where(x => x.Date.DayOfWeek == day.Key && x.DailySlotId == DailySlot.Id).Sum(i => i.Participants);
+                                                    var count = Model.WeeklyReportDetails.Where(x => x.Date.DayOfWeek == day.Key && x.DailySlotId == DailySlot.Id).GroupBy(x=>x.Date).Count();
+                                                    var avg = count == 0 ? 0 : total / (double)count;
+                                                        }
+                                                        @total.ToString("D") (@avg.ToString("F2"))
+
+                                                    </td>
+
+                                                }
+                        <td style="text-align: center;border: solid 1px #666;">
+                            @if (@DailySlot.Participants > 0)
+                            {
+                                @DailySlot.Participants <text>(</text>@DailySlot.AVGParticipants.ToString("F2")<text>%)</text>
+                            }
+                        </td>
+                    </tr>
+                }
+</tbody>
+            <tfoot>
+                <tr>
+                    <td>סה"כ</td>
+                    @foreach (var day in Model.WeeklyDates.GroupBy(x => x.Date.DayOfWeek).OrderBy(x => x.Key))
+                    {
+
+                        <td style="text-align: center;">
+                            @{
+                        var total = Model.WeeklyReportDetails.Where(x => x.Date.DayOfWeek == day.Key).Sum(i => i.Participants);
+                        var count = Model.WeeklyReportDetails.Sum(i => i.Participants);
+                        var avg = count == 0 ? 0 : total * 100 / (double)count;
+                            }
+
+                            @total (@avg.ToString("F2")%)
+                        </td>
+
+                    }
+                    <td style="text-align: center;">@Model.WeeklyReportDetails.Sum(i => i.Participants)</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    $(function () {
+        var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+        $(".CalanderChangeDate").click(function () {
+            var fromdate = $(this).data("date");
+            var todate = $(this).data("date");
+            $.ajax({
+                type: "POST",
+                url: "/Report/GetMonthlyTable",
+                data: { fromdate: fromdate, todate: todate },
+                datatype: "text",
+                beforeSend: function () {
+                    $('#ClassesTable').html(loaddingdiv);
+                },
+                success: function (data) {
+                    $('#ClassesTable').html(data);
+                }
+            });
+        });
+
+
+    });
+
+</script>
+

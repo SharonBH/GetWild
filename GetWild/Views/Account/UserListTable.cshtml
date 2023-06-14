@@ -1,0 +1,196 @@
+﻿@using InShapeModels
+@using Utilities
+@model UsersList
+
+@if (Model.UserWithSubscriptions.Any())
+{
+    <div class="panel panel-info">
+        <div class="panel-heading" style="height: 40px;">
+            <div class="col-md-9"><h3 class="panel-title">רשימת משתמשים</h3></div>
+            <div class="col-md-2">סה"כ: <span id="RowCounter"> @Model.UserWithSubscriptions.Count()</span> שורות</div>
+            <div class="col-md-1"><button class="btn btn-info btn-xs" type="button" id="btn_LoadMoreUsers" value="טען משתמשים נוספים" onclick="getUsersPage();">טען משתמשים נוספים <i class="glyphicon glyphicon-resize-vertical"></i></button></div>
+        </div>
+        <div class="panel-body">
+            <div id="update-message">
+            </div>
+            <table class="table table-striped table-hover ">
+                <thead>
+                    <tr>
+                        <th style="text-align: right; width: 40px;">
+                        </th>
+                        <th style="text-align: right;">
+                        </th>
+                        <th style="text-align: right;">
+                            שם
+                        </th>
+                        <th style="text-align: right;">
+                            סוג
+                        </th>
+                        <th style="text-align: right;">
+                            תפוגת מנוי
+                        </th>
+                        <th style="text-align: right;">
+                            סיום תשלום
+                        </th>
+                        <th style="text-align: right;">
+                            ניצול מנוי
+                        </th>
+                        <th style="text-align: right;">
+                            רישום
+                        </th>
+                        <th style="text-align: right;">
+                            טלפון
+                        </th>
+                        <th style="text-align: right;">
+                            אימון אחרון
+                        </th>
+                        <th style="text-align: right;">
+                            אימון הבא
+                        </th>
+                        <th style="text-align: right;"></th>
+                        <th style="text-align: right;"></th>
+                    </tr>
+                </thead>
+                @{ int i = 0; }
+                @foreach (var item in Model.UserWithSubscriptions)
+                {
+                    i = i + 1;
+                    <tr class="Manageclick-row @item.CssClass" data-id="@item.UserId" style="cursor: pointer;">
+                        <td><h3>@i</h3></td>
+                        <td>
+                            <img src="@item.ProfileIMGPath" class="img-responsive table-img" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullName)
+                        </td>
+                        <td>@item.UserType.GetDisplayName()</td>
+                        <td>
+                            @if (item.SubscriptionExpireDate != null)
+                            {
+                                @item.SubscriptionExpireDate.Value.ToShortDateString()
+                            }
+                        </td>
+                        <td class="@item.PayingClass">
+                            @if (item.PayEndDate != null)
+                            {
+                                @item.PayEndDate.Value.ToShortDateString() @item.DaysSincePayEnd
+                            }
+                        </td>
+                        <td>
+                            @if (@item.Active.HasValue && @item.Active.Value)
+                            {
+                                @item.SubscriptionType <br />
+                                @item.NumClasses
+                                <text>/</text>
+                                @item.ClassesDone
+                                <text>(@item.WeeklyClasses)</text>
+                                <br /><text>הבריז: @item.ClassesMissed</text>
+                            }
+                        </td>
+                        <td>
+                            @item.JoinDate.ToShortDateString()
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                        </td>
+                        <td>
+                            @if (item.LastClassDate != null)
+                            {
+                                @item.LastClassDate.Value.ToShortDateString()<br />
+                                <text>שעה: </text>
+                                @item.LastClassDate.Value.ToShortTimeString()<br />
+                                @*<text>סוג: </text>
+                            @item.LastClassType*@
+                            }
+                        </td>
+                        <td>
+                            @if (item.NextClassDate != null)
+                            {
+                                @item.NextClassDate.Value.ToShortDateString()<br />
+                                <text>שעה: </text>
+                                @item.NextClassDate.Value.ToShortTimeString()<br />
+                                @*<text>סוג: </text>
+                            @item.NextClassType*@
+                            }
+                        </td>
+                        <td>
+                            @if (item.Ticked)
+                            {
+                                <i class="glyphicon text-primary glyphicon-ok-sign" style="font-size: 20px;"></i>
+                            }
+                            else
+                            {
+                                <a class="btn btn-xs btn-primary btn-process" onclick="processUser($(this), event);" data-id="@item.UserId" data-toggle="modal" data-title="סימון" data-message="האם לסמן יומי ?"><i class="glyphicon glyphicon-ok"></i> סמן</a>
+                            }
+                        </td>
+
+                        <td>
+                            <a data-confirm="" onclick="deleteUser($(this), event);" class="btn btn-xs btn-danger" data-href="/Account/DeleteConfirmed?UserId=@item.UserId" data-toggle="modal" data-target="#confirm-delete" data-title="מחק משתמש" data-message="האם אתה בטוח שברצונך למחוק ?"><i class="glyphicon glyphicon-trash"></i> מחק</a>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <div id="loadMoreUsers"></div>
+            <div id="loadMoreUsersprogress" style="margin:10% 48%; display: none;"><img src="/images/loading-red.gif" /></div>
+            @*<table class="table table-striped table-hover ">
+            <tr class="info" style="text-align: right;">
+                <td>
+                    @*סה"כ משתמשים:
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td id="cart-total">
+                    @Model.UserWithSubscriptions.Count() (פעילים: @Model.UserWithSubscriptions.Count(x => x.Active.HasValue && x.Active.Value))
+                </td>
+            </tr>
+        </table>*@
+            <div class="col-md-1"><button class="btn btn-info btn-xs" type="button" id="btn_LoadMoreUsers" value="טען משתמשים נוספים" onclick="getUsersPage();">טען משתמשים נוספים <i class="glyphicon glyphicon-resize-vertical"></i></button></div>
+        </div>
+    </div>
+}
+else
+{
+    <div>
+        <p>
+            @if (ViewBag.showHeader != 0)
+            {
+                <text> לא נמצאו משתמשים במערכת, אנא הוסף משתמש חדש.</text>
+            }
+            else
+            {
+                <text> לא נמצאו משתמשים.</text>
+            }
+        </p>
+    </div>
+}
+
+@Html.Partial("_ConfirmDelete")
+
+@*@if (Model.PageNo > 0)
+    {
+        <script type="text/javascript">
+
+            $(document).ready(function () {
+                //$(window).scroll(function () {
+                //    if ($(window).scrollTop() ==
+                //        $(document).height() - $(window).height() && pageIndex > 0) {
+                //        GetData();
+                //    }
+                //});
+                $(".btn_LoadMoreUsers").click(function () {
+                    debugger;
+                    GetData();
+                }
+        });
+            </script>
+    }*@
+

@@ -1,0 +1,41 @@
+﻿@using InShapeModels
+@using Utilities
+@model GetWild.Models.ClassViewModel
+<div class="CalanderBox @(Model.IsUserEnrolled ? " Enroll" : "") @(Model.Date < DateTime.UtcNow.ToLocal() || Model.ClassTypeId == 999 ? " Disabled" : "")" data-id="@Model.Id" style="cursor:pointer; background-color: @Model.BGColor2;">
+    <div class="row nopadding">
+        <div class="col-md-12 col-xs-12">
+            <span class="h5 font-weight-bold">@Model.Time.Value.ToShortTimeString() - @Model.Time.Value.AddMinutes(@Model.Duration.Value).ToShortTimeString()</span>
+        </div>
+    </div>
+    <div class="row nopadding">
+        <div class="col-md-2 col-md-offset-2 col-xs-2 smallpadding">
+            @if (Model.CurrentCompany.UseInstructors)
+            {
+                foreach (var item in Model.Instructors)
+                {
+                    <img src="@item.ProfileIMGPath" class="cal-img" alt="@Model.ClassInstructors" />
+                }
+            }
+            <div>@Model.ClassInstructors</div>
+        </div>
+        <div class="col-md-8 col-xs-8">
+            @if (Model.IsUserEnrolled)
+            {
+                <span class="glyphicon glyphicon-ok"></span>
+            }
+            else if (Model.IsUserInWaitingList)
+            {
+                <span class="glyphicon glyphicon-time"></span>
+            }
+            <span class="font-weight-bold">@Model.Name</span>
+        </div>
+    </div>
+        <div class="row nopadding">
+            <span class="badge@(string.IsNullOrEmpty(Model.SelectedPlacement) ? " hidden" : "")">@Model.SelectedPlacement</span>
+            <div>@Html.Raw(Model.SpaceLeftHTML)</div>
+        </div>
+    
+       
+</div>
+
+

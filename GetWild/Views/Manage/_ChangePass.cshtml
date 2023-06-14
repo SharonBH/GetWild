@@ -1,0 +1,72 @@
+﻿@model GetWild.Models.ChangePasswordViewModel
+<div class="modal-dialog">
+    <div class="modal-content">
+        <form id="PassChangeForm">
+            @Html.AntiForgeryToken()
+            <div class="modal-header">
+                שנה סיסמא
+            </div>
+            <div class="modal-body">
+                <div class="row row-bottombuffer">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OldPassword, new { @class = "col-md-3 control-label" })
+                        <div class="col-md-8">
+                            @Html.PasswordFor(m => m.OldPassword, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-bottombuffer">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.NewPassword, new { @class = "col-md-3 control-label" })
+                        <div class="col-md-8">
+                            @Html.PasswordFor(m => m.NewPassword, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-3 control-label" })
+                        <div class="col-md-8">
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="form-group">
+                    <input id="btnChangePass" type="button" value="שמור" class="btn btn-primary" />
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">ביטול</button>
+                </div>
+                <div class="ErrorMSG"></div>
+                </div>
+        </form>
+        </div>
+    </div>
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+        }
+        <script type="text/javascript">
+            $(function () {
+                // Document.ready -> link up remove event handler
+                $("#btnChangePass").click(function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Manage/ChangePassword",
+                        data: $('#PassChangeForm').serialize(),
+                        datatype: "html",
+                        success: function (data) {
+                            var result = data.Response;
+                            if (result == 'Error') {
+                                $('.ErrorMSG').html(data.Message);
+                            } else {
+                                $('#IMGUploadModal').modal('hide');
+                                $('#ConfirmEnrollMSG').html('השינויים נשמרו בהצלחה.');
+                                $("#ConfirmEnrollModal").fadeTo(4000, 500).slideUp(500, function () {
+                                    $("#ConfirmEnrollModal").alert('close');
+                                });
+                            }
+                        }
+                    });
+                });
+            });
+        </script>

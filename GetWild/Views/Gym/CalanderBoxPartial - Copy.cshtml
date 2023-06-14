@@ -1,0 +1,60 @@
+﻿@using InShapeModels
+@using Utilities
+@model GetWild.Models.ClassViewModel
+<div class="CalanderBox @(Model.IsUserEnrolled ? " Enroll" : "") @(Model.Date < DateTime.UtcNow.ToLocal() || Model.ClassTypeId == 999 ? " Disabled" : "")" data-id="@Model.Id" style="cursor:pointer; background-color: @Model.BGColor2;">
+    <div class="row nopadding">
+        <div class="col-md-6 col-md-offset-3">
+            <span class="h5 font-weight-bold">@Model.Time.Value.ToShortTimeString() - @Model.Time.Value.AddMinutes(@Model.Duration.Value).ToShortTimeString()</span>
+        </div>
+    </div>
+    <div class="row nopadding">
+        <div class="col-md-4 col-xs-4 nopadding">
+            @if (Utilities.App.CurrentCompany.UseInstructors)
+            {
+                foreach (var item in Model.Instructors)
+                {
+                    <img src="@item.ProfileIMGPath" class="cal-img" alt="@Model.ClassInstructors" />
+                }
+            }
+
+        </div>
+        <div class="col-md-8 col-xs-8 nopadding">
+            @if (Model.IsUserEnrolled)
+            {
+                <span class="glyphicon glyphicon-ok"></span>
+            }
+            else if (Model.IsUserInWaitingList)
+            {
+                <span class="glyphicon glyphicon-time"></span>
+            }
+            <span class="">@Model.Name</span>  <span class="badge@(string.IsNullOrEmpty(Model.SelectedPlacement) ? " hidden" : "")">@Model.SelectedPlacement</span>
+            @*@if (Utilities.App.CurrentCompany.UseInstructors)
+                    {<text> - @Model.ClassInstructors </text>
+                }
+                    <br />
+
+                    <br />*@
+            @*<span style="font-size: x-small;" class="label label-warning">@Model.SpaceLeftMSG</span>*@
+
+
+            @*<span class="label label-primary">@Model.SpaceLeft <i class="glyphicon glyphicon-plus"></i></span>*@
+        </div>
+
+        @*<div class="col-md-2 col-xs-2">*@
+        @*@if (Model.ClassTypeId != 999 && Model.Gender != Gender.מעורב)
+            {
+                <img src="@Model.GetGenderImageURL" alt="@Model.Gender.ToString()" />}*@
+        @*@if (Model.ClassTypeId != 999 && Model.AgeGroup != AgeGroup.מבוגרים)
+            {
+                <img src="@Model.GetAgeGroupImageURL" alt="@Model.AgeGroup.ToString()" />}*@
+        @*@Html.Raw(Model.SpaceLeftHTML)
+            </div>*@
+    </div>
+    <div class="row row-topbuffer">
+        <div class="col-md-2 col-xs-2 nopadding"></div>
+            <div class="col-md-10 col-xs-10 nopadding">
+                @Html.Raw(Model.SpaceLeftHTML)
+            </div>
+        </div>
+    </div>
+

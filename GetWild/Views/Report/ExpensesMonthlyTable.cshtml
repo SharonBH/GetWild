@@ -1,0 +1,165 @@
+﻿@model InShapeModels.ExpensesReport
+<div class="panel panel-info">
+    <div class="panel-heading">
+        @*<div class="row">
+            <div style="text-align:left; width: 25%; float: right;">
+                <a class="btn btn-info glyphicon glyphicon-chevron-right CalanderChangeDate" data-date="@(Model.StartDate.Date.AddMonths(-1))"></a> 
+            </div>
+            <div style="text-align:center;width: 50%; float: right;"><h3 class="panel-title">דוח חודשי ממוצעים - @Model.StartDate.Date.ToString("Y")</h3></div>
+            <div style="text-align:right; width: 25%; float: right;">
+                <a class="btn btn-info glyphicon glyphicon-chevron-left CalanderChangeDate" data-date="@(Model.StartDate.Date.AddMonths(1))"></a>
+            </div>
+        </div>*@
+       
+        
+        
+        
+    </div>
+    <div class="panel-body">
+        <div id="update-message">
+        </div>
+        <table class="table table-striped table-hover ">
+            <thead>
+                <tr>
+                    <th style="text-align: right; width: 40px;">
+                    </th>                   
+                    <th style="text-align: right;">
+                        שם
+                    </th>
+                    <th style="text-align: right;">
+                        תאור
+                    </th>
+                    <th style="text-align: right;">
+                        סכום
+                    </th>
+                    <th style="text-align: right;">
+                        תאריך
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            @{ int i = 0; }
+            @foreach (var item in Model.ExpensesReportList)
+            {
+                i = i + 1;
+                var s = item.Amount > 0 ? "green" : "red";
+                
+                <tr class="clickable-row" data-id="@item.Id" style="cursor:pointer; border-bottom: @s solid 5px;;">
+                    <td><h3>@i</h3></td>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.Description
+                    </td>
+
+                    <td>
+                        @item.Amount.ToString("c")
+                    </td>
+                    <td>
+                        @item.Date.ToShortDateString()
+                    </td>
+                    <td>
+                        <a onclick="DataConfirmClicked(event, this);" data-confirm="" class="btn btn-xs btn-danger" data-href="/Expenses/DeleteConfirmed?id=@item.Id" data-toggle="modal" data-target="#confirm-delete" data-title="מחק הוצאה" data-message="האם אתה בטוח שברצונך למחוק ?"><i class="glyphicon glyphicon-trash"></i> מחק</a>
+                    </td>
+                </tr>
+            }
+            <tr class="info" style="text-align: right;">
+                <td colspan="2">
+                    סה"כ: @Model.ExpensesReportList.Count() שורות
+                </td>
+                <td></td>
+                <td>הכנסות: @Model.ExpensesReportList.Where(x => x.Amount > 0).Sum(x => x.Amount)</td>
+                <td>הוצאות: @Model.ExpensesReportList.Where(x => x.Amount < 0).Sum(x => x.Amount)</td>
+                <td id="cart-total">
+                    נטו: @Model.ExpensesReportList.Sum(x => x.Amount)
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+
+</div>
+@Html.Partial("_ConfirmDelete")
+<script>
+    $(function() {
+        var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+        $("#SearchFromDate").val('@Model.ReportDate.ToString("MM/yyyy")');
+        $(".CalanderChangeDate").click(function() {
+            var fromdate = $(this).data("date");
+            var todate = $(this).data("date");
+            $.ajax({
+                type: "POST",
+                url: "/Report/GetMonthlyTable",
+                data: { fromdate: fromdate, todate: todate },
+                datatype: "text",
+                beforeSend: function() {
+                    $('#ClassesTable').html(loaddingdiv);
+                },
+                success: function(data) {
+                    $('#ClassesTable').html(data);
+                }
+            });
+        });
+
+        $(".clickable-row").click(function () {
+            window.document.location = "/Expenses/Create?id=" + $(this).data("id");
+        });
+
+        $('.btn-Classes').click(function (ve) {
+            var title = $(this).data('name');
+            var footer = $(this).data('footer');
+            var id = $(this).data('id');
+            $('#myModal .modal-title').html('מאמן: ' + title);
+            //$('#myModal .modal-footer-inner').html('סה"כ מתאמנים רשומים: ' + footer);
+            $('#myModal .modal-body').html(loaddingdiv);
+            $('#myModal .modal-body').load('/StudioClass/GetClassByInstructor?id=' + id + '&month=' + $("#SearchFromDate").val(), function (response, status, xhr) {
+                if (status != "success") {
+                    $('#IMGUploadContainer').html('תקלה, אנא נסה מאוחר יותר' + response);
+                }
+            });
+            $('#myModal').modal('show', { backdrop: 'static' });
+            //$('#myModal').find('.btn-RemoveParticipants').data('wr', true);
+            ve.stopPropagation();
+        });
+
+        jQuery(document).ready(function($) {
+            $('[data-toggle="tooltip"]').tooltip();
+            var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+            $('.btn-process').click(function (ev) {
+                var userid = $(this).data('id');
+                var name = $(this).data('name');
+                var amount = $(this).data('amount');
+                var btn = $('#btn_UpdateReportUser');
+                btn.attr('data-userid', userid);
+                btn.attr('data-name', name);
+                btn.attr('data-amount', amount);
+                btn.attr('data-date', '@Model.ReportDate.ToShortDateString()');
+                $('#UserReportModal').find('.modal-title').text(name + ' (משכורת: ' + amount +' שח) ');
+                //var msg = $(this).attr('data-message');
+                //$('#dataConfirmModal').find('.modal-body').text(msg);
+                //var title = $(this).attr('data-title');
+                //$('#dataConfirmModal').find('.modal-header').text(title);
+
+                $('#UserReportModal').modal('show', { backdrop: 'static' });
+                ev.stopPropagation();
+            });
+
+        });
+
+        $('a[data-confirm]').click(function (ev) {
+            var href = $(this).data('href');
+            $('#dataConfirmModal').find('.btn-ok').attr('href', href);
+            var msg = $(this).attr('data-message');
+            $('#dataConfirmModal').find('.modal-body').text(msg);
+            var title = $(this).attr('data-title');
+            $('#dataConfirmModal').find('.modal-header').text(title);
+
+            $('#dataConfirmModal').modal({ show: true });
+            ev.stopPropagation();
+        });
+    });
+
+</script>
+

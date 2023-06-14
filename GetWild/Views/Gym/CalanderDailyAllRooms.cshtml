@@ -1,0 +1,127 @@
+﻿@using System.Globalization
+@using InShapeModels
+@using Utilities
+@model GetWild.Models.GymCalanderViewModel
+
+    <div class="panel-heading">
+        <div class="row">
+            <div style="text-align:left; width: 15%; float: right;">
+                @if (@Model.Date.Date > DateTime.UtcNow.ToLocal().Date)
+                {
+                    <a class="glyphicon glyphicon-chevron-right CalanderChangeDate" data-date="@Model.Date.AddDays(-1)"></a>
+                }
+            </div>
+            <div style="text-align:center;width: 70%; float: right;"><h3 class="panel-title">ל'וז יומי  לתאריך: @Model.Date.ToString("D")</h3></div>
+            <div style="text-align:right; width: 15%; float: right;">
+                <a class="glyphicon glyphicon-chevron-left CalanderChangeDate" data-date="@Model.Date.AddDays(1)"></a>
+            </div>
+        </div>
+    </div>
+<div class="panel-body">
+    @{
+        var now = Model.Date.Date; //DateTime.UtcNow.ToLocal();
+        var result = now.AddDays(-((now.DayOfWeek - System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.FirstDayOfWeek + 7) % 7)).Date;
+    }
+    
+    <div class="btn-group btn-group-justified hidden-xs hidden-sm">
+        @for (int i = 0; i < 7; i++)
+        {
+            <a href="#" data-date="@result.AddDays(i)"
+               class="btn btn-primary @(result.AddDays(i) < DateTime.UtcNow.ToLocal().Date ? "disabled" : result.AddDays(i) == @Model.Date.Date ? "btn-info disabled" : "") CalanderChangeDate">@CultureInfo.CurrentCulture.DateTimeFormat.DayNames[(int)result.AddDays(i).DayOfWeek]</a>
+        }
+    </div>
+    
+    <div class="btn-group btn-group-justified hidden-md hidden-lg">
+        @for (int i = 0; i < 7; i++)
+        {
+            <a href="#" data-date="@result.AddDays(i)"
+               class="btn btn-primary @(result.AddDays(i) < DateTime.UtcNow.ToLocal().Date ? "disabled" : result.AddDays(i) == @Model.Date.Date ? "btn-info disabled" : "") CalanderChangeDate">@((ShortDay)i)</a>
+        }
+    </div>
+
+
+
+                <table class="table CalanderTable">
+
+
+                    @*@if (Model.Classes.Exists(x => x.StudioRoomId == room.Id && x.TimeofDay == "Morning"))
+                        {*@
+
+                    @foreach (var Class in Model.Classes.OrderBy(x => x.Date))
+                    {
+                        <tr>
+                            <td>
+                                @Html.Partial("CalanderBoxPartialwithDetails", Class)
+                            </td>
+                        </tr>
+                    }
+                </table>
+    </div>
+
+
+
+<script>
+    jQuery(document).ready(function($) {
+        var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+        var classid = getUrlParameter('classid');
+        //var reloaded = @ViewBag.Reloaded;
+        if (isNaN(classid) === false && '@ViewBag.Reloaded' == 'False') {
+            $('#myModal .modal-body').html(loaddingdiv).load("/Gym/GetCalanderDetails?classId=" + classid, function(response, status, xhr) {
+                if (status != "success") {
+                    $('#myModal .modal-body').html('תקלה, אנא נסה מאוחר יותר' + response);
+                }
+            });
+            $('#myModal').modal('show', { backdrop: 'static' });
+        }
+
+        $(".CalanderChangeDate").click(function () {
+            var date = $(this).data("date");
+            $.ajax({
+                type: "POST",
+                url: "/Gym/GetCalander",
+                data: { date: date },
+                datatype: "text",
+                beforeSend: function () {
+                    $('#CalanderDailyPanel').html(loaddingdiv);
+                },
+                success: function (data) {
+                    $('#CalanderDailyPanel').html(data);
+                }
+            });
+        });
+            $("#CalanderClassBox").click(function () {
+                var id = $(this).data("id");
+                $('#myModal .modal-body').html(loaddingdiv).load("/Gym/GetCalanderDetails?classId=" + id, function (response, status, xhr) {
+                    if (status != "success") {
+                        $('#myModal .modal-body').html('תקלה, אנא נסה מאוחר יותר' + response);
+                    }
+                });
+                $('#myModal').modal('show', { backdrop: 'static' });
+            });
+
+            $(".CalanderBox").click(function () {
+                var id = $(this).data("id");
+                $('#myModal .modal-body').html(loaddingdiv).load("/Gym/GetCalanderDetails?classId=" + id, function (response, status, xhr) {
+                    if (status != "success") {
+                        $('#myModal .modal-body').html('תקלה, אנא נסה מאוחר יותר' + response);
+                    }
+                });
+                $('#myModal').modal('show', { backdrop: 'static' });
+            });
+    });
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? 'na' : sParameterName[1];
+            }
+        }
+        return sParameterName[1] === undefined ? 'na' : sParameterName[1];
+    };
+</script>

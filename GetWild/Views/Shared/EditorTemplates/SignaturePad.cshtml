@@ -1,0 +1,7 @@
+﻿@model byte[]
+
+<div class="signature-pad" id="signature-pad">
+    <canvas class="panel panel-default form-control" data-val="true" data-val-required="חתימה"></canvas>
+    <button type="button" class="btn btn-default btn-sm btn-clear-canvas">מחק</button>
+    @Html.HiddenFor(model => model, ViewData["htmlAttributes"])
+</div>

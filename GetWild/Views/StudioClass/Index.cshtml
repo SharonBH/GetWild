@@ -1,0 +1,51 @@
+﻿@model InShapeModels.ClassesList
+
+@{
+    ViewBag.Title = "אימונים";
+}
+
+<h2>ניהול הסטודיו - לו"ז אימונים</h2>
+
+<div class="row row-bottombuffer">
+    <div class="col-md-4">
+        @Html.ActionLink("הוסף אימון חדש", "Create", null, new { @class = "btn btn-info" })
+        @Html.ActionLink("הצג ממוצעים", "Index", new { weekno = ViewBag.WeekNo, inclAVG = true }, new { @class = "btn btn-info" })
+        <a data-confirm="" onclick="DataConfirmClicked(event, this);" class="btn btn-warning" data-weekno="@ViewBag.WeekNo" data-href="/studioclass/CopyCalander" data-toggle="modal" data-target="#confirm-delete" data-title="שכפל לו'ז שבועי" data-message="האם אתה בטוח שברצונך לשכפל את הלו'ז ?" data-action="DuplicateCal"><i class="glyphicon glyphicon-copy"></i> שכפל לו'ז</a>
+        @if (ViewBag.ShowPublishbtn ?? false)
+        {<a data-confirm="" onclick="DataConfirmClicked(event, this);" class="btn btn-warning" data-weekno="@ViewBag.WeekNo" data-href="/studioclass/PublishCalander" data-toggle="modal" data-target="#confirm-delete" data-title="פרסם לו'ז שבועי" data-message="האם אתה בטוח שברצונך לפרסם את הלו'ז ?" data-action="PublishCal"><i class="glyphicon glyphicon-pushpin"></i> פרסם לו'ז</a>
+        }
+        <a data-confirm="" onclick="DataConfirmClicked(event, this);" class="btn btn-warning" data-href="/studioclass/UpdateClassLinks" data-toggle="modal" data-target="#confirm-delete" data-title="עדכון לינקים לאימונים" data-message="האם אתה בטוח שאתה רוצה לעדכן לינקים לאימונים שאין להם ?" data-action="UpdateClassLinks"><i class="glyphicon glyphicon-send"></i> עדכן לינקים</a>
+    </div>
+    <div class="col-md-8">
+        <div class="input-group">
+            @Html.TextBox("DateSearch", null, new { @class = "form-control datepicker", @id = "SearchByDate" })
+            @*<span class="input-group-addon btn-rounded" style="background-color: #39B3D7; color: #fff;">
+                    <button type="button" value="חפש" class="glyphicon glyphicon-search"></button>
+                </span>*@
+            <div class="input-group-btn">
+                <button class="btn btn-primary" type="button" id="btn_searchClassByWeek" value="חפש"><i class="glyphicon glyphicon-search"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div style="text-align:left; width: 25%; float: right;">
+        <a class="btn btn-info glyphicon glyphicon-chevron-right StudioClassChangeDate" data-weekno="@(ViewBag.WeekNo - 1)"></a>
+    </div>
+    <div style="text-align:center;width: 50%; float: right;">@ViewBag.Header</div>
+    <div style="text-align:right; width: 25%; float: right;">
+        <a class="btn btn-info glyphicon glyphicon-chevron-left StudioClassChangeDate" data-weekno="@(ViewBag.WeekNo + 1)"></a>
+    </div>
+</div>
+<div id="ClassesTable" data-source="Index">
+    @Html.Partial("ClassesTablePartial", @Model)
+</div>
+@Html.Partial("_ConfirmDelete")
+@Html.Partial("BOEnrollToClassPartial-holder")
+@Html.Partial("_PopupPartial")
+@Html.Partial("_ConfirmEnroll")
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,325 @@
+﻿@model GetWild.Models.ClassViewModel
+@if (Model != null)
+{
+    if (Model.CurrentCompany.UsePlacements && Model.ClassAvailablePlacements.Any())
+    {
+        <div class="row smallpadding">
+            <div class="col-md-12 col-xs-12">
+                <h2>@Model.Name</h2>
+                @if (!Model.CurrentCompany.UseClassTypeDetails)
+                {<span style="white-space: pre-line">
+    @Model.Description</span>
+                }
+                <h4>שעת האימון: @Model.Time.Value.AddMinutes(@Model.Duration.Value).ToShortTimeString() - @Model.Time.Value.ToShortTimeString()</h4>
+                @if (Model.CurrentCompany.UseInstructors)
+                {
+                    <h4>מאמן: @Model.ClassInstructors</h4>
+                }
+                <p><span style="white-space: pre-line">
+    @Model.ClassTypeDescription @*@string.IsNullOrEmpty(Model.Description) ? @Model.ClassTypeDescription : @Model.Description*@
+</span></p>
+</div>
+        </div>
+        <div class="row smallpadding">
+            <div class="col-md-12 col-xs-12">
+                @*<img src="~/images/placements.png" alt="@Model.Name" />
+        <img src="@Model.Picture" alt="@Model.Name" />*@
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row smallpadding">
+            <div class="col-md-8 col-xs-8">
+                <h2>@Model.Name</h2>
+                @if (!Model.CurrentCompany.UseClassTypeDetails)
+                {<span style="white-space: pre-line">
+    @Model.Description
+</span>
+                }
+                <h4>שעת האימון: @Model.Time.Value.AddMinutes(@Model.Duration.Value).ToShortTimeString() - @Model.Time.Value.ToShortTimeString()</h4>
+                @if (Model.CurrentCompany.UseInstructors)
+                {
+                    <h4>מאמן: @Model.ClassInstructors</h4>
+                }
+                <p><span style="white-space: pre-line">@Model.ClassTypeDescription @*@string.IsNullOrEmpty(Model.Description) ? @Model.ClassTypeDescription : @Model.Description*@ </span></p>
+</div>
+            <div class="col-md-4 col-xs-4">
+                <img src="@Model.Picture" alt="@Model.Name" />
+            </div>
+        </div>
+    }
+        <div class="row smallpadding">
+            <div class="col-md-12">
+                @if (Model.IsUserEnrolled)
+                {
+                    if (Model.CanCancel)
+                    {
+                        <button id="btn_outrolltoClass" data-id="@Model.Id" data-islate="False" class="btn btn-default btn-danger btn-block">ביטול רישום | <span class="glyphicon glyphicon-chevron-left"></span></button>
+                        <div id="enroll-result"></div>
+                    }
+                    else
+                    {
+                        if (Model.CanLateCancel)
+                        {
+                            <button id="btn_outrolltoClass" data-id="@Model.Id" data-islate="True" class="btn btn-default btn-comment btn-block">ביטול מאוחר | <span class="glyphicon glyphicon-chevron-left"></span></button>
+                            <div id="enroll-result"  class="alert EnrollComment">* לידעתך - ביטול מאוחר ראשון גורר הרשמה מאוחרת לאימון הבא כ- 5 שעות בלבד לפני תחילת השיעור</div>
+                        }
+                        else
+                        {
+                            <button id="btn_outrolltoClass" data-id="@Model.Id" class="btn btn-default btn-danger btn-block disabled">ביטול רישום | <span class="glyphicon glyphicon-chevron-left"></span></button>
+                            <div id="enroll-result">ניתן לבטל אימון עד @Model.CurrentCompany.CancellationThresholdMins דקות לפני תחילת האימון</div>
+                        }
+                    }
+                }
+                else if (Model.IsUserInWaitingList)
+                {
+                    if (Model.CanEnrollFromWaitList)
+                    {
+                        if (Model.CurrentCompany.UsePlacements && Model.ClassAvailablePlacements.Any())
+                        {
+                            <div class="col-md-12">
+                                <div class="list-group">
+                                    @foreach (var item in Model.ClassAvailablePlacements)
+                                    {
+                                        <button class="btn_enrollplacmentFromWaitList list-group-item list-group-item-reg clearfix" style="background-color: @(item.BGColor);" data-key="@item.Id" data-classid="@Model.Id">
+                                            <span style="float: right;">@item.DisplyName</span>
+
+                                            <span class="glyphicon glyphicon-chevron-left list-group-item-icon"></span>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <button id="btn_enrolltoClassFromWaitList" data-id="@Model.Id" class="btn btn-default btn-reg btn-block">הרשמה | <span class="glyphicon glyphicon-chevron-left"></span></button>
+                        }
+                    }
+                    else
+                    {
+                        <button id="btn_CancelWaitingList" data-id="@Model.Id" class="btn btn-default btn-danger btn-block">ביטול המתנה | <span class="glyphicon glyphicon-chevron-left"></span></button>
+                    }
+                }
+                else
+                {
+                    if (Model.CanEnroll)
+                    {
+                        if (Model.CurrentCompany.UsePlacements && Model.ClassAvailablePlacements.Any())
+                        {
+                            <div class="col-md-12">
+                                <div class="list-group">
+                                    @foreach (var item in Model.ClassAvailablePlacements)
+                                    {
+                                        <button class="btn_enrollplacment list-group-item list-group-item-reg clearfix" style="background-color: @(item.BGColor);" data-key="@item.Id" data-classid="@Model.Id">
+                                            <span style="float: right;">@item.DisplyName</span>
+
+                                            <span class="glyphicon glyphicon-chevron-left list-group-item-icon"></span>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <button id="btn_enrolltoClass" data-id="@Model.Id" class="btn btn-default btn-reg btn-block">הרשמה | <span class="glyphicon glyphicon-chevron-left"></span></button>
+                            @*<a class="btn btn-default btn-reg btn-block disabled">הרשמה | <span class="glyphicon glyphicon-chevron-left"></span></a>*@
+                        }
+                    }
+                    else if (Model.CanJoinWaitingList)
+                    {
+                        if (Model.CurrentCompany.UsePlacements && Model.ClassAvailablePlacements.Any())
+                        {
+                            <div class="col-md-12">
+                                <div class="list-group">
+                                    @foreach (var item in Model.ClassAvailablePlacements.Where(x => x.StudioPlacementId == 999 || x.StudioPlacementId == 1003 || x.StudioPlacementId == 1007))
+                                    {
+                                        <button class="btn_enrollplacment list-group-item list-group-item-reg clearfix" style="background-color: @(item.BGColor);" data-key="@item.Id" data-classid="@Model.Id">
+                                            <span style="float: right;">@item.DisplyName</span>
+
+                                            <span class="glyphicon glyphicon-chevron-left list-group-item-icon"></span>
+                                        </button>
+                                    }
+                                </div>
+                                <button id="btn_joinWaitingList" data-id="@Model.Id" class="btn btn-info btn-block">רשימת המתנה | <span class="glyphicon glyphicon-chevron-left"></span></button>
+                            </div>
+                        }
+                        else
+                        {
+                            <button id="btn_joinWaitingList" data-id="@Model.Id" class="btn btn-info btn-block">רשימת המתנה | <span class="glyphicon glyphicon-chevron-left"></span></button>
+                        }
+                    }
+                    else
+                    {
+                        <button class="btn btn-default btn-reg btn-block disabled">הרשמה | <span class="glyphicon glyphicon-chevron-left"></span></button>
+                    }
+                }
+            </div>
+
+
+        </div>
+        <div class="row smallpadding row-topbuffer">
+            @*<div class="col-md-11 col-md-offset-1">*@
+            <div class="alert alert-danger" id="enroll-result">
+                @if (Model.IsFull)
+                {
+                    if (Model.CanEnrollFromWaitList)
+                    {
+                        <text>תורך ברשימת המתנה הגיע, יש לך כמה דקות להירשם לפני שיעבור לבא בתור</text>
+                    }
+                    else if (Model.CanJoinWaitingList)
+                    {
+                        <text>אין כרגע מקומות פנויים לאימון, באפשרותך להירשם לרשימת המתנה, הודעה תשלח אליך באם יתפנה מקום.</text>
+                    }
+                    else
+                    {
+                        <text>אין כרגע מקומות פנויים לאימון זה.</text>
+                    }
+                }
+                else
+                {
+                    if (!Model.CanEnroll)
+                    {
+                        @Model.CannotEnrollMSG
+                    }
+                    else
+                    {
+                        @Model.SpaceLeftMSG
+                    }
+                }
+
+            </div>
+        </div>
+        @*</div>*@
+        <script type="text/javascript">
+        $(function () {
+            // Document.ready -> link up remove event handler
+            $(".btn_enrollplacment").click(function () {
+                $(this).attr("disabled", true);
+                //$(this).prop("disabled", 'disabled');
+                //$(this).attr("value", 'רגע...רושם לאימון');
+                var id = $(this).data("classid");
+                var selectedplacement = $(this).data("key");
+                //debugger;
+                $.ajax({
+                    type: "POST",
+                    url: "/Gym/EnrollToClass",
+                    data: { classid: id, classAvailablePlacementId: selectedplacement },
+                    datatype: "text",
+                    success: function (data) {
+                        SetConfirmPopup(data, 'enroll');
+                    }
+                });
+            });
+
+            $(".btn_enrollplacmentFromWaitList").click(function () {
+                $(this).attr("disabled", true);
+                //$(this).attr("value", 'רגע...רושם לאימון');
+                var id = $(this).data("classid");
+                var selectedplacement = $(this).data("key");
+                //debugger;
+                $.ajax({
+                    type: "POST",
+                    url: "/Gym/EnrollToClassFromWaitList",
+                    data: { classid: id, classAvailablePlacementId: selectedplacement },
+                    datatype: "text",
+                    success: function (data) {
+                        SetConfirmPopup(data, 'enroll');
+                    }
+                });
+            });
+
+
+            $("#btn_enrolltoClass").click(function () {
+                $(this).attr("disabled", true);
+                //$(this).attr("value", 'רגע...רושם לאימון');
+                var id = $(this).data("id");
+                var selectedplacement = $('#classplacement').val();
+                $.ajax({
+                    type: "POST",
+                    url: "/Gym/EnrollToClass",
+                    data: { classid: id, classAvailablePlacementId: selectedplacement },
+                    datatype: "text",
+                    success: function (data) {
+                        SetConfirmPopup(data, 'enroll');
+                    }
+                });
+            });
+
+            $("#btn_enrolltoClassFromWaitList").click(function () {
+                $(this).attr("disabled", true);
+                //$(this).attr("value", 'רגע...רושם לאימון');
+                var id = $(this).data("id");
+                var selectedplacement = $('#classplacement').val();
+                $.ajax({
+                    type: "POST",
+                    url: "/Gym/EnrollToClassFromWaitList",
+                    data: { classid: id, classAvailablePlacementId: selectedplacement },
+                    datatype: "text",
+                    success: function (data) {
+                        SetConfirmPopup(data, 'enroll');
+                    }
+                });
+            });
+
+
+            // Document.ready -> link up remove event handler
+            $("#btn_outrolltoClass").click(function () {
+                $(this).attr("disabled", true);
+                //$(this).prop("disabled", 'disabled');
+                //$(this).attr("value", 'רגע...רושם לאימון');
+                var id = $(this).data("id");
+                var islate = $(this).data("islate");
+                var late = 'outroll';
+                if (islate != 'False') {
+                    late = 'late';
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "/Gym/OutrollFromClass",
+                    data: { classid: id, isLate: islate },
+                    datatype: "text",
+                    success: function (data) {
+                        SetConfirmPopup(data, late);
+                    }
+                });
+            });
+
+            $("#btn_joinWaitingList").click(function () {
+                $(this).attr("disabled", true);
+                var id = $(this).data("id");
+                $.ajax({
+                    type: "POST",
+                    url: "/Gym/JoinWaitingList",
+                    data: { classid: id },
+                    datatype: "text",
+                    success: function (data) {
+                        SetConfirmPopup(data, 'wait');
+                    }
+                });
+            });
+
+            $("#btn_CancelWaitingList").click(function () {
+                $(this).attr("disabled", true);
+                var id = $(this).data("id");
+                $.ajax({
+                    type: "POST",
+                    url: "/Gym/CancelWaitingLis",
+                    data: { classid: id },
+                    datatype: "text",
+                    success: function (data) {
+                        SetConfirmPopup(data, 'waitout');
+                    }
+                });
+            });
+        });
+        </script>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-8">
+                <h2>אימון לא נמצא</h2>
+            </div>
+        </div>
+    }

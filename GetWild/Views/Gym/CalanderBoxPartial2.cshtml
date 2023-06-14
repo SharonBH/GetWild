@@ -1,0 +1,42 @@
+﻿@using System.Globalization
+@using InShapeModels
+@using Utilities
+@model GetWild.Models.ClassViewModel
+<div class="Class0 CalanderBox @Model.CssClass @(Model.IsUserEnrolled ? " Enroll" : "") @(Model.Date < DateTime.UtcNow.ToLocal() || Model.ClassTypeId == 999 ? " Disabled" : "")" data-id="@Model.Id" style="cursor:pointer;">
+    <div class="row smallpadding">
+        <div class="col-md-1">יום
+            <span class="text-DayHeader"> @((ShortDay)@Model.Date.Value.DayOfWeek)</span>
+        </div>
+        <div class="col-md-9">
+            @if (@Model.IsUserEnrolled)
+            {
+                <span class="glyphicon glyphicon-ok"></span>
+            } @Model.Name
+            <br/>
+            @Model.Date.Value.ToShortDateString()
+            @Model.Time.Value.AddMinutes(@Model.Duration.Value).ToShortTimeString() - @Model.Time.Value.ToShortTimeString()
+        </div>
+        <div class="col-md-2">
+
+            @if (Model.ClassTypeId < 999)
+            {
+                switch (Model.Gender)
+                {
+                    case Gender.זכר:
+                        <img src="/images/Gender_male.png" alt="גבר"/>
+                        break;
+                    case Gender.מעורב:
+                        <img src="/images/Gender_both.png" alt="מעורב"/>
+                        break;
+                    default:
+                        <img src="/images/Gender_female.png" alt="אישה"/>
+                        break;
+                }
+            }
+        </div>
+    </div>
+    
+     
+
+</div>
+

@@ -1,0 +1,66 @@
+﻿@using InShapeModels
+@using Utilities
+@model AboutToExpireMessageModel
+
+@if (Model.AboutToExpireSubscriptionModels != null && Model.AboutToExpireSubscriptionModels.Any())
+{
+ 
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th style="text-align: right;">
+                            שם
+                        </th>
+                        <th style="text-align: right;">
+                            סוג
+                        </th>
+                        <th style="text-align: right;">
+                            תאריף תפוגה
+                        </th>
+                        <th style="text-align: right;">
+                            טלפון
+                        </th>
+                        @*<th></th>*@
+                    </tr>
+                </thead>
+                @{ int i = 0; }
+                @foreach (var item in Model.AboutToExpireSubscriptionModels)
+                {
+                    i = i + 1;
+                    <tr class="Manageclick-row" data-id="@item.UserId" style="cursor: pointer;">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullName)
+                        </td>
+                        <td>@item.SubscriptionType.Name</td>
+                        <td>
+                            @if (item.DateExpire != null)
+                            {
+                                @item.DateExpire.Value.ToShortDateString()
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                        </td>
+                        @*<td>
+                            <a data-confirm="" class="btn btn-xs btn-danger" data-href="/Account/DeleteConfirmed?UserId=@item.UserId" data-toggle="modal" data-target="#confirm-delete" data-title="מחק משתמש" data-message="האם אתה בטוח שברצונך למחוק ?"><i class="glyphicon glyphicon-trash"></i> מחק</a>
+                        </td>*@
+                    </tr>
+                }
+                <tr class="danger" style="text-align: right;">
+                    <td colspan="2">
+                        סה"כ משתמשים:
+                    </td>
+                    <td></td>
+                    @*<td></td>*@
+                    <td id="cart-total">
+                        @Model.AboutToExpireSubscriptionModels.Count()
+                    </td>
+                </tr>
+            </table>
+}
+else
+{
+    <div>
+    </div>
+}
+   

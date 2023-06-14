@@ -1,0 +1,156 @@
+﻿@model GetWild.Models.GymUserViewModel
+@{
+    ViewBag.Title = "מידע אישי";
+}
+<div class="row gym-row">
+    <div class="col-md-3 gymnav">
+        @{ Html.RenderAction("GetRightNav", "Gym");}
+    </div>
+    <div class="col-md-6 userinfo">
+        <div class="row">
+            <div class="col-md-12"><span class="userinfo-label">שם מלא: </span>@Model.User.FullMame</div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><span class="userinfo-label">תאריך הצטרפות: </span>@Model.User.JoinDate.ToShortDateString()</div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><span class="userinfo-label">תאריך לידה: </span>
+                @if (Model.User.DOB.HasValue)
+                {
+                    @Model.User.DOB.Value.ToShortDateString()
+                }
+                else
+                { <span>לא ידוע</span> }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><span class="userinfo-label">כתובת: </span>
+                @if (!string.IsNullOrEmpty(Model.User.Address))
+                {
+                    @Model.User.Address
+                }
+                else
+                { <span>לא ידוע</span> }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><span class="userinfo-label">אימייל: </span>@Model.User.Email</div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><span class="userinfo-label">טלפון נייד: </span>@Model.User.PhoneNumber</div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12"><span class="userinfo-label">תאריך מדידה אחרון: </span>@(Model.UserProfile.Date.HasValue ? Model.UserProfile.Date.Value.ToShortDateString(): "אין מדדים")</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><span class="userinfo-label">גובה: </span>@Model.UserProfile.Height</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><span class="userinfo-label">משקל: </span>@Model.UserProfile.Weight (@Model.UserFirstProfile.Weight)</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><span class="userinfo-label"> BMI (בי.אם.אי): </span>@Model.UserProfile.BMI (@Model.UserFirstProfile.BMI)</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><span class="userinfo-label">מסת שריר: </span>@Model.UserProfile.Mucsle (@Model.UserFirstProfile.Mucsle)</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><span class="userinfo-label">עד כה ירדת: </span>@Model.UserProfile.WeightChange</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <h3>אחוזי שומן</h3>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><span class="userinfo-label">כללי: </span>@Model.UserProfile.Fat (@Model.UserFirstProfile.Fat)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><span class="userinfo-label">בטן: </span>@Model.UserProfile.Fat_Belly (@Model.UserFirstProfile.Fat_Belly)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><span class="userinfo-label">יד שמאל: </span>@Model.UserProfile.Fat_HandL (@Model.UserFirstProfile.Fat_HandL)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><span class="userinfo-label">יד ימין: </span>@Model.UserProfile.Fat_HandR (@Model.UserFirstProfile.Fat_HandR)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><span class="userinfo-label">רגל שמאל: </span>@Model.UserProfile.Fat_LegL (@Model.UserFirstProfile.Fat_LegL)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><span class="userinfo-label">רגל ימין: </span>@Model.UserProfile.Fat_LegR (@Model.UserFirstProfile.Fat_LegR)
+                    </div>
+                </div>
+            </div>
+            <p>* המדדים הראשונים בסוגריים</p>
+        </div>
+        <hr />
+        <div class="row">
+            @{ Html.RenderAction("GetGraph", "Gym");}
+        </div>
+        <hr />
+        <div class="row">
+            @{ Html.RenderAction("GetTips", "Tip");}
+        </div>
+        </div>
+    <div class="col-md-3 col-img">
+        @if (string.IsNullOrEmpty(Model.User.ProfileIMG))
+        { 
+        <div class="row">
+            <div class="col-md-10 col-md-offset-2 text-center">
+                <a class="btn btn-default btn-primary btn_AddImg" data-id="profile">הוסיפי תמונה | <span class="glyphicon glyphicon-camera"></span></a>
+            </div>
+        </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-10 col-md-offset-2 text-center">
+                    <a class="btn btn-default btn-primary btn_AddImg" data-id="profile">החליפי תמונה | <span class="glyphicon glyphicon-camera"></span></a>
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-md-10 col-md-offset-2">
+                <img src="@Model.User.ProfileIMGPath?@DateTime.Now.ToString("yyyyMMddHHmm")" class="img-responsive col-img" />
+            </div>
+        </div>
+        @if ((Model.UserSubscription.ClassesDone >= 10))
+        {
+            <div class="row">
+                <div class="col-md-10 col-md-offset-2 text-center">
+                    <a class="btn btn-default btn-warning btn_AddImg" data-id="progress">הוסיפי תמונת התקדמות | <span class="glyphicon glyphicon-camera"></span></a>
+                </div>
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.UserProfile.Picture))
+        {
+            <div class="row">
+                <div class="col-md-10 col-md-offset-2">
+                    <img src="@Model.UserProfile.ProgressIMGPath?@DateTime.Now.ToString("yyyyMMddHHmm")" class="img-responsive col-img" />
+                </div>
+            </div>
+        }
+    </div>
+</div> 
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.btn_AddImg').click(function () {
+            var type = $(this).attr('data-id');
+            var url = "/gym/UploadProfileIMG?ImageType=" + type; // the url to the controller
+            //var id = $(this).attr('data-id'); // the id that's given to each button in the list
+            $.get(url, function (data) {
+                $('#IMGUploadContainer').html(data);
+                $('#IMGUploadModal').modal('show');
+            });
+        });
+    });
+</script>

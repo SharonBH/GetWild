@@ -1,0 +1,27 @@
+﻿<div id="UserReportModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="form-group">
+                        <div class="control-label col-md-2">הערה:</div>
+                        <div class="col-md-10">
+                            @Html.TextArea("UserNote", null, new { @class = "form-control", @id = "UserReportNote", style = "height: 100px;" })
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btn_UpdateReportUser" class="btn btn-primary">שמור</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">סגור</button>
+            </div>
+        </div>
+    </div>
+</div>

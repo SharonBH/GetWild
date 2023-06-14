@@ -1,0 +1,169 @@
+﻿@using System.Linq
+@using InShapeModels
+@using Utilities
+
+@model InShapeModels.WeeklyReportModel
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <div class="row">
+            <div style="text-align:left; width: 25%; float: right;">
+                <a class="btn btn-info glyphicon glyphicon-chevron-right WklyCalanderChangeDate" data-weekno="@(Model.WeekNo-1)"></a>
+            </div>
+            <div style="text-align:center;width: 50%; float: right;"><h3 class="panel-title">דוח שבועי מסכם</h3></div>
+            <div style="text-align:right; width: 25%; float: right;">
+                <a class="btn btn-info glyphicon glyphicon-chevron-left WklyCalanderChangeDate" data-weekno="@(Model.WeekNo+1)"></a>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th style="width: 6%;"></th>
+                    @foreach (var day in Model.WeeklyDates)
+                    {
+
+                        <th colspan="@Model.StudioRooms.Count" style="text-align: center;">
+                            @day.Date.ToString("dddd, dd/MM")
+                        </th>
+
+                    }
+                    <th colspan="@Model.StudioRooms.Count" style="text-align: center;">סה"כ</th>
+                </tr>
+                <tr style="font-size: small;">
+                    <th></th>
+                    @foreach (var day in Model.WeeklyDates)
+                    {
+                        foreach (var room in Model.StudioRooms)
+                        {
+
+                            <th>
+                                @room.Name
+                            </th>
+
+                        }
+                    }
+                    <th colspan="@Model.StudioRooms.Count" style="text-align: center;"></th>
+                </tr>
+            <tbody>
+                @foreach (var DailySlot in Model.DailySlots.Where(x => x.Id > 0))
+                {
+                    <tr style="font-size: smaller;">
+                        <td>@DailySlot.Name </td>
+                        @{int r = 0;}
+                        @foreach (var i in from day in Model.WeeklyDates
+                                          from room in Model.StudioRooms
+                                          select Model.WeeklyReportDetails.FirstOrDefault(x => x.Date.Date == day.Date && x.StudioRoomId == room.Id && x.Date.TimeOfDay >= DailySlot.StartTime && x.Date.TimeOfDay < DailySlot.EndTime))
+                        {
+                            if (i == null)
+                            {
+                                var date = Model.WeeklyDates[(r / Model.StudioRooms.Count) % Model.WeeklyDates.Count];
+                                <td>
+                                    @*<button class="btn btn-xs btn-info btn-AddClass" data-slotid="@DailySlot.Id" data-roomid="@Model.StudioRooms[r%Model.StudioRooms.Count].Id"><i class="glyphicon glyphicon-calendar"></i></button>*@
+                                    @*@Html.ActionLink("", "Create", "StudioClass", routeValues: new { WeeklyReport = true, DailySlot = @DailySlot.Id, RoomId = @Model.StudioRooms[r % Model.StudioRooms.Count].Id }, htmlAttributes: new { @class = "btn btn-info" })*@
+                                    @if (date.Date >= DateTime.UtcNow.ToLocal().Date && (User.IsInRole("admin") || User.IsInRole("Instructor")))
+                                    {
+                                        <a class="btn btn-xs btn-info" href="@Url.Action("Create", "StudioClass", routeValues: new {source = "WeeklyReport", DailySlot = @DailySlot.Id, RoomId = @Model.StudioRooms[r%Model.StudioRooms.Count].Id, Date = date.Date.ToString("dd/MM/yyyy")})"><i class="glyphicon glyphicon-calendar"></i></a>
+                                    }
+                                </td>
+                                r++;
+                            }
+                            else
+                            {
+                                //var c = Model.ClassTypes.FirstOrDefault(x => x.Id == i.ClassTypeId);
+                                <td class="clickable-row @Model.GetBGClass(i.Date.DayOfWeek)" data-id="@i.Id" style="cursor: pointer; background: @Model.GetBGInstructorClass(i.InstructorIds);">
+                                    @*@c.Name*@
+                                    @i.Name
+                                    @if (i.AllParticipants == 0)
+                                    {
+                                        <a data-confirm="" onclick="DataConfirmClicked(event, this);" class="btn btn-xs btn-danger" data-source="WeeklyReport" data-href="/StudioClass/DeleteConfirmed?id=@i.Id" data-toggle="modal" data-target="#confirm-delete" data-title="מחק אימון" data-message="האם אתה בטוח שברצונך למחוק ?"><i class="glyphicon glyphicon-trash"></i></a>
+                                    }<br />
+                                    <div class="btn-group">
+                                        @if (i.AllParticipants > 0)
+                                        {
+                                            if (Model.CurrentCompany.UsePlacements && i.UsePlacements)
+                                            {
+                                                <button type="button" class="btn btn-xs btn-info btn-Participantsplc" data-id="@i.Id" data-name="@i.Name (@i.Date.ToString("g"))" data-footer="@i.AllParticipants">@i.AllParticipants <i class="glyphicon glyphicon-th-list"></i></button>
+                                            }
+                                            else
+                                            { <button type="button" class="btn btn-xs btn-info btn-Participants" onclick="classParticipants($(this), event);" data-source="WeeklyReport" data-id="@i.Id" data-name="@i.Name (@i.Date.ToString("g"))" data-footer="@i.AllParticipants">@i.AllParticipants <i class="glyphicon glyphicon-th-list"></i></button>
+                                        }
+                                        if (Model.CurrentCompany.UseSMS)
+                                        {
+                                            <button type="button" class="btn btn-xs btn-primary btn-smsSend" onclick="smsSendParticipants($(this), event);" data-smstype="@SmsListType.ByClass" data-refid="@i.Id"><i class="glyphicon glyphicon-phone"></i></button>
+                                        }
+                                    }
+                                        @if (i.SpacesLeft > 0)
+                                        {
+                                            <button type="button" class="btn btn-xs btn-success btn-AddParticipants" data-id="@i.Id" data-name="@i.Name (@i.Date.ToString("g"))" data-footer="@i.SpacesLeft">@i.SpacesLeft <i class="glyphicon glyphicon-plus-sign"></i></button>
+                                        }
+                                        @if (Model.CurrentCompany.WaitingListEnabled && i.WaitingList > 0)
+                                        {
+                                            <button type="button" class="btn btn-xs btn-warning btn-Waitlist" data-id="@i.Id" data-name="@i.Name (@i.Date.ToString("g"))" data-footer="@i.WaitingList">@i.WaitingList <i class="glyphicon glyphicon-list"></i></button>
+                                        }
+                                    </div>
+                                </td>
+                                r++;
+                            }
+
+                        }
+                                <td colspan="@Model.StudioRooms.Count" style="text-align: center; border: solid 1px #666;">
+                                    @if (@DailySlot.Participants > 0 && (User.IsInRole("admin") || User.IsInRole("Instructor")))
+                                    {
+                                        @DailySlot.Participants <text>/</text> @DailySlot.DailyClasses
+                                        <text>(</text> @DailySlot.AVGParticipants.ToString("F2") <text>) </text>
+                                    }
+                                </td>
+                    </tr>
+                }
+            </tbody>
+            @if (User.IsInRole("admin") || User.IsInRole("Instructor"))
+            {
+                <tfoot>
+                    <tr>
+                        <td>סה"כ</td>
+                        @foreach (var day in Model.WeeklyDates)
+                        {
+                    <td colspan="@Model.StudioRooms.Count" style="text-align: center;">
+                        @day.TotalClasses
+                        @if (day.TotalParticipants > 0)
+                        {
+                            <a class="btn btn-xs btn-info btn-DailyParticipants" data-date="@day.Date" data-name="@day.Date.ToString("dddd, dd/MM")" data-footer="@day.TotalParticipants">@day.TotalParticipants (@day.MissedParticipants) <i class="glyphicon glyphicon-th-list"></i></a>
+                            <a class="btn btn-xs btn-warning btn-DailyTrails" data-date="@day.Date" data-name="@day.Date.ToString("dddd, dd/MM")" data-footer="@day.TrailParticipants">@day.TrailParticipants <i class="glyphicon glyphicon-th-list"></i></a>
+                            <a class="btn btn-xs btn-success btn-DailyActivated" data-date="@day.Date" data-name="@day.Date.ToString("dddd, dd/MM")" data-footer="@day.Activated">@day.Activated <i class="glyphicon glyphicon-th-list"></i></a>
+                            <a class="btn btn-xs btn-comment btn-DailyComments" data-date="@day.Date" data-name="@day.Date.ToString("dddd, dd/MM")" data-footer="">@day.Comments <i class="glyphicon glyphicon-comment"></i></a>
+                            if (Model.CurrentCompany.LateCancelation >= 0)
+                            {<a class="btn btn-xs btn-danger btn-lateCancel" data-date="@day.Date" data-name="@day.Date.ToString("dddd, dd/MM")" data-footer="">@day.LateCancel <i class="glyphicon glyphicon-th-list"></i></a>}
+                        if (Model.CurrentCompany.UseSMS)
+                        {<a class="btn btn-xs btn-primary btn-smsSendday" data-smstype="@SmsListType.ByDay" data-refdate="@day.Date"><i class="glyphicon glyphicon-phone"></i></a>}
+
+                    }
+                    </td>
+
+                        }
+                        <td style="text-align: center;">@Model.WeeklyDates.Sum(x => x.TotalParticipants) (@Model.WeeklyReportDetails.Count)</td>
+                    </tr>
+                </tfoot>
+            }
+        </table>
+    </div>
+    @if (Model.CurrentCompany.UseInstructors)
+    {
+        if (User.IsInRole("admin") || User.IsInRole("Instructor"))
+        {
+            <div class="row">
+                @foreach (var i in Model.Instructors.Where(x=>!x.IsDeleted))
+                {
+                    <div class="col-md-1 col-xs-1" style="background-color: #@i.ColorCode">@i.FullName (@Model.WeeklyReportDetails.Count(x => x.InstructorIds.Contains(i.InstructorId)))</div>
+                }
+            </div>
+        }
+    }
+    </div>
+<script>
+        if ('@ViewBag.ShowPublishbtn' == 'True') $('#linkPublishCalander').removeClass('hidden');
+    $(".btn-WeeklyTrails").data("weekno",@Model.WeekNo);
+</script>
+

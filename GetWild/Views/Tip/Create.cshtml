@@ -1,0 +1,51 @@
+﻿@model GetWild.Models.TipViewModel
+
+@{
+    ViewBag.Title = "ניהול סטודיו";
+}
+
+@if (@Model != null)
+{
+    <h2>ערוך @Utilities.App.DefaultCompany.TipsName</h2>
+}
+else
+{
+    <h2>הוסף @Utilities.App.DefaultCompany.TipsName חדש</h2>
+}
+
+<form action="" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.StudioId)
+        <div class="form-group">
+            <div class="control-label col-md-2">
+                @Utilities.App.DefaultCompany.TipsName
+                </div>
+                @*@Html.LabelFor(model => model.Tip, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Tip, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Tip, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @if (@Model != null)
+                { <input type="submit" value="שמור שינויים" class="btn btn-primary btn-block" />}
+                else
+                { <input type="submit" value="הוסף" class="btn btn-primary btn-block" />}
+            </div>
+        </div>
+    </div>
+    </form>
+
+    <div>
+        @Html.ActionLink("חזרה לניהול", "Index")
+    </div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }

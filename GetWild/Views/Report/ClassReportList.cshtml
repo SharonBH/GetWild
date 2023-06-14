@@ -1,0 +1,82 @@
+﻿@model IEnumerable<InShapeModels.StudioClassModel>
+           
+
+@if (Model.Any())
+{
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">רשימת האימונים</h3>
+        </div>
+        <div class="panel-body">
+            <div id="update-message">
+            </div>
+            <table class="table table-striped table-hover ">
+                <thead>
+                    <tr>
+                        <th style="text-align:right;">
+                            אימון
+                        </th>
+                        <th style="text-align:right;">תאריך</th>
+                        <th style="text-align:right;">מס' משתתפים</th>
+                        <th style="text-align:right;"></th>
+                    </tr>
+                </thead>
+                @foreach (var item in Model)
+                {
+                    <tr class="clickable-row" data-id="@item.Id" style="cursor:pointer;">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Participants)
+                        </td>
+                        <td>
+                            <a data-confirm="" onclick="DataConfirmClicked(event, this);" class="btn btn-xs btn-primary" data-href="/Report/ExportClass?classid=@item.Id" data-toggle="modal" data-target="#confirm-delete" data-title="יצוא לאקסל" data-message="האם אתה בטוח שברצונך לייצא את האימון שנבחר ?"><i class="glyphicon glyphicon-export"></i> יצא לאקסל</a>
+                        </td>
+                    </tr>
+                }
+                <tr class="info" style="text-align:right;">
+                    <td>
+                        סה"כ אימונים:
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td id="cart-total">
+                        @Model.Count()
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div>
+        <p>
+            לא נמצאו אימונים לחדר שנבחר, אנא בחר חדר אחר.
+        </p>
+    </div>
+}
+@Html.Partial("_ConfirmDelete")
+<script>
+        jQuery(document).ready(function ($) {
+            
+            $('a[data-confirm]').click(function(ev) {
+                var href = $(this).data('href');
+                var btn = $('#dataConfirmModal').find('.btn-ok');
+                btn.attr('href', href);
+                btn.attr('class', 'btn btn-primary btn-ok');
+                btn.html('יצא לאקסל <i class=\"glyphicon glyphicon-export\"></i>');
+                var msg = $(this).attr('data-message');
+                $('#dataConfirmModal').find('.modal-body').text(msg);
+                var title = $(this).attr('data-title');
+                $('#dataConfirmModal').find('.modal-header').text(title);
+
+                $('#dataConfirmModal').modal({ show: true });
+                ev.stopPropagation();
+            });
+        });
+</script>

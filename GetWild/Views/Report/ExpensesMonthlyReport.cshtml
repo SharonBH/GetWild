@@ -1,0 +1,102 @@
+﻿
+@{
+    ViewBag.Title = "דוחות";
+    <link rel="stylesheet" href="~/Content/calander.css" />
+}
+
+<h2>ניהול הסטודיו - דוחות</h2>
+<div class="row">
+    <div class="col-md-3">
+        @Html.ActionLink("הוסף שורה", "Create", "Expenses", null, new {@class = "btn btn-info"})
+    </div>
+    <div class="col-md-3 col-md-offset-3">
+        @Html.TextBox("DateSearchFrom", null, new {@class = "form-control datepicker", @id = "SearchFromDate"})
+    </div>
+</div>
+<div class="row-topbuffer">
+    <div class="" id="ClassesTable">
+        @{
+            Html.RenderAction("GetExpensesMonthlyTable", "Report", new {month = ViewBag.Date});
+        }
+    </div>
+</div>
+@Html.Partial("_ConfirmDelete")
+    <script>
+        jQuery(document).ready(function ($) {
+            var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+
+            $("#SearchFromDate").on('change', function () {
+                var fromdate = $(this).val();
+                $.ajax({
+                    type: "POST",
+                    url: "/Report/GetExpensesMonthlyTable",
+                    data: { month: fromdate },
+                    datatype: "text",
+                    beforeSend: function () {
+                        $('#ClassesTable').html(loaddingdiv);
+                    },
+                    success: function (data) {
+                        $('#ClassesTable').html(data);
+                    }
+                });
+            });
+
+
+            $(function () {
+                $.validator.addMethod('date',
+                    function (value, element) {
+                        if (this.optional(element)) {
+                            return true;
+                        }
+                        var ok = true;
+                        try {
+                            $.datepicker.parseDate('dd/mm/yy', value);
+                        } catch (err) {
+                            ok = false;
+                        }
+                        return ok;
+                    });
+                $('.datepicker').datepicker({
+                    dateFormat: "mm/yy",
+                    changeMonth: true,
+                    changeYear: true,
+                    showButtonPanel: true,
+                    monthNamesShort: ["ינואר", "פברואר", "מרץ", "אפריל",
+               "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר",
+               "אוקטובר", "נובמבר", "דצמבר"],
+                    onClose: function (dateText, inst) {
+
+
+                        function isDonePressed() {
+                            return ($('#ui-datepicker-div').html().indexOf('ui-datepicker-close ui-state-default ui-priority-primary ui-corner-all ui-state-hover') > -1);
+                        }
+
+                        if (isDonePressed()) {
+                            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                            $(this).datepicker('setDate', new Date(year, month, 1)).trigger('change');
+
+                            $('.datepicker').focusout();  //Added to remove focus from datepicker input box on selecting date
+                        }
+                    },
+                    beforeShow: function (input, inst) {
+
+                        inst.dpDiv.addClass('month_year_datepicker');
+
+                        if ((datestr = $(this).val()).length > 0) {
+                            year = datestr.substring(datestr.length - 4, datestr.length);
+                            month = datestr.substring(0, 2);
+                            $(this).datepicker('option', 'defaultDate', new Date(year, month - 1, 1));
+                            $(this).datepicker('setDate', new Date(year, month - 1, 1));
+                            $(".ui-datepicker-calendar").hide();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        <script type="text/javascript" src="~/scripts/jquery.popconfirm.js"></script>
+    }
+

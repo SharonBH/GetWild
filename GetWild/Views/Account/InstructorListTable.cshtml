@@ -1,0 +1,145 @@
+﻿@using InShapeModels
+@using Utilities
+@model List<InstructorDetailsModel>
+
+@if (Model.Any())
+{
+    <div class="panel panel-info">
+        <div class="panel-heading" style="height: 40px;">
+            <div class="col-md-10"><h3 class="panel-title">רשימת מאמנים</h3></div>
+            <div class="col-md-2">סה"כ: @Model.Count() </div>
+        </div>
+        <div class="panel-body">
+            <div id="update-message">
+            </div>
+            <table class="table table-striped table-hover ">
+                <thead>
+                    <tr>
+                        <th style="text-align: right; width: 40px;">
+                        </th>
+                        <th style="text-align: right;">
+                        </th>
+                        <th style="text-align: right;">
+                            שם
+                        </th>
+                        <th style="text-align: right;">
+                            צבע
+                        </th>
+                        @*<th style="text-align: right;">
+                            שכר לאימון
+                        </th>*@
+                        <th style="text-align: right;">
+                            נסיעות
+                        </th>
+                        <th style="text-align: right;">
+                            שכר החודש / אימונים
+                        </th>
+                        <th style="text-align: right;">
+                            תאריך הצטרפות
+                        </th>
+                        <th style="text-align: right;">
+                            טלפון
+                        </th>
+                        <th style="text-align: right;">
+                            אימון אחרון
+                        </th>
+                        <th style="text-align: right;">
+                            אימון הבא
+                        </th>
+                        <th style="text-align: right;"></th>
+                        <th style="text-align: right;"></th>
+                    </tr>
+                </thead>
+                @{ int i = 0; }
+                @foreach (var item in Model)
+                {
+                    i = i + 1;
+                <tr class="Instructorclick-row" data-id="@item.UserId" style="cursor: pointer;">
+                    <td><h3>@i</h3></td>
+                    <td>
+                        <img src="@item.ProfileIMGPath" class="img-responsive table-img" />
+                    </td>
+                    <td>
+                        @item.FullName
+                    </td>
+                    <td><span style="background-color: #@item.ColorCode">צבע</span></td>
+                    @*<td>
+                        @item.Rate
+                    </td>*@
+                    <td>
+                        @item.DailyRate (@item.Expenses)
+                    </td>
+                    <td>
+                        @item.CurrentEarnings (@item.CurrentNumClasses)
+                    </td>
+                    <td>
+                        @item.JoinDate.ToShortDateString()
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    <td>
+                        @if (item.LastClassDate != null)
+                        {
+                            @item.LastClassDate.Value.ToShortDateString()<br />
+                            <text>שעה: </text>
+                            @item.LastClassDate.Value.ToShortTimeString()<br />
+                            <text>סוג: </text>
+                            @item.LastClassType
+                        }
+                    </td>
+                    <td>
+                        @if (item.NextClassDate != null)
+                        {
+                            @item.NextClassDate.Value.ToShortDateString()<br />
+                            <text>שעה: </text>
+                            @item.NextClassDate.Value.ToShortTimeString()<br />
+                            <text>סוג: </text>
+                            @item.NextClassType
+                        }
+                    </td>
+
+                    <td>
+                        <a data-confirm="" onclick="DataConfirmClicked(event, this);" class="btn btn-xs btn-danger" data-href="/Account/DeleteInstructor?UserId=@item.UserId" data-toggle="modal" data-target="#confirm-delete" data-title="מחק מאמן" data-message="האם אתה בטוח שברצונך למחוק ?"><i class="glyphicon glyphicon-trash"></i> מחק</a>
+                    </td>
+                </tr>
+                }
+                <tr class="info" style="text-align: right;">
+                    <td colspan="2">
+                        סה"כ מאמנים:
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td id="cart-total">
+                        @Model.Count()
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div>
+        <p>
+            @if (ViewBag.showHeader != 0)
+            {
+                <text> לא נמצאו מאמנים במערכת, אנא הוסף מאמנים חדש.</text>
+            }
+            else
+            {
+                <text> לא נמצאו מאמנים.</text>
+            }
+        </p>
+    </div>
+}
+    
+@Html.Partial("_ConfirmDelete")

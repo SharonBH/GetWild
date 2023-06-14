@@ -1,0 +1,70 @@
+﻿@model GetWild.Models.SubscriberViewModel
+           <div id="ContactUsForm">
+    <form id="DetailsSubscription">
+        @Html.AntiForgeryToken()
+        <h4>לפרטים נוספים השאירו פרטים:</h4>
+        <div class="form-horizontal">
+            <hr />
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-8 col-md-offset-4">
+                    <input id="btn_subscribetoEmail" type="button" value="שלח טופס" class="btn btn-info btn-block" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div id="ThankyouContactUs" class="hidden" style="padding: 16px;">
+    <h3>תודה!</h3>
+    <p id="ThankyouContactUsMSG" class="text-info"></p>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        // Document.ready -> link up remove event handler
+        $("#btn_subscribetoEmail").click(function () {
+            var isValid = $('#DetailsSubscription').validate().form();
+            if (!isValid) return false;
+            $.ajax({
+                type: "POST",
+                url: "/home/AddContactUs",
+                data: $('#DetailsSubscription').serialize(),
+                datatype: "html",
+                success: function (data) {
+                    if ((data.Response) == 'Error') {
+                        $('#myModal .modal-title').html('אופס!');
+                        $('#myModal .modal-body').html(data.Message);
+                        $('#myModal').modal('show', { backdrop: 'static' });
+                    } else {
+                        $('#ThankyouContactUsMSG').html(data.Message);
+                        $('#ContactUsForm').toggle();
+                        $('#ThankyouContactUs').removeClass('hidden');
+                    }
+                    //$('#subsription-tab').load('/Account/ManageSubscriptions');
+                }
+            });
+        });
+    });
+</script>

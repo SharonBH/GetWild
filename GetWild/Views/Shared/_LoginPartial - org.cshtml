@@ -1,0 +1,29 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+    @Html.AntiForgeryToken()
+
+        <ul class="nav navbar-nav navbar-reg navbar-right">
+            @if (User.IsInRole("admin") || User.IsInRole("Instructor"))
+            {
+                @*<li>@Html.ActionLink("משתמש חדש", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>*@
+                @*<li>@Html.ActionLink("משתמשים", "GetUsersByRole", "Account", routeValues: new {roleId = "2"}, htmlAttributes: new {id = "UserListLink"})</li>*@
+                <li>@Html.ActionLink("משתמשים", "GetUsers", "Account", routeValues: null, htmlAttributes: new { id = "UserListLink" })</li>
+                <li>@Html.ActionLink("חדרי סטודיו", "Index", "Studio", routeValues: null, htmlAttributes: new {id = "StudioLink"})</li>
+                <li>@Html.ActionLink("סוגי אימון", "Index", "ClassType", routeValues: null, htmlAttributes: new {id = "ClassTypeLink"})</li>
+                <li>@Html.ActionLink("לו''ז אימונים", "Index", "StudioClass", routeValues: null, htmlAttributes: new {id = "StudioClassLink"})</li>
+                <li>@Html.ActionLink("טיפים", "Index", "Tip", routeValues: null, htmlAttributes: new {id = "TipLink"})</li>
+                <li>@Html.ActionLink("דוחות", "UserReport", "Report", routeValues: null, htmlAttributes: new { id = "ReportLink" })</li>
+            }
+            <li><a href="javascript:document.getElementById('logoutForm').submit()" class="btn-logout"><span class="glyphicon glyphicon-off"></span> יציאה</a></li>
+        </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-reg navbar-right">
+        @*<li><span class="glyphicon glyphicon-user"></span> @Html.ActionLink("כניסה למנויים", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @class="btn-info" })</li>*@
+        <li><a href="@Url.Action("Login", "Account")" class="btn-info"><span class="glyphicon glyphicon-user"></span> כניסה למנויים</a></li></ul>
+}

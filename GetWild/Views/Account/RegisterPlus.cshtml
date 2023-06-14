@@ -1,0 +1,199 @@
+﻿@using InShapeModels
+@model GetWild.Models.RegisterPlusViewModel
+@{
+    ViewBag.Title = "רישום";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("RegisterPlus", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <h4>טופס הצטרפות.</h4>
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.RegistrationDetails.Fname, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.RegistrationDetails.Fname, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.RegistrationDetails.Lname, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.RegistrationDetails.Lname, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.RegistrationDetails.mobile, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.RegistrationDetails.mobile, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.RegistrationDetails.Email, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.RegistrationDetails.Email, new { @class = "form-control", @autocomplete = "false" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.RegistrationDetails.Gender, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            <label class="radio-inline">@Html.RadioButtonFor(m => m.RegistrationDetails.Gender, Gender.נקבה)@Html.Label(Gender.נקבה.ToString())</label>
+            <label class="radio-inline">@Html.RadioButtonFor(m => m.RegistrationDetails.Gender, Gender.זכר)@Html.Label(Gender.זכר.ToString())</label>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.RegistrationDetails.Password, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.RegistrationDetails.Password, new { @class = "form-control", @autocomplete = "new-password" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.RegistrationDetails.ConfirmPassword, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.RegistrationDetails.ConfirmPassword, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.RegistrationDetails.DOB, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.RegistrationDetails.DOB, new { @class = "form-control", @placeholder = "DD/MM/YYYY" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.RegistrationDetails.AgeGroup, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            <label class="radio-inline">@Html.RadioButtonFor(m => m.RegistrationDetails.AgeGroup, AgeGroup.ילדים)@Html.Label(AgeGroup.ילדים.ToString())</label>
+            <label class="radio-inline">@Html.RadioButtonFor(m => m.RegistrationDetails.AgeGroup, AgeGroup.נוער)@Html.Label(AgeGroup.נוער.ToString())</label>
+            <label class="radio-inline">@Html.RadioButtonFor(m => m.RegistrationDetails.AgeGroup, AgeGroup.מבוגרים)@Html.Label(AgeGroup.מבוגרים.ToString())</label>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.RegistrationDetails.Address, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.RegistrationDetails.Address, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.RegistrationDetails.ReceiveSMS, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.CheckBoxFor(m => m.RegistrationDetails.ReceiveSMS, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.RegistrationDetails.Marked, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.CheckBoxFor(m => m.RegistrationDetails.Marked, new { @class = "form-control" })
+        </div>
+    </div>
+    @*<div class="form-group">
+            @Html.LabelFor(m => m.RegistrationDetails.UserType, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.RegistrationDetails.UserType, UserType.User)@Html.Label(UserType.User.ToFriendlyString())</label>
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.RegistrationDetails.UserType, UserType.FreeUser)@Html.Label(UserType.FreeUser.ToFriendlyString())</label>
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.RegistrationDetails.UserType, UserType.TrailUser)@Html.Label(UserType.TrailUser.ToFriendlyString())</label>
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.RegistrationDetails.UserType, UserType.DemoUser)@Html.Label(UserType.DemoUser.ToFriendlyString())</label>
+            </div>
+        </div>*@
+    <div class="form-group">
+        @Html.LabelFor(m => m.RegistrationDetails.UserType, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.EnumDropDownListFor(m => m.RegistrationDetails.UserType, new { @class = "form-control" })
+        </div>
+    </div>
+    <hr />
+    <h3>פרטי מנוי</h3>
+    <div class="form-group">
+        @Html.LabelFor(model => model.SubscriptionDetails.SubscriptionType.Name, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.SubscriptionDetails.SubscriptionTypeId, new SelectList(Model.SubscriptionDetails.SubscriptionTypesList, "Id", "Name"), new { @class = "form-control", @id = "subscriptionTypeList" })
+            @Html.ValidationMessageFor(model => model.SubscriptionDetails.SubscriptionTypeId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.SubscriptionDetails.NumClasses, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.SubscriptionDetails.NumClasses, new { @class = "form-control", @id = "NumofClassesId" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.SubscriptionDetails.DateExpire, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.SubscriptionDetails.DateExpire, new { @class = "form-control datepicker", @id = "DateExpireId", @placeholder = "יום/חודש/שנה" })
+        </div>
+    </div>
+    @*<div class="form-group">
+            @Html.LabelFor(m => m.SubscriptionDetails.AmountPaid, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.SubscriptionDetails.AmountPaid, new { @class = "form-control", @id = "AmountPaidId" })
+            </div>
+        </div>*@
+    if (Model.SendWelcomeSMS)
+    {
+        <div class="form-group">
+            @Html.LabelFor(m => m.SendWelcomeSMS, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(m => m.SendWelcomeSMS, new { @class = "form-control" })
+            </div>
+        </div>
+    }
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-primary btn-block" value="הרשם!" />
+        </div>
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script>
+    jQuery(function ($) {
+        $.validator.addMethod('date',
+        function (value, element) {
+            if (this.optional(element)) {
+                return true;
+            }
+
+            var ok = true;
+            try {
+                $.datepicker.parseDate('dd/mm/yy', value);
+            }
+            catch (err) {
+                ok = false;
+            }
+            return ok;
+        });
+    });
+    var SubscriptionList = @Html.Raw(Json.Encode(Model.SubscriptionDetails.SubscriptionTypesList));
+    $(function () {
+        $('#subscriptionTypeList').on('change', function () {
+            var id = $(this).val();
+            var sub = getByValue(SubscriptionList, id);
+            $('#NumofClassesId').val(sub.NumClasses);
+            $('#AmountPaidId').val(sub.Price);
+            if (sub.PeriodMonths > 0) {
+                //var CurrentDate = new Date();
+                //var month = CurrentDate.getMonth() + 1 + sub.PeriodMonths;
+                var CurrentDate = moment().add(sub.PeriodMonths, 'M');
+                //$('#DateExpireId').val(CurrentDate.date() + "/" + CurrentDate.month() + "/" + CurrentDate.year());
+                $('#DateExpireId').val(CurrentDate.format('DD/MM/YYYY'));
+            } else {
+                $('#DateExpireId').val(null);
+            }
+            //alert(sub);
+        });
+
+        function getByValue(arr, value) {
+
+            for (var i = 0, iLen = arr.length; i < iLen; i++) {
+
+                if (arr[i].Id == value) return arr[i];
+            }
+        }
+    });
+</script>
+

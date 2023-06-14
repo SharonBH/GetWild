@@ -1,0 +1,148 @@
+﻿@model GetWild.Models.SubscriptionViewModel
+@if (Model.Id > 0 && Model.Active)
+{
+    <div class="col-md-12">
+        <div class="form-group">
+            @Html.LabelFor(model => model.CurrentBalance, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10 control-label">
+                @Model.CurrentBalance
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.NumofClasses, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10 control-label">
+                @Model.NumofClasses
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.DateAdded, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10 control-label">
+                @Model.DateAdded.ToShortDateString()
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.DateExpire, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10 control-label">
+                @if (@Model.DateExpire.HasValue)
+                {
+                    @Model.DateExpire.Value.ToShortDateString()
+                }
+                else
+                {
+                    <span> אין תאריך תפוגה</span>
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.AmountPaid, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10 control-label">
+                @Model.AmountPaid
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-6 col-md-6 control-label">
+                <input id="btn_subscriptiondetails" type="button" class="btn btn-default" data-id="@Model.Id" value="פרטים" />
+                <input id="btn_subscriptionchange" type="button" class="btn btn-default" data-id="@Model.Id" data-userid="@Model.UserId" value="עדכון" />
+                @*<input id="btn_subscriptioncancel" type="button" class="btn btn-default  btn-danger" value="ביטול מנוי" />*@
+                <a id="btn_subscriptioncancel" class="btn btn-default btn-danger" data-href="/Account/DeleteSubscriptionConfirmed?id=@Model.Id" data-toggle="modal" data-target="#confirm-delete" data-title="ביטול מנוי" data-message="האם אתה בטוח שברצונך לבטל את המנוי ?"><i class="glyphicon glyphicon-trash"></i> ביטול מנוי</a>
+            </div>
+        </div>
+    </div>
+    @*<div class="col-md-6">
+        this is a test
+        @{ Html.RenderAction("GetSubsicriptionEdit", "Account", new { subscriptionId = Model.Id, userId = Model.UserId });}
+    </div>*@
+
+}
+else
+{
+    <h4>
+        למשתמש אין מנוי פעיל
+    </h4>
+    <p>באפשרותך להוסיף מנוי חדש על ידי מילוי הטופס</p>
+    <hr />
+    <form id="UserSubscription">
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.UserId)
+        <div class="form-group">
+            @Html.LabelFor(m => m.NumofClasses, new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.NumofClasses, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.DateExpire, new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.DateExpire, new { @class = "form-control datepicker", @placeholder = "יום/חודש/שנה" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.AmountPaid, new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(m => m.AmountPaid, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input id="btn_updatesubscription" type="button" class="btn btn-default" value="הוסף מנוי" />
+            </div>
+        </div>
+    </form>
+    @Html.Partial("_ConfirmDelete")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script type="text/javascript">
+    $(function() {
+        // Document.ready -> link up remove event handler
+        $("#btn_updatesubscription").click(function () {
+            var isValid = $('#UserSubscription').validate().form();
+            if (!isValid) return false;
+            $.ajax({
+                type: "POST",
+                url: "/Account/UpdateSubscription",
+                data: $('#UserSubscription').serialize(),
+                datatype: "html",
+                success: function (data) {
+                    if ((data.Response) == 'Error') {
+                        $('#myModal .modal-title').html('ניהול משתמשים');
+                        $('#myModal .modal-body').html(data.Message);
+                        $('#myModal').modal('show', { backdrop: 'static' });
+                    } else {
+                        $('#subsription-tab').html(data);
+                    }
+                    //$('#subsription-tab').load('/Account/ManageSubscriptions');
+                }
+            });
+        });
+    });
+    $("#btn_subscriptionchange").click(function () {
+        var id = $(this).data("id");
+        var userId = $(this).data("userid");
+        //debugger;
+        //$.ajax({
+        //    type: "Get",
+        //    url: "/Account/GetSubsicriptionEdit",
+        //    data: $(this).data("id"),
+        //    datatype: "html",
+        //    success: function(data) {
+        $('#myModal .modal-content').load("/Account/GetSubsicriptionEdit?subscriptionId=" + id + "&UserId=" + userId , function (response, status, xhr) {
+            if (status != "success") {
+                $('#myModal .modal-content').html('תקלה, אנא נסה מאוחר יותר');
+            }
+        });
+                $('#myModal').modal('show', { backdrop: 'static' });
+        //    }
+        //});
+    });
+    
+
+    $(function () {
+        $('.datepicker').datepicker({ dateFormat: 'dd/mm/yy' });
+    });
+</script>

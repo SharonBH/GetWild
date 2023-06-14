@@ -1,0 +1,279 @@
+﻿@using System.Linq
+@using InShapeModels
+@using Utilities
+
+@model InShapeModels.WeeklyReportModel
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <div class="row">
+            <div style="text-align:left; width: 25%; float: right;">
+                <a class="btn btn-info glyphicon glyphicon-chevron-right CalanderChangeDate" data-weekno="@(Model.WeekNo-1)"></a> 
+            </div>
+            <div style="text-align:center;width: 50%; float: right;"><h3 class="panel-title">דוח שבועי מסכם</h3></div>
+            <div style="text-align:right; width: 25%; float: right;">
+                <a class="btn btn-info glyphicon glyphicon-chevron-left CalanderChangeDate" data-weekno="@(Model.WeekNo+1)"></a>
+            </div>
+        </div>
+       
+        
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th style="width: 6%;"></th>
+                    @foreach (var day in Model.WeeklyDates)
+                    {
+
+                        <th style="text-align: center;">
+                            @day.Date.ToString("dddd, dd/MM")
+                        </th>
+
+                    }
+                    <th style="text-align: center;">סה"כ</th>
+                </tr>
+                <tr style="font-size: small;">
+                    <th></th>
+                    @*@foreach (var day in Model.WeeklyDates)
+                    {
+                        foreach (var room in Model.StudioRooms)
+                        {
+
+                            <th>
+                                @room.Name
+                            </th>
+
+                        }
+                    }*@
+                    <th colspan="7" style="text-align: center;"></th>
+                </tr>
+            <tbody>
+                @foreach (var DailySlot in Model.DailySlots.Where((x=>x.Id > 0)))
+                {
+                    <tr style="font-size: smaller;">
+                        <td>@DailySlot.Name </td>
+                        @{int r = 0;}
+                        @foreach (var i in from day in Model.WeeklyDates
+                                          select Model.WeeklyReportDetails.FirstOrDefault(x => x.Date.Date == day.Date && x.Date.Hour == DailySlot.StartTime.Hours)) /*x.DailySlotId == DailySlot.Id))*/
+                            {
+                            if (i == null)
+                            {
+                                var date = Model.WeeklyDates[r];
+                                    <td class="">
+                                    @*<button class="btn btn-xs btn-info btn-AddClass" data-slotid="@DailySlot.Id" data-roomid="@Model.StudioRooms[r%Model.StudioRooms.Count].Id"><i class="glyphicon glyphicon-calendar"></i></button>*@
+                                    @*@Html.ActionLink("", "Create", "StudioClass", routeValues: new { WeeklyReport = true, DailySlot = @DailySlot.Id, RoomId = @Model.StudioRooms[r % Model.StudioRooms.Count].Id }, htmlAttributes: new { @class = "btn btn-info" })*@
+                                    @if (date.Date >= DateTime.UtcNow.ToLocal().Date)
+                                    {
+                                        <a class="btn btn-xs btn-info" href="@Url.Action("Create", "StudioClass", routeValues: new {WeeklyReport = true, DailySlot = @DailySlot.Id, RoomId = @Model.StudioRooms[r%Model.StudioRooms.Count].Id, Date = date.Date.ToString("dd/MM/yyyy")})"><i class="glyphicon glyphicon-calendar"></i></a>
+                                    }
+                                </td>
+                                r++;
+                            }
+                            else
+                            {
+                                var c = Model.ClassTypes.FirstOrDefault(x => x.Id == i.ClassTypeId);
+                                <td class="clickable-class @Model.GetBGClass(i.Date.DayOfWeek)" data-id="@i.Id" style="cursor: pointer;">
+                                    @c.Name
+                                    @if (i.Date.Date >= DateTime.UtcNow.ToLocal().Date)
+                                    {
+                                        <a data-confirm="" onclick="DataConfirmClicked(event, this);" class="btn btn-xs btn-danger" data-href="/StudioClass/DeleteConfirmed?id=@i.Id&WeeklyReport=true" data-toggle="modal" data-target="#confirm-delete" data-title="מחק אימון" data-message="האם אתה בטוח שברצונך למחוק ?"><i class="glyphicon glyphicon-trash"></i></a>
+                                    }<br/>
+                                    <div class="btn-group">
+                                        @if (i.Participants > 0)
+                                        {
+                                            <button type="button" class="btn btn-xs btn-info btn-Participants" data-id="@i.Id" data-name="@i.Name (@i.Date.ToString("g"))" data-footer="@i.Participants">@i.Participants <i class="glyphicon glyphicon-th-list"></i></button>
+                                            if (Model.CurrentCompany.UseSMS)
+                                            {
+                                                <button type="button" class="btn btn-xs btn-primary btn-smsSend" data-smstype="@SmsListType.ByClass" data-refid="@i.Id"><i class="glyphicon glyphicon-phone"></i></button>
+                                            }
+                                        }
+                                        @if (i.SpacesLeft > 0)
+                                        {
+                                            <button type="button" class="btn btn-xs btn-success btn-AddParticipants" data-id="@i.Id" data-name="@i.Name (@i.Date.ToString("g"))" data-footer="@i.SpacesLeft">@i.SpacesLeft <i class="glyphicon glyphicon-plus-sign"></i></button>
+                                        }
+                                        @if (Model.CurrentCompany.WaitingListEnabled &&  (i.IsFull || i.WaitingList > 0))
+                                        {
+                                            <button type="button" class="btn btn-xs btn-warning btn-Waitlist" data-id="@i.Id" data-name="@i.Name (@i.Date.ToString("g"))" data-footer="@i.WaitingList">@i.WaitingList <i class="glyphicon glyphicon-list"></i></button>
+                                        }
+                                    </div>
+                                </td>
+                                r++;
+                            }
+
+                        }
+                        <td colspan="7" style="text-align: center;border: solid 1px #666;">
+                            @if (@DailySlot.Participants > 0)
+                            {
+                                @DailySlot.Participants <text>(</text>@DailySlot.AVGParticipants.ToString("F2")<text>)</text>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>סה"כ</td>
+                    @foreach (var day in Model.WeeklyDates)
+                    {
+
+                        <td style="text-align: center;">
+                            @{
+                                var dailyrails = @Model.WeeklyDates.FirstOrDefault(x => x.Date.Date == @day.Date.Date).TrailParticipants;
+                                var total = @Model.WeeklyReportDetails.Where(x => x.Date.Date == day.Date.Date).Sum(i => i.Participants);
+                                //var missed = @Model.WeeklyReportDetails.Where(x => x.Date.Date == day.Date).Sum(i => i.Enrollments.Count(e => !e.IsVerified));
+                            }
+                            <a class="btn btn-xs btn-info btn-DailyParticipants" data-date="@day.Date" data-name="@day.Date.ToString("dddd, dd/MM")" data-footer="@total">@total (@day.MissedParticipants) <i class="glyphicon glyphicon-th-list"></i></a>
+                            <a class="btn btn-xs btn-warning btn-DailyTrails" data-date="@day.Date" data-name="@day.Date.ToString("dddd, dd/MM")" data-footer="@dailyrails">@dailyrails <i class="glyphicon glyphicon-th-list"></i></a>
+                            @if (Model.CurrentCompany.UseSMS)
+                            {<a class="btn btn-xs btn-primary btn-smsSendday" data-smstype="@SmsListType.ByDay" data-refdate="@day.Date"><i class="glyphicon glyphicon-phone"></i></a>}
+                        </td>
+
+                                }
+                    <td style="text-align: center;">@Model.DailySlots.Sum(x => x.Participants)</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    $(function() {
+        var loaddingdiv = '<div style=\"margin:10% 48%"><img src=\"/images/loading-red.gif\" /></div>';
+        $('.btn-Participants').click(function(ve) {
+            var title = $(this).data('name');
+            var footer = $(this).data('footer');
+            var id = $(this).data('id');
+            $('#myModal .modal-title').html('רשומים לאימון: ' + title);
+            //$('#myModal .modal-footer-inner').html('סה"כ מתאמנים רשומים: ' + footer);
+            $('#myModal .modal-body').html(loaddingdiv);
+            $('#myModal .modal-body').load('/studioclass/GetClassEnrollment?id=' + id + '&weeklyreport=true', function(response, status, xhr) {
+                if (status != "success") {
+                    $('#IMGUploadContainer').html('תקלה, אנא נסה מאוחר יותר' + response);
+                }
+            });
+            $('#myModal').modal('show', { backdrop: 'static' });
+            //$('#myModal').find('.btn-RemoveParticipants').data('wr', true);
+            ve.stopPropagation();
+        });
+
+        $('.btn-Waitlist').click(function (ve) {
+            var title = $(this).data('name');
+            var footer = $(this).data('footer');
+            var id = $(this).data('id');
+            $('#myModal .modal-title').html('רשימת המתנה לאימון: ' + title);
+            //$('#myModal .modal-footer-inner').html('סה"כ מתאמנים רשומים: ' + footer);
+            $('#myModal .modal-body').load('/studioclass/GetClassWaitListEnrollment?id=' + id + "&WeeklyReport=true", function (response, status, xhr) {
+                if (status != "success") {
+                    $('#IMGUploadContainer').html('תקלה, אנא נסה מאוחר יותר' + response);
+                }
+            });
+            $('#myModal').modal('show', { backdrop: 'static' });
+            ve.stopPropagation();
+        });
+
+        $('.btn-DailyParticipants').click(function(ve) {
+            $('#myModal .modal-body').html(loaddingdiv);
+            var title = $(this).data('name');
+            var footer = $(this).data('footer');
+            var date = $(this).data('date');
+            $('#myModal .modal-title').html('רשומים לאימונים: ' + title);
+            $('#myModal .modal-footer-inner').html('סה"כ מתאמנים רשומים: ' + footer);
+            $.get('/studioclass/GetClassEnrollmentBydate?date=' + date.substring(0, 10), function(data) {
+                $('#myModal .modal-body').html(data);
+            });
+            // $('#myModal .modal-body').load('/studioclass/GetClassEnrollmentBydate?date=' + date);
+            //$('#myModal .modal-body').html('TEST 123');
+            $('#myModal').modal('show', { backdrop: 'static' });
+            ve.stopPropagation();
+        });
+
+        $('.btn-DailyTrails').click(function(ve) {
+            $('#myModal .modal-body').html(loaddingdiv);
+            var title = $(this).data('name');
+            var footer = $(this).data('footer');
+            var date = $(this).data('date');
+            $('#myModal .modal-title').html('רשומים לאימונים (פוטנציאל): ' + title);
+            $('#myModal .modal-footer-inner').html('סה"כ מתאמני פוטנציאל רשומים: ' + footer);
+            $.get('/studioclass/GetClassEnrollmentBydate?date=' + date.substring(0, 10) + '&userrole=5&removeEmptyClasses=true', function(data) {
+                $('#myModal .modal-body').html(data);
+            });
+            // $('#myModal .modal-body').load('/studioclass/GetClassEnrollmentBydate?date=' + date);
+            //$('#myModal .modal-body').html('TEST 123');
+            $('#myModal').modal('show', { backdrop: 'static' });
+            ve.stopPropagation();
+        });
+
+
+        $(".CalanderChangeDate").click(function() {
+            var weekno = $(this).data("weekno");
+            $.ajax({
+                type: "POST",
+                url: "/Report/GetWeeklyTable",
+                data: { weekno: weekno },
+                datatype: "text",
+                beforeSend: function() {
+                    $('#ClassesTable').html(loaddingdiv);
+                },
+                success: function(data) {
+                    $('#ClassesTable').html(data);
+                }
+            });
+        });
+
+        $(".btn-smsSend").click(function(ev) {
+            window.document.location = "/Sms/SmsSender?smsType=" + $(this).data("smstype") + "&refid=" + $(this).data("refid");
+            ev.stopPropagation();
+        });
+        $(".btn-smsSendday").click(function(ev) {
+            window.document.location = "/Sms/SmsSender?smsType=" + $(this).data("smstype") + "&refid=0&date=" + $(this).data("refdate").substring(0, 10);
+            ev.stopPropagation();
+        });
+
+        $(".clickable-class").click(function() {
+            window.document.location = "/studioclass/Create?id=" + $(this).data("id") + "&WeeklyReport=true";
+        });
+
+        $('.btn-AddParticipants').click(function(ve) {
+            var title = $(this).data('name');
+            var id = $(this).data('id');
+            $('#BoClassEnrollModal .modal-title').html('רישום לאימון: ' + title);
+            $('#BoClassEnrollModal').find('.btn-reg').data('id', id);
+            $('#BoClassEnrollModal').find('.btn-reg').data('wr', true);
+            $('#BoClassEnrollModal').modal('show', { backdrop: 'static' });
+            ve.stopPropagation();
+        });
+
+        $('a[data-confirm]').click(function(ev) {
+            var href = $(this).data('href');
+            $('#dataConfirmModal').find('.btn-ok').attr('href', href);
+            var msg = $(this).attr('data-message');
+            $('#dataConfirmModal').find('.modal-body').text(msg);
+            var title = $(this).attr('data-title');
+            $('#dataConfirmModal').find('.modal-header').text(title);
+
+            $('#dataConfirmModal').modal({ show: true });
+            ev.stopPropagation();
+        });
+
+
+        $('.btn-WeeklyTrails').click(function(ve) {
+            $('#myModal .modal-body').html(loaddingdiv);
+            //var title = $(this).data('name');
+            //var footer = $(this).data('footer');
+            var week = @Model.WeekNo;
+            $('#myModal .modal-title').html('רשומים לאימונים (פוטנציאל)');
+            //$('#myModal .modal-title').html('רשומים לאימונים (פוטנציאל): ' + title);
+            //$('#myModal .modal-footer-inner').html('סה"כ מתאמני פוטנציאל רשומים: ' + footer);
+            $.get('/studioclass/GetClassEnrollmentByWeek?weekno=' + week + '&userrole=5&removeEmptyClasses=true', function(data) {
+                $('#myModal .modal-body').html(data);
+            });
+            // $('#myModal .modal-body').load('/studioclass/GetClassEnrollmentBydate?date=' + date);
+            //$('#myModal .modal-body').html('TEST 123');
+            $('#myModal').modal('show', { backdrop: 'static' });
+            ve.stopPropagation();
+        });
+    });
+
+</script>
+

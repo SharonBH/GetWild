@@ -1,0 +1,541 @@
+﻿@using InShapeModels
+@model GetWild.Models.ClassViewModel
+<link rel="stylesheet" href="~/Content/bootstrap-multiselect.css" />
+<link rel="stylesheet" href="~/Content/MultiSelect.css" />
+@{
+    ViewBag.Title = "ניהול סטודיו";
+}
+
+@if (@Model.Id > 0)
+{
+    <h2>ערוך אימון - מיקום</h2>
+}
+else
+{
+    <h2>הוסף אימון חדש - מיקום</h2>
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Participants)
+    @Html.HiddenFor(model => model.SourcePage)
+    @Html.HiddenFor(model => model.ShortURL)
+    @Html.HiddenFor(model => model.WaitingList)
+    @Html.HiddenFor(model => model.IsFull)
+    if (Model.CurrentCompany.AutoPublish)
+    {
+        @Html.HiddenFor(model => model.Published)
+    }
+        @Html.HiddenFor(model => model.MaxExtraParticipants)
+        @Html.HiddenFor(model => model.ExtraParticipants)
+        <div class="form-horizontal">
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ClassTypeId, new { @class = "control-label col-md-3" })
+                        <div class="col-md-9">
+                            @Html.DropDownListFor(m => m.ClassTypeId, new SelectList(Model.ClassTypes, "Id", "Name"), "בחר סוג אימון", new { @class = "form-control", @id = "classtypeddl" })
+                            @Html.ValidationMessageFor(model => model.ClassTypeId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                @if (!Model.CurrentCompany.UseClassNamefromType)
+                {
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-3" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @id = "txtClassName" } })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    @Html.HiddenFor(model => model.Name, new { @id = "txtClassName" })
+                }
+            </div>
+            @if (Model.CurrentCompany.UseClassTypeDetails)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ClassTypeDetailsId, new { @class = "control-label col-md-3" })
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(m => m.ClassTypeDetailsId, new SelectList(Model.ClassTypesDetails, "Id", "Name"), new { @class = "form-control", @id = "classtypedetailsddl" })
+                        @*@Html.ValidationMessageFor(model => model.ClassTypeDetailsId, "", new {@class = "text-danger"})*@
+                    </div>
+                </div>
+            }
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Date, new { @class = "control-label col-md-3" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "יום/חודש/שנה" } })
+                            @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DailySlotId, new { @class = "control-label col-md-3" })
+                        <div class="col-md-6">
+                            @Html.DropDownListFor(m => m.DailySlotId, new SelectList(Model.TimeSlots, "Id", "Name"), "בחר שעה", new { @class = "form-control", @id = "dailyslotddl" })
+                            @Html.ValidationMessageFor(model => model.DailySlotId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group hidden othertime">
+                        @Html.LabelFor(model => model.Time, new { @class = "control-label col-md-3" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.Time, new { htmlAttributes = new { @class = "form-control timepicker ipothertime" } })
+                            @Html.ValidationMessageFor(model => model.Time, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group hidden othertime">
+                        @Html.LabelFor(model => model.Duration, new { @class = "control-label col-md-3" })
+                        <div class="col-md-4">
+                            @Html.EditorFor(model => model.Duration, new { htmlAttributes = new { @class = "form-control ipothertime", @placeholder = "זמן האימון (בדקות)" } })
+                            @Html.ValidationMessageFor(model => model.Duration, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                @if (Model.CurrentCompany.UseInstructors)
+                {
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.InstructorIds, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                @Html.DropDownListFor(m => m.InstructorIds, new SelectList(Model.Instructors, "InstructorId", "FullName"), new { @class = "listbox", @id = "instructorMulti", @multiple = "multiple" })
+                                @Html.ValidationMessageFor(model => model.InstructorIds, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="col-md-3">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.AgeGroup, new { @class = "col-md-3 control-label" })
+                        <div class="col-md-9">
+                            <label class="radio-inline">@Html.RadioButtonFor(m => m.AgeGroup, AgeGroup.ילדים)@Html.Label(AgeGroup.ילדים.ToString())</label>
+                            <label class="radio-inline">@Html.RadioButtonFor(m => m.AgeGroup, AgeGroup.נוער)@Html.Label(AgeGroup.נוער.ToString())</label>
+                            <label class="radio-inline">@Html.RadioButtonFor(m => m.AgeGroup, AgeGroup.מבוגרים)@Html.Label(AgeGroup.מבוגרים.ToString())</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.StudioRoomId, new { @class = "control-label col-md-3" })
+                        <div class="col-md-9">
+                            @Html.DropDownListFor(m => m.StudioRoomId, new SelectList(Model.StudioRooms, "Id", "Name"), "בחר " + @Model.CurrentCompany.StudioRoomName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.StudioRoomId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                @*@if (Utilities.App.CurrentCompany.UseInstructors)
+                    { }*@
+                <div class="col-md-3">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.IsMultiRoom, new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            @Html.CheckBoxFor(m => m.IsMultiRoom, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Gender, new { @class = "control-label col-md-3" })
+                        <div class="col-md-9">
+                            <label class="radio-inline">@Html.RadioButtonFor(model => model.Gender, Gender.נקבה)@Html.Label(Gender.נקבה.ToString())</label>
+                            <label class="radio-inline">@Html.RadioButtonFor(model => model.Gender, Gender.זכר)@Html.Label(Gender.זכר.ToString())</label>
+                            <label class="radio-inline">@Html.RadioButtonFor(model => model.Gender, Gender.מעורב)@Html.Label(Gender.מעורב.ToString())</label>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.MinAge, new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.MinAge, new { htmlAttributes = new { @class = "form-control", @id = "MinAgetxt" } })
+                                @Html.ValidationMessageFor(model => model.MinAge, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>*@
+
+            </div>
+
+            <div class="row">
+
+                @if (Model.CurrentCompany.UsePlacements)
+                {
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.PlacementIds, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                <div class="checkbox">
+                                    @*<label><input id="cbUsePlacements" type="checkbox" value="" @(Model.AutoShowPlacements ? "checked" : "")>אימון עם מיקום?</label>*@
+                                    @Html.CheckBoxFor(m => m.UsePlacements, new { @class = "form-control", @id = "cbUsePlacements" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.UseKangoo, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                <div class="checkbox">
+                                    @*<label><input id="cbUsePlacements" type="checkbox" value="" @(Model.AutoShowPlacements ? "checked" : "")>אימון עם מיקום?</label>*@
+                                    @Html.CheckBoxFor(m => m.UseKangoo, new { @class = "form-control", @id = "cbUseKangoo" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.UseNumbers, new { @class = "control-label col-md-3" })
+                            <div class="col-md-9">
+                                <div class="checkbox">
+                                    @*<label><input id="cbUsePlacements" type="checkbox" value="" @(Model.AutoShowPlacements ? "checked" : "")>אימון עם מיקום?</label>*@
+                                    @Html.CheckBoxFor(m => m.UseNumbers, new { @class = "form-control", @id = "cbUseNumbers" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.MaxParticipants, new { @class = "control-label col-md-3" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.MaxParticipants, new { htmlAttributes = new { @class = "form-control", @id = "MaxParticipantstxt" } })
+                            @Html.ValidationMessageFor(model => model.MaxParticipants, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="placementsHolder" class="@(Model.AutoShowPlacements ? "" : "hidden")">
+                @Html.EditorFor(model => model.ClassAvailablePlacements, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+            <div id="kangooplacementsHolder" class="@(Model.AutoShowKangooPlacements ? "" : "hidden")">
+                @Html.EditorFor(model => model.KangooClassAvailablePlacements, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+            <div id="NumbersplacementsHolder" class="@(Model.AutoShowNumbersPlacements ? "" : "hidden")">
+                @Html.EditorFor(model => model.NumbersClassAvailablePlacements, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+
+                    @if (!Model.CurrentCompany.AutoPublish)
+                    {
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @*@Html.LabelFor(m => m.Published, new { @class = "col-md-2 control-label" })*@
+                                <div class="col-md-2"><label class="control-label">לפרסם?</label></div>
+                                <div class="col-md-4">
+                                    @Html.CheckBoxFor(m => m.Published, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (@Model.Id > 0)
+                    {<input type="submit" id="btn_addclass" value="שמור שינויים" class="btn btn-primary btn-block" />}
+                    else
+                    { <input type="submit" id="btn_addclass" value="הוסף" class="btn btn-primary btn-block" />}
+                </div>
+            </div>
+        </div>
+    }
+    <div>
+        @(Model.SourcePage == "WeeklySummaryReport" ? Html.ActionLink("חזרה לניהול", "WeeklySummaryReport", "Report") : Html.ActionLink("חזרה לניהול", "Index"))
+    </div>
+    <script type="text/javascript">
+    //$(function () { // will trigger when the document is ready
+    //    $('.timepicker').datetimepicker({
+    //        format: 'LT',
+    //        locale: 'he'
+    //    }); //Initialise any date pickers
+    //});
+    jQuery(document).ready(function($) {
+        //$('.timepicker').timepicker({
+        //    stepMinute: 5,
+        //    timeOnlyTitle: 'שעת תחילת האימון',
+        //    timeText: '',
+        //    hourText: 'שעה',
+        //    minuteText: 'דקות',
+        //    currentText: 'עכשיו',
+        //    closeText: 'סגור',
+        //    isRTL: 'true'
+        //});
+        var otime = @Model.DailySlotId == -1 || @Model.DailySlotId == 1004 || @Model.DailySlotId == 1024;
+        if (otime) {
+            $('.othertime').removeClass("hidden");
+        }
+
+        var cid = @(Model.Id ?? 0);
+        if (cid > 0) {
+            $('#cbUsePlacements').attr("readOnly", true);
+            $('#cbUseKangoo').attr("readOnly", true);
+            $('#cbUseNumbers').attr("readOnly", true);
+        }
+
+        if ($('#cbUsePlacements').prop('checked')) {
+            $('#placementsHolder').removeClass("hidden");
+            //$('#MaxParticipantstxt').val(22);
+            $('#MaxParticipantstxt').prop('readonly', true);
+        }
+
+        if ($('#cbUseKangoo').prop('checked')) {
+            $('#kangooplacementsHolder').removeClass("hidden");
+            //$('#MaxParticipantstxt').val(22);
+            $('#MaxParticipantstxt').prop('readonly', true);
+        }
+
+        if ($('#cbUseNumbers').prop('checked')) {
+            $('#NumbersplacementsHolder').removeClass("hidden");
+            //$('#MaxParticipantstxt').val(22);
+            $('#MaxParticipantstxt').prop('readonly', true);
+        }
+
+        $("#classtypeddl").change(function () {
+            $("#txtClassName").val($(this).find("option:selected").text());
+            $.getJSON('/ClassTypeDetails/GetClassTypesDetailsByType?typeid='+$(this).val(), function(result) {
+                var ddl = $('#classtypedetailsddl');
+                ddl.empty();
+                $(result).each(function() {
+                    $(document.createElement('option'))
+                        .attr('value', this.Id)
+                        .text(this.Name)
+                        .appendTo(ddl);
+                });
+            });
+            //$("#classtypedetailsddl")
+        });
+
+        $('#cbUsePlacements').change(function () {
+            //debugger;
+            if ($(this).prop('checked')) {
+                $('#placementsHolder').removeClass("hidden");
+                var setMaxParticipants = @Model.Id.HasValue.ToString().ToLower();
+                if (setMaxParticipants == false) {
+                    $('#MaxParticipantstxt').val(@Model.ClassAvailablePlacements.Count(p=>p.StudioPlacementId != 999 && p.StudioPlacementId != 1003 && p.StudioPlacementId != 1007));
+                }
+                $('#MaxParticipantstxt').prop('readonly', true);
+                $('#cbUseKangoo').prop('readonly', true);
+                $('#cbUseNumbers').prop('readonly', true);
+            }
+            else {
+                $('#placementsHolder').addClass("hidden");
+                $('#MaxParticipantstxt').prop('readonly', false);
+                $('#cbUseKangoo').prop('readonly', false);
+                $('#cbUseNumbers').prop('readonly', false);
+            }
+        });
+
+        $('#cbUseKangoo').change(function () {
+            //debugger;
+            if ($(this).prop('checked')) {
+                $('#kangooplacementsHolder').removeClass("hidden");
+                var setMaxParticipants = @Model.Id.HasValue.ToString().ToLower();
+                if (setMaxParticipants == false) {
+                    $('#MaxParticipantstxt').val(@Model.KangooClassAvailablePlacements.Count());
+                }
+                $('#MaxParticipantstxt').prop('readonly', true);
+                $('#cbUsePlacements').prop('readonly', true);
+                $('#cbUseNumbers').prop('readonly', true);
+            }
+            else {
+                $('#kangooplacementsHolder').addClass("hidden");
+                $('#MaxParticipantstxt').prop('readonly', false);
+                $('#cbUsePlacements').prop('readonly', false);
+                $('#cbUseNumbers').prop('readonly', false);
+            }
+        });
+
+        $('#cbUseNumbers').change(function () {
+            //debugger;
+            if ($(this).prop('checked')) {
+                $('#NumbersplacementsHolder').removeClass("hidden");
+                var setMaxParticipants = @Model.Id.HasValue.ToString().ToLower();
+                if (setMaxParticipants == false) {
+                    $('#MaxParticipantstxt').val(@Model.NumbersClassAvailablePlacements.Count());
+                }
+                $('#MaxParticipantstxt').prop('readonly', true);
+                $('#cbUsePlacements').prop('readonly', true);
+                $('#cbUseKangoo').prop('readonly', true);
+            }
+            else {
+                $('#NumbersplacementsHolder').addClass("hidden");
+                $('#MaxParticipantstxt').prop('readonly', false);
+                $('#cbUsePlacements').prop('readonly', false);
+                $('#cbUseKangoo').prop('readonly', false);
+            }
+        });
+
+        $("#dailyslotddl").change(function () {
+            //if ($("#dailyslotddl").find("option:selected").val() == '')
+            //    $('#dailyslotddl').attr("data-val", "true");
+            if ($(this).find("option:selected").text() == 'זמן אחר') {
+                $('.othertime').removeClass("hidden");
+                //$('.othertime').attr("data-val", "true");
+                //$('.othertime').attr("data-val-required", "msfd");
+            } else {
+                $('.othertime').addClass("hidden");
+                //$('.othertime').attr("data-val", "false");
+            }
+        });
+
+        $.validator.addMethod('date',
+            function (value, element) {
+                if (this.optional(element)) {
+                    return true;
+                }
+                var ok = true;
+                try {
+                    $.datepicker.parseDate('dd/mm/yy', value);
+                } catch (err) {
+                    ok = false;
+                }
+                return ok;
+            });
+        $('.datepicker').datepicker({ dateFormat: 'dd/mm/yy' });
+
+        $("#btn_addclass").click(function () {
+            //debugger;
+            //var r = $(".ipothertime").val();
+            if ($("#dailyslotddl").find("option:selected").text() == 'זמן אחר' && $(".ipothertime").val() == '') {
+                $(".othertime").removeClass('has-success');
+                $(".othertime").addClass('has-error');
+                return false;
+            } else {
+                $(".othertime").removeClass('has-error');
+                $(".othertime").addClass('has-success');
+            }
+        });
+
+        $(document).on('submit', 'form', function () {
+            var buttons = $(this).find('[type="submit"]');
+            if ($(this).valid()) {
+                buttons.each(function () {
+                    //debugger;
+                    $(this).prop('value', 'שומר שינויים...');
+                    $(this).prop('disabled', true);
+                });
+                //buttons.each(function (btn) {
+                //    debugger;
+                //    $(buttons[btn]).prop('disabled', true);
+                //    $(buttons[btn]).value('המתן...');
+                //});
+            } else {
+                buttons.each(function (btn) {
+                    $(buttons[btn]).prop('disabled', false);
+                });
+            }
+        });
+
+
+        $('#instructorMulti').multiselect({
+            nonSelectedText: 'בחר מאמן',
+            allSelectedText: 'כולם נבחרו'
+        });
+        //$('#placementsMulti').multiselect({
+        //    nonSelectedText: 'בחר סוגי מקום',
+        //    allSelectedText: 'כולם נבחרו',
+        //    onChange: function (option, checked, select) {
+        //        var id = $(option).val();
+        //        //debugger;
+        //        //alert('Changed option ' + id + '.');
+        //        if (checked) {
+        //            $('.StudioPlacementId_' + id).removeClass('hidden');
+        //            //$('#MaxParticipantstxt').prop('disabled', true);
+        //            clacMaxParticipants();
+        //        }
+        //        else {
+        //            $('.StudioPlacementId_' + id).addClass('hidden');
+        //            var selectedOptions = $('#placementsMulti option:selected');
+        //            clacMaxParticipants();
+        //            if (selectedOptions.length == 0) { $('#MaxParticipantstxt').prop('disabled', false); }
+        //        }
+        //    }
+        //});
+
+        $(".placmentinput").on("change paste keyup", function () {
+            //debugger;
+            //var myArray = $(".placmentinput").map(function () {
+            //    return parseInt($(this).val());
+            //}).get();
+            clacMaxParticipants();
+            //var newval = $(this).val();
+            //var maxval = $('#MaxParticipantstxt').val();
+            //$('#MaxParticipantstxt').val(parseInt(newval) + parseInt(maxval));
+        });
+
+        function clacMaxParticipants() {
+            //debugger;
+            var total = 0;
+            $(".placmentinput").map(function () {
+                if ($(this).parent().parent().is(":not(.hidden, .StudioPlacementId_999)")) {
+                    total += parseInt($(this).val());
+                }
+            });
+            $('#MaxParticipantstxt').val(total);
+        }
+
+        $('.checkbox.ToCreate').change(function () {
+            var MaxParticipants = $('#MaxParticipantstxt');
+            var val = $(this).data('placementid');
+            var id = 'addParticipants' + $(this).data('id');
+            var p = Number(MaxParticipants.val());
+            if ($(this).prop('checked')) {
+                $(this).closest('div.panel').removeClass("panel-danger").addClass("panel-success");
+                $('#' + id).removeClass("hidden");
+                if (val != 999 && val != 1003 && val != 1007) p = p + 1;
+                $('#MaxParticipantstxt').val(p);
+            }
+            else {
+                $(this).closest('div.panel').removeClass("panel-success").addClass("panel-danger");
+                $('#' + id).addClass("hidden");
+                if (val != 999 && val != 1003 && val != 1007) p = p - 1;
+                $('#MaxParticipantstxt').val(p);
+            }
+        });
+
+        $(".btn-group").addClass("btn-control");
+        $(".btn-group>button").addClass("form-control");
+
+        @if (Model.Id > 0)
+        {
+            var s = @Html.Raw(string.Join("', '", Model.InstructorIds));
+            //var p = @Html.Raw(string.Join("', '", Model.PlacementIds));
+
+            //var selected = Server.UrlDecode(string.Join(",", Model.InstructorIds.Select(item => "'" + item + "'")));
+           <text> $('#instructorMulti').multiselect('select', ['@s']);</text>
+            @*<text> $('#placementsMulti').multiselect('select', ['@p']);</text> //$('#placementsMulti').multiselect('disable');*@
+
+        }
+
+    });
+    </script>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        <script src="~/Scripts/bootstrap-multiselect.js"></script>
+    }

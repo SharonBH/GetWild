@@ -1,0 +1,36 @@
+﻿@model InShapeModels.ClassEnrollmentModel
+<link href="~/Content/star-rating.css" rel="stylesheet" />
+<script src="~/Scripts/star-rating.js"></script>
+
+<div class="panel panel-info panel-center">
+<div class="panel-heading">איך היה האימון ?</div>
+
+    <div class="panel-body" style="direction: ltr;"> @*" text-align: right;">*@
+        <h4>@Model.Class.Name - @Model.Class.Date.ToShortDateString()</h4>
+        <input id="input-1" class="rating rating-loading" dir="rtl" data-show-clear="false" data-min="0" data-max="5" data-step="1" data-size="xs">
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+
+<script>
+//$(document).on('ready', function () {
+    $('#input-1').rating({
+        starCaptions: { 1: 'לא טוב', 2: 'טעון שיפור', 3: 'טוב', 4: 'מעולה', 5: 'מדהים' },
+        clearCaption: "לא דורג"
+    });
+    $('.rating,#input-1').on(
+                'change', function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Gym/RateClass",
+                        data: {enrolmentid: @Model.Id, rating: $(this).val()},
+                        datatype: "text",
+                        success: function (data) {
+                            $("#input-1").rating("refresh", { disabled: true });
+                        }
+                    });
+                    //console.log('Rating selected: ' + $(this).val());
+                });
+    //});
+</script>

@@ -1,0 +1,170 @@
+﻿@using InShapeModels
+@model GetWild.Models.RegisterInstructorViewModel
+@{
+    ViewBag.Title = "רישום";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<form action="" method="post" enctype="multipart/form-data">
+    <div class="form-horizontal">
+        <hr />
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Userid)
+        <h4>טופס רישום מאמן.</h4>
+        <hr />
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.Fname, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Fname, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Lname, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Lname, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ImageUpload, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @if (@Model != null)
+                {
+                    <img src="@Model.ProfileIMG" class="form-img" />
+                    <br />
+                }
+                @Html.TextBoxFor(model => model.ImageUpload, new { type = "file" })
+                @Html.ValidationMessageFor(model => model.ImageUpload, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.mobile, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.mobile, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Gender, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.Gender, Gender.נקבה)@Html.Label(Gender.נקבה.ToString())</label>
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.Gender, Gender.זכר)@Html.Label(Gender.זכר.ToString())</label>
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.DOB, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.DOB, new { @class = "form-control", @placeholder = "DD/MM/YYYY" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Address, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+            </div>
+        </div>
+        <hr />
+        <div class="form-group">
+            @Html.LabelFor(model => model.ColorCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ColorCode, new { htmlAttributes = new { @class = "form-control jscolor" } })
+                @Html.ValidationMessageFor(model => model.ColorCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        @*<div class="form-group">
+            @Html.LabelFor(m => m.UserType, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.UserType, UserType.User)@Html.Label(UserType.User.ToFriendlyString())</label>
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.UserType, UserType.FreeUser)@Html.Label(UserType.FreeUser.ToFriendlyString())</label>
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.UserType, UserType.TrailUser)@Html.Label(UserType.TrailUser.ToFriendlyString())</label>
+                <label class="radio-inline">@Html.RadioButtonFor(m => m.UserType, UserType.DemoUser)@Html.Label(UserType.DemoUser.ToFriendlyString())</label>
+            </div>
+        </div>*@
+
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Rate, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Rate, new { @class = "form-control", @id = "NumofClassesId" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.DailyRate, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.DailyRate, new { @class = "form-control", @id = "NumofClassesId" })
+            </div>
+        </div>
+        <hr />
+        <div class="form-group">
+            @Html.LabelFor(m => m.ReceiveSMS, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(m => m.ReceiveSMS, new { @class = "form-control" })
+            </div>
+        </div>
+
+        @*if (Utilities.App.CurrentCompany.UseSMS)
+        {
+            <div class="form-group">
+                @Html.LabelFor(m => m.SendWelcomeSMS, new {@class = "col-md-2 control-label"})
+                <div class="col-md-10">
+                    @Html.CheckBoxFor(m => m.SendWelcomeSMS, new {@class = "form-control"})
+                </div>
+            </div>
+        }*@
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-primary btn-block" value="הרשם!" />
+            </div>
+        </div>
+    </div>
+</form>
+<div>
+    @Html.ActionLink("חזרה לניהול", "GetInstructors")
+</div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        <script src="~/Scripts/jscolor.min.js"></script>
+    }
+    <script>
+        jQuery(function ($) {
+            $.validator.addMethod('date',
+            function (value, element) {
+                if (this.optional(element)) {
+                    return true;
+                }
+
+                var ok = true;
+                try {
+                    $.datepicker.parseDate('dd/mm/yy', value);
+                }
+                catch (err) {
+                    ok = false;
+                }
+                return ok;
+            });
+        });
+
+    </script>
+

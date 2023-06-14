@@ -1,0 +1,75 @@
+﻿@using Utilities
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - @Utilities.App.DefaultCompany.SiteName</title>
+    @Styles.Render("~/Content/themes/base/css")
+    <!-- Load Bootstrap RTL theme from CDNJS -->
+    @*<link rel="stylesheet" href="//cdn.rawgit.com/morteza/bootstrap-rtl/master/dist/cdnjs/3.3.1/css/bootstrap-rtl.min.css">*@
+    @Styles.Render("~/Content/fonts")
+    @Styles.Render("~/Content/css")
+    <link rel="stylesheet" href="~/Content/@Utilities.App.DefaultCompany.CSSFileName" />
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+
+</head>
+<body>
+    <nav class="navbar navbar-static-top navbar-default">
+        <div class="container-fluid">
+            @if (ViewBag.isLogin != null && ViewBag.isLogin)
+            {
+
+            }
+            else
+            {
+                <div class="navbar-header">
+                    @Html.ActionLink(" ", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                if (User.IsInRole("admin") || User.IsInRole("Instructor"))
+                {
+                    @Html.Action("GetAdminTop", "Admin")
+                }
+                    <div class="navbar-collapse collapse">
+                        @*<div class="logo"><a href="/home/index"><img src="/images/logo-GW.png" /></a></div>*@
+                        @*<div style="float: right; padding:1% 1% 0 0; width: 70%;"><h4>050-4000000</h4> </div>*@
+                        @if (!Request.IsAuthenticated)
+                        {
+                            <ul class="nav navbar-nav navbar-reg">
+                                <li>@Html.ActionLink("עמוד הבית", "Index", "Home")</li>
+                                <li>@Html.ActionLink("אודות", "About", "Home")</li>
+                                <li>@Html.ActionLink("הצוות", "TheTeam", "Home")</li>
+                                <li>@Html.ActionLink("צור קשר", "Contact", "Home")</li>
+                            </ul>
+                        }
+                        @Html.Partial("_LoginPartial")
+                    </div>
+                }
+            </div>
+    </nav>
+    <div class="container-fluid body-content" id="mainBody">
+        @RenderBody()
+        @*<hr />*@
+        <footer class="panel-footer">
+            <p class="text-muted" style="direction: ltr;">
+                &copy; @DateTime.Now.Year - @Utilities.App.DefaultCompany.SiteName. <i>developed by SBH</i>
+            </p>
+            
+            @{Html.RenderAction("DebugInfo", "Debug");}
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    @if (User.IsInRole("admin") || User.IsInRole("Instructor") || User.IsInRole("ClassInstructor"))
+    {
+        <script src="~/Scripts/admin.js"></script>}
+</body>
+</html>

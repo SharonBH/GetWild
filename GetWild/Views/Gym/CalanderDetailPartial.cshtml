@@ -1,0 +1,197 @@
+﻿@model GetWild.Models.ClassViewModel
+@if (Model != null)
+{
+    <div class="row">
+        <div class="col-md-8 col-xs-8">
+            <h2>@Model.Name</h2>
+            @if (!Model.CurrentCompany.UseClassTypeDetails)
+            { @Model.Description}
+            <h4>שעת האימון: @Model.Time.Value.AddMinutes(@Model.Duration.Value).ToShortTimeString() - @Model.Time.Value.ToShortTimeString()</h4>
+            @if (Model.CurrentCompany.UseInstructors)
+    {
+        <h4>מאמן: @Model.ClassInstructors</h4>
+}
+            <p>@Model.ClassTypeDescription @*@string.IsNullOrEmpty(Model.Description) ? @Model.ClassTypeDescription : @Model.Description*@</p>
+            <div class="col-md-6">
+                @if (Model.IsUserEnrolled)
+                {
+                    if (Model.CanCancel)
+                    {
+                        <a id="btn_outrolltoClass" data-id="@Model.Id" class="btn btn-default btn-danger btn-block">ביטול רישום | <span class="glyphicon glyphicon-chevron-left"></span></a>
+                        <div id="enroll-result"></div>
+                    }
+                    else
+                    {
+                        if (Model.CanLateCancel)
+                        {
+                            <button id="btn_outrolltoClass" data-id="@Model.Id" data-islate="True" class="btn btn-default btn-comment btn-block">ביטול מאוחר | <span class="glyphicon glyphicon-chevron-left"></span></button>
+                            <div id="enroll-result" class="alert EnrollComment">* לידעתך - ביטול מאוחר ראשון גורר הרשמה מאוחרת לאימון הבא כ- 5 שעות בלבד לפני תחילת השיעור</div>
+                        }
+                        else
+                        {
+                            <button id="btn_outrolltoClass" data-id="@Model.Id" class="btn btn-default btn-danger btn-block disabled">ביטול רישום | <span class="glyphicon glyphicon-chevron-left"></span></button>
+                            <div id="enroll-result">ניתן לבטל אימון עד @Model.CurrentCompany.CancellationThresholdMins דקות לפני תחילת האימון</div>
+                        }
+                    }
+                }
+                else if (Model.IsUserInWaitingList)
+                {
+                    if (Model.CanEnrollFromWaitList)
+                    {
+                        <a id="btn_enrolltoClassFromWaitList" data-id="@Model.Id" class="btn btn-default btn-reg btn-block">הרשמה | <span class="glyphicon glyphicon-chevron-left"></span></a>
+                    }
+                    else
+                    {
+                        <a id="btn_CancelWaitingList" data-id="@Model.Id" class="btn btn-default btn-danger btn-block">ביטול המתנה | <span class="glyphicon glyphicon-chevron-left"></span></a>
+                    }
+                }
+                else
+                {
+                    if (Model.CanEnroll)
+                    {
+                        <a id="btn_enrolltoClass" data-id="@Model.Id" class="btn btn-default btn-reg btn-block">הרשמה | <span class="glyphicon glyphicon-chevron-left"></span></a>
+                        @*<a class="btn btn-default btn-reg btn-block disabled">הרשמה | <span class="glyphicon glyphicon-chevron-left"></span></a>*@
+                    }
+                    else if (Model.CanJoinWaitingList)
+                    {
+                        <a id="btn_joinWaitingList" data-id="@Model.Id" class="btn btn-info btn-block">רשימת המתנה | <span class="glyphicon glyphicon-chevron-left"></span></a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-default btn-reg btn-block disabled">הרשמה | <span class="glyphicon glyphicon-chevron-left"></span></a>
+                    }
+                }
+            </div>
+
+
+        </div>
+        <div class="col-md-4 col-xs-4">
+            <img src="@Model.Picture" alt="@Model.Name" />
+        </div>
+    </div>
+    <div class="row row-topbuffer">
+        @*<div class="col-md-11 col-md-offset-1">*@
+        <div class="alert alert-danger" id="enroll-result">
+            @if (Model.IsFull)
+            {
+                if (Model.CanEnrollFromWaitList)
+                {
+                    <text>תורך ברשימת המתנה הגיע, יש לך כמה דקות להירשם לפני שיעבור לבא בתור</text>
+                }
+                else if (Model.CanJoinWaitingList)
+                {
+                    <text>אין כרגע מקומות פנויים לאימון, באפשרותך להירשם לרשימת המתנה, הודעה תשלח אליך באם יתפנה מקום.</text>
+                }
+                else
+                {
+                    <text>אין כרגע מקומות פנויים לאימון זה.</text>
+                }
+            }
+            else
+            {
+                if (!Model.CanEnroll)
+                {
+                    @Model.CannotEnrollMSG
+                }
+                else
+                {
+                    @Model.SpaceLeftMSG
+                }
+            }
+
+        </div>
+    </div>
+    @*</div>*@
+    <script type="text/javascript">
+        $(function () {
+            // Document.ready -> link up remove event handler
+            $("#btn_enrolltoClass").click(function () {
+                $(this).attr("disabled", true);
+                $(this).attr("value", 'רגע...רושם לאימון');
+                var id = $(this).data("id");
+                var selectedplacement = $('#classplacement').val();
+                $.ajax({
+                    type: "POST",
+                    url: "/Gym/EnrollToClass",
+                    data: { classid: id, placementKey: selectedplacement },
+                    datatype: "text",
+                    success: function (data) {
+                        SetConfirmPopup(data, 'enroll');
+                    }
+                });
+            });
+
+            $("#btn_enrolltoClassFromWaitList").click(function () {
+                $(this).attr("disabled", true);
+                $(this).attr("value", 'רגע...רושם לאימון');
+                var id = $(this).data("id");
+                var selectedplacement = $('#classplacement').val();
+                $.ajax({
+                    type: "POST",
+                    url: "/Gym/EnrollToClassFromWaitList",
+                    data: { classid: id, placementKey: selectedplacement },
+                    datatype: "text",
+                    success: function (data) {
+                        SetConfirmPopup(data, 'enroll');
+                    }
+                });
+            });
+
+
+            // Document.ready -> link up remove event handler
+            $("#btn_outrolltoClass").click(function () {
+                $(this).attr("disabled", true);
+                $(this).attr("value", 'רגע...רושם לאימון');
+                var id = $(this).data("id");
+                var islate = $(this).data("islate");
+                $.ajax({
+                    type: "POST",
+                    url: "/Gym/OutrollFromClass",
+                    data: { classid: id, isLate: islate },
+                    datatype: "text",
+                    success: function (data) {
+                        SetConfirmPopup(data, islate ? 'late' : 'outroll');
+                    }
+                });
+            });
+
+            $("#btn_joinWaitingList").click(function () {
+                $(this).attr("disabled", true);
+                $(this).attr("value", 'רגע...רושם לאימון');
+                var id = $(this).data("id");
+                $.ajax({
+                    type: "POST",
+                    url: "/Gym/JoinWaitingList",
+                    data: { classid: id },
+                    datatype: "text",
+                    success: function (data) {
+                        SetConfirmPopup(data, 'joinwait');
+                    }
+                });
+            });
+
+            $("#btn_CancelWaitingList").click(function () {
+                $(this).attr("disabled", true);
+                $(this).attr("value", 'רגע...רושם לאימון');
+                var id = $(this).data("id");
+                $.ajax({
+                    type: "POST",
+                    url: "/Gym/CancelWaitingLis",
+                    data: { classid: id },
+                    datatype: "text",
+                    success: function (data) {
+                        SetConfirmPopup(data, 'outwait');
+                    }
+                });
+            });
+        });
+    </script>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-8">
+            <h2>אימון לא נמצא</h2>
+        </div>
+    </div>
+            }

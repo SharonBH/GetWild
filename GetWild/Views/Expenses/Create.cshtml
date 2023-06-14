@@ -1,0 +1,109 @@
+﻿@model GetWild.Models.ExpensesViewModel
+
+@{
+    ViewBag.Title = "ניהול סטודיו";
+}
+
+@if (@Model != null)
+{
+    <h2>ערוך הכנסה/הוצאה</h2>
+}
+else
+{
+    <h2>הוסף הכנסה/הוצאה</h2>
+}
+@*@using (Html.BeginForm("Upload", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))*@
+<form action="" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.StudioId)
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.Description, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Date, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "יום/חודש/שנה" } })
+                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-2">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-danger btn-number" data-type="minus" data-field="Amount">
+                            <span class="glyphicon glyphicon-minus"></span>
+                        </button>
+                    </span>
+                    @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-success btn-number" data-type="plus" data-field="Amount">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    </span>
+                </div>
+                
+                @Html.ValidationMessageFor(model => model.Amount, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                @if (@Model != null)
+                { <input type="submit" value="שמור שינויים" class="btn btn-primary btn-block" />}
+                else
+                { <input type="submit" value="הוסף" class="btn btn-primary btn-block" />}
+            </div>
+        </div>
+    </div>
+    </form>
+
+<div>
+    @Html.ActionLink("חזרה לדוח", "ExpensesMonthlyReport", "Report")
+</div>
+<script type="text/javascript">
+    //$(function () { // will trigger when the document is ready
+    //    $('.timepicker').datetimepicker({
+    //        format: 'LT',
+    //        locale: 'he'
+    //    }); //Initialise any date pickers
+    //});
+    jQuery(document).ready(function($) {
+       
+        $.validator.addMethod('date',
+            function (value, element) {
+                if (this.optional(element)) {
+                    return true;
+                }
+                var ok = true;
+                try {
+                    $.datepicker.parseDate('dd/mm/yy', value);
+                } catch (err) {
+                    ok = false;
+                }
+                return ok;
+            });
+        $('.datepicker').datepicker({ dateFormat: 'dd/mm/yy' });
+
+    });
+</script>
+@section Scripts {
+        <script src="~/Scripts/js/plus-minus.js"></script>
+        @Scripts.Render("~/bundles/jqueryval")
+    }

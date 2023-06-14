@@ -1,0 +1,77 @@
+﻿@model InShapeModels.UsersGraphModel
+@*<script src="https://code.highcharts.com/modules/exporting.js"></script>*@
+
+    
+    
+    <div id="container" style="height:400px; margin: 0 auto"></div>
+<script>
+    $(function() {
+        Highcharts.setOptions({
+            global: {
+                useUTC: false
+            }
+        });
+    });
+    var dates = '@HttpUtility.HtmlDecode(string.Join(",", @Model.UsersPerDay.Select(x => x.Date.Date.ToShortDateString()).ToArray()))';
+    //var res = "'" + dates.replace(/,/g, "\',\'") + "'";
+    var res2 = dates.split(",");
+    //alert(res);
+    $(function() {
+        $('#container').highcharts({
+            chart: {
+                type: 'spline'
+            },
+            title: {
+                text: 'מתאמנים',
+                x: -20 //center
+            },
+            subtitle: {
+                text: '',
+                x: -20
+            },
+            xAxis: {
+                //type: 'datetime',
+                //dateTimeLabelFormats: { day: '%b %m, %Y'},
+                //categories: ['10/11/15','11/11/15','13/11/15','29/11/15','30/11/15','02/12/15','03/12/15','05/12/15']
+                categories: res2
+
+            },
+            yAxis: {
+                title: {
+                    text: 'מתאמנים'
+                },
+                plotLines: [
+                    {
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }
+                ]
+            },
+            tooltip: {
+                valueSuffix: '',
+                useHTML: true
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                useHTML: true,
+                borderWidth: 0
+            },
+            colors: ['#1e90ff', '#0066FF', '#990000', '#233D7F'],
+            series: [
+                {
+                    name: 'מתאמנים פעילים',
+                    data: [@string.Join(",", @Model.UsersPerDay.Select(x => x.ActiveUsers).ToArray())]
+                }
+            ]
+        });
+    });
+</script>
+<hr/>
+<div class="col-md-6 col-md-offset-3">
+    <div class="col-md-4 text-primary"><h3>סה"כ משתמשים: @Model.TotalUsers </h3></div>
+    <div class="col-md-4 text-success"><h3>פעילים: @Model.ActiveUsers </h3></div>
+    <div class="col-md-4 text-danger"><h3>לא פעילים: @Model.InActiveUsers </h3></div>
+</div>

@@ -1,0 +1,146 @@
+﻿@model GetWild.Models.ClassViewModel
+
+@if (Model != null)
+{
+
+        <!-- Modal content-->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">שבץ לאימון: @Model.Name (@Model.Date.Value.ToString("g"))</h4>
+            </div>
+            <div class="modal-body">
+                <div class="">
+                    <div class="form-group">
+                        <div class="col-md-2">מתאמן: </div>
+                        <div class="input-group col-md-10">
+                            <div class="input-group">
+                                @Html.TextBox("UserSearch", null, new { @class = "form-control form-control-rounded autocomplete-with-hidden", @id = "userddl", data_url = Url.Action("GetUsersForClassSearch", "Account") })
+                                <span class="input-group-addon btn-rounded" style="background-color: #39B3D7; color: #fff;">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </span>
+                                @*<span class="input-group-btn">
+                                        <button class="btn btn-info btn-rounded" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                                    </span>*@
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div id="enroll-result"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                @if (Model.CurrentCompany.UsePlacements && Model.ClassAvailablePlacements.Any())
+                {
+                <div class="">
+                    <div class="form-group">
+                        <div class="col-md-6">מיקום: </div>
+                        <div class="input-group col-md-6">
+                            @Html.DropDownListFor(m => m.SelectedPlacementId, new SelectList(Model.ClassAvailablePlacements, "Id", "DisplyName"), new { @class = "form-control", @id = "classplacement" })
+                        </div>
+                    </div>
+                </div>
+                }
+                    <button id="btn_enrolltoClass" class="btn btn-default btn-reg">הרשמה | <span class="glyphicon glyphicon-chevron-left"></span></button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">ביטול</button>
+                </div>
+
+                <script type="text/javascript">
+                    $(function () {
+                        var userid;
+                        var classid;
+
+                        $('#userddl').autocomplete({
+                            minLength: 3,
+                            source: function (request, response) {
+                                var url = $(this.element).data('url');
+                                classid = @Model.Id;
+                                $.getJSON(url, { term: request.term, classid: classid }, function (data) {
+                                    response(data);
+                                });
+                            },
+                            select: function (event, ui) {
+                                $(event.target).next('input[type=hidden]').val(ui.item.id);
+                                userid = ui.item.id;
+                                //    window.document.location = "Manage?userid=" + ui.item.id;
+                            },
+                            change: function (event, ui) {
+                                if (!ui.item) {
+                                    $("#btn_enrolltoClass").attr("disabled", false);
+                                    $('#enroll-result').html('');
+                                    $(event.target).val('').next('input[type=hidden]').val('');
+                                }
+                            }
+                        });
+
+                        jQuery('#userddl').on('input', function () {
+                            $("#btn_enrolltoClass").attr("disabled", false);
+                            $('#enroll-result').html('');
+                        });
+
+                        $("#btn_enrolltoClass").click(function () {
+                            var btn = $(this);
+                            btn.attr("disabled", true);
+                            classid = @Model.Id; //$(this).data('id');
+                            var url = window.location.href;
+                            //debugger;
+                            var weeklyreport = url.includes('WeeklySummaryReport');
+                            var withplacements = url.includes('manageplacements');
+                            var selectedplacement = $('#classplacement').val();
+                            var posturl = 'AdminEnrollToClass';
+                            if (withplacements) posturl = 'AdminEnrollToClassPlacement'
+                            if (userid != null && userid != '') {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/StudioClass/" + posturl,
+                                    data: { classId: classid, classAvailablePlacementId: selectedplacement, userId: userid, WeeklyReport: weeklyreport },
+                                    datatype: "text",
+                                    success: function (data) {
+                                        var result = data.Response;
+                                        if (result == 'Error') {
+                                            $('#enroll-result').html(data.Message);
+                                        } else {
+                                            //debugger;
+                                            $('#userddl').val('');
+                                            $('#BoClassEnrollModal').modal('hide');
+                                            $('body').removeClass('modal-open');
+                                            $('.modal-backdrop').remove();
+                                            if (withplacements)
+                                            {
+                                                var subsciptionId = data.SubsciptionId;
+                                                var fullName = data.FullName;
+                                                var removeParticipantsDiv = $('#RemoveParticipants' + selectedplacement);
+                                                removeParticipantsDiv.removeClass('hidden');
+                                                $('#addParticipants' + selectedplacement).addClass('hidden');
+                                                $('#addParticipants' + selectedplacement).closest('.panel').removeClass('panel-success').addClass('panel-primary');
+                                                removeParticipantsDiv.children('a').data('id', subsciptionId).data('classid', classid);
+                                                //removeParticipantsDiv.children('a').data('classid', classid);
+                                                removeParticipantsDiv.children('span').text(fullName);
+                                            }
+                                            else { $('#ClassesTable').html(data); }
+                                            btn.attr("disabled", false);
+
+                                        }
+                                    }
+                                });
+                            } else {
+                                {
+                                    $('#enroll-result').html('עליך לבחור מתאמן לשיבוץ');
+                                }
+                            }
+                        });
+                        $('#BoClassEnrollModal').on('hidden.bs.modal', function (e) {
+                            $(this)
+                                .find("input,textarea,select")
+                                .val('')
+                                .end()
+                                .find("input[type=checkbox], input[type=radio]")
+                                .prop("checked", "")
+                                .end();
+                            $('#enroll-result').html('');
+                        });
+                    });
+                </script>
+
+                }

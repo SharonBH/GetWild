@@ -1,0 +1,194 @@
+﻿@model GetWild.Models.SubscriptionViewModel
+<div id="RightNav">
+    <div><a href="/Gym/UserInfo"><h3><img src="~/images/profile-small.png" /> קיוסק מידע אישי </h3></a></div>
+    <div><a href="/Gym/GetCalander"><h3><img src="~/images/calander-small.png" /> לוז אימונים </h3></a></div>
+    <hr />
+    
+    @if (Model.Id > 0 && Model.NumClasses > 0)
+    {
+        
+        <div class="panel panel-info">
+
+            <div class="panel-heading">
+                @*אימונים שנותרו: <span class="badge badge-notify2" id="UserCurrentBalance">@Model.CurrentBalance</span>*@
+                פרטי מנוי:<b> @*@Model.SubscriptionType.Name*@</b> @if (Model.Frozen)
+                                                               { <span class="label label-danger">המנוי בהקפאה</span> }
+            </div>
+            <div class="panel-body panel-center">
+                <div id="NetxUserEnrollmentContainer"></div>
+                אימונים שנותרו:
+                <div class="progress">
+                    <div class="progress-bar progress-bar-@Model.SubscriptionProgressClass" role="progressbar" aria-valuenow="@Model.SubscriptionProgress"
+                         aria-valuemin="0" aria-valuemax="100" style="width: @Model.SubscriptionProgress%;">
+                        <span id="UserCurrentBalance">@Model.CurrentBalance</span>
+                    </div>
+                </div>
+                @*<h4>תוקף המנוי</h4>*@
+                @if (@Model.DateExpire.HasValue)
+                {
+                    <text> המנוי בתוקף עד: </text>
+                    <span style="font-weight: bold;">@Model.DateExpire.Value.ToShortDateString()</span>
+                    <text> (@Model.ExpirationDays ימים) </text>
+                }
+                else
+                {
+                    <text> המנוי ללא תאריך תפוגה </text>
+                }
+                @*@Model.Expiration*@
+            </div>
+        </div>
+    }
+    else if (Model.Id > 0 && Model.NumClasses == 0)
+    {
+        <div class="panel panel-info">
+
+            <div class="panel-heading">
+                פרטי מנוי:<b> @*@Model.SubscriptionType.Name*@</b> @if (Model.Frozen)
+                {<span class="label label-danger">המנוי בהקפאה</span>}
+            </div>
+            <div class="panel-body panel-center">
+                <div id="NetxUserEnrollmentContainer">
+                    <div style="margin:10% 48%"><img src="/images/loading-red.gif" /></div></div>
+                @if (@Model.DateExpire.HasValue)
+                {
+                    <text> המנוי בתוקף עד: </text>
+                    <span style="font-weight: bold;">@Model.DateExpire.Value.ToShortDateString()</span>
+                    <text> (@Model.ExpirationDays ימים) </text>
+                }
+                else
+                {
+                    <text> המנוי ללא תאריך תפוגה </text>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel panel-danger">
+            <div class="panel-heading">אין מנוי פעיל</div>
+            <div class="panel-body panel-center">יש לחדש מנוי על מנת להמשיך ולהנות מהמערכת.</div>
+        </div>
+    }
+
+
+
+    <div class="alert alert-info" id="messagesAlert">
+        @if (Model.Messages.Count > 0)
+        {
+            <span class="glyphicon glyphicon-envelope"></span>
+            <a id="LinkMsgs" href="#"> @string.Format("יש {0} הודעות חדשות", Model.Messages.Count) </a>
+        }
+        else
+        {
+            <text>אין הודעות חדשות</text>
+        }
+    </div>
+    <div class="panel panel-info">
+        <a id="btn_showTandC" class="btn btn-primary btn-block">תקנון - @Utilities.App.DefaultCompany.SiteName</a>
+    </div>
+    @*<div class="panel panel-info">
+        <a id="btn_NextClasses" class="btn btn-info btn-block">האימונים שלי</a>
+    </div>*@
+    <div class="panel panel-info">
+        <a id="btn_ChangePass" class="btn btn-info btn-block">שינוי סיסמא</a>
+    </div>
+    @*<div class="panel panel-info panel-center">
+            <h3>מדד לבבות</h3>
+            <div class="panel-body">
+                @for (int i = 1; i <= Model.HeartRate; i++)
+                {
+                    <span class="glyphicon glyphicon-heart icon-red"></span>
+                }
+            </div>
+        </div>*@
+    <div id="RateLastClass"></div>
+</div>
+
+    <div class="modal fade" id="IMGUploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div id="IMGUploadContainer">
+            <div style="margin:10% 48%"><img src="/images/loading-red.gif" /></div>
+        </div>
+    </div>
+<div id="msgModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">ההודעות שלי</h4>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group">
+                    @foreach (var msg in Model.Messages)
+                    {
+                        <li class="list-group-item">
+                            @msg.Date.ToShortDateString(): @msg.Message
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnMsgsRead">סגור</button>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial("TandCPopup")
+    <script>
+        jQuery(document).ready(function ($) {
+            $('#NetxUserEnrollmentContainer').load("/Gym/NetxUserEnrollment", function (response, status, xhr) {
+                if (status != "success") {
+                    $('#IMGUploadContainer').html('תקלה, אנא נסה מאוחר יותר' + response);
+                }
+            });
+
+            $('#RateLastClass').load("/Gym/GetLastClass", function (response, status, xhr) {
+                if (status != "success") {
+                    $('#IMGUploadContainer').html('תקלה, אנא נסה מאוחר יותר' + response);
+                }
+            });
+
+            $("#LinkMsgs").click(function () {
+                $('#msgModal').modal('show', { backdrop: 'static' });
+            });
+
+            $("#btn_showTandC").click(function () {
+                $('#TandCModal #btn_confirmtandc').addClass('hidden');
+                $('#TandCModal #closetandc').removeClass('hidden');
+                $('#TandCModal #btn_logouttandc').addClass('hidden');
+                $('#TandCModal').modal('show', { backdrop: 'static' });
+            });
+
+            $("#btnMsgsRead").click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Gym/ReadMessages",
+                    data: {},
+                    datatype: "text",
+                    success: function (data) {
+                        $('#messagesAlert').html(data.Message);
+                    }
+                });
+            });
+
+            $("#btn_ChangePass").click(function () {
+                $('#IMGUploadContainer').load("/Manage/ChangePassword", function (response, status, xhr) {
+                    if (status != "success") {
+                        $('#IMGUploadContainer').html('תקלה, אנא נסה מאוחר יותר' + response);
+                    }
+                });
+                $('#IMGUploadModal').modal('show', { backdrop: 'static' });
+            });
+
+            $("#btn_NextClasses").click(function () {
+                $('#IMGUploadContainer').load("/Gym/NetxUserEnrollment", function (response, status, xhr) {
+                    if (status != "success") {
+                        $('#IMGUploadContainer').html('תקלה, אנא נסה מאוחר יותר' + response);
+                    }
+                });
+                $('#IMGUploadModal').modal('show', { backdrop: 'static' });
+            });
+
+        });
+    </script>

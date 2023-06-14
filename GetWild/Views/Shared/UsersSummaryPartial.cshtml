@@ -1,0 +1,40 @@
+﻿@model List<InShapeModels.UsersSummaryModel>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+    <div class="btn-group smallpadding" role="group">
+        <button type="button" class="btn btn-primary" data-toggle="dropdown" onclick="getUsers('@((int)item.UserType)', null, null, true);">
+            @item.TypeName <b>@item.Total</b>
+        </button>
+        <button type="button" class="btn btn-primary" data-toggle="dropdown" style="background-color:@item.CssActive;" onclick="getUsers('@((int)item.UserType)', true, false);">
+            @item.Active (@item.ActiveSubscription)
+            @*<span class="badge">@item.Active</span>*@
+        </button>
+        <button type="button" class="btn btn-primary" data-toggle="dropdown" style="background-color:@item.CssInActive;" onclick="getUsers('@((int)item.UserType)', false, false);">
+            @item.InActive
+            @*<span class="badge">@item.InActive</span>*@
+        </button>
+        <button type="button" class="btn btn-primary" data-toggle="dropdown" style="background-color:@item.CssFrozen;" onclick="getUsers('@((int)item.UserType)', true, true);">
+            @item.Frozen
+            @*<span class="badge">@item.Frozen</span>*@
+        </button>
+        <button type="button" class="btn btn-default" data-toggle="dropdown">
+            משלמים <span class="label label-success">@item.Paying / @item.NonPaying</span>
+        </button>
+        
+    </div>
+    }
+</div>
+
+@*<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-3">
+            @item.TypeName: @item.Total
+            (<span class="badge" style="background-color: @item.CssActive;">@item.Active</span> /
+            <span class="badge" style="background-color: @item.CssInActive;">@item.InActive</span> /
+            <span class="badge" style="background-color: @item.CssFrozen;">@item.Frozen</span>)
+        </div>
+    }
+</div>*@

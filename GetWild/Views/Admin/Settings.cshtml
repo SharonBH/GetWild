@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewBag.Title = "הגדרות הסטודיו";
+}
+
+@*<h2>ניהול הסטודיו</h2>*@
+
+<div id="UserListTable" class="row">
+    <div class="col-md-5">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                אימונים היום
+            </div>
+            <div class="panel-body">
+                @Html.Action("GetNextClasses", "StudioClass")
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                מנויים חדשים (7 ימים)
+            </div>
+            <div class="panel-body">
+                @Html.Action("GetNewUsers", "Account")
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                מנויים לפני סיום תוקף
+            </div>
+            <div class="panel-body">
+                @Html.Action("GetAlmostExpiredSubscriptions", "Account")
+            </div>
+        </div>
+    </div>
+</div>
+@*@Html.Partial("_PopupPartial")
+    @Html.Partial("_ConfirmDelete")*@

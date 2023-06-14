@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="b29de491132f4d95b1262b80ee883f99" Name="Diagram1" ZoomLevel="87">
+        <EntityTypeShape EntityType="InShapeModel.BalanceChangeType" Width="1.5" PointX="3" PointY="22.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="InShapeModel.ClassType" Width="1.5" PointX="5.25" PointY="69.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="InShapeModel.UserBalanceTracking" Width="1.5" PointX="10.125" PointY="34.625" IsExpanded="true" />
+        <AssociationConnector Association="InShapeModel.FK_UserBalanceTracking_BalanceChangeType" />
+        <EntityTypeShape EntityType="InShapeModel.SysAlert" Width="1.5" PointX="7.5" PointY="32.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="InShapeModel.UserProcessing" Width="1.5" PointX="7.5" PointY="56.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="InShapeModel.ProfileTracking" Width="1.5" PointX="7.5" PointY="58.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="InShapeModel.ClassDailySlot" Width="1.5" PointX="5.25" PointY="73.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="InShapeModel.UserSMSs" Width="1.5" PointX="10.5" PointY="31" IsExpanded="true" />
+        <EntityTypeShape EntityType="InShapeModel.MSGType" Width="1.5" PointX="3" PointY="18.75" IsExpanded="true" />
+        <AssociationConnector Association="InShapeModel.FK_SysAlerts_MSGTypes" />
+        <AssociationConnector Association="InShapeModel.FK_UserSMSs_MSGTypes" />
+        <EntityTypeShape EntityType="InShapeModel.UserDailyTick" Width="1.5" PointX="7.5" PointY="64.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="InShapeModel.AspNetUserRole" Width="1.5" PointX="7.5" PointY="67" IsExpanded="true" />
+        <EntityTypeShape EntityType="InShapeModel.SmsSender" Width="1.5" PointX="7.5" PointY="69.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="InShapeModel.SubscriptionType" Width="1.5" PointX="5.25" PointY="25.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="InShapeModel.SMSSetting" Width="1.5" PointX="3" PointY="79.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="InShapeModel.Studio" Width="1.5" PointX="3" PointY="48.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="InShapeModel.StudioRoom" Width="1.5" PointX="5.25" PointY="66.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="InShapeModel.Subscriber" Width="1.5" PointX="3" PointY="76.75" IsExpanded="true" />
+        <AssociationConnector Association="InShapeModel.FK_StudioRoom_Studio" />
+        <EntityTypeShape EntityType="InShapeModel.FrozenSubscription" Width="1.5" PointX="10.125" PointY="40" IsExpanded="true" />
+        <EntityTypeShape EntityType="InShapeModel.ClassWaitList" Width="1.5" PointX="12.75" PointY="53.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="InShapeModel.AspNetUser" Width="1.5" PointX="5.25" PointY="37.625" />
+        <AssociationConnector Association="InShapeModel.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="InShapeModel.FK_AspNetUsers_Studio" />
+        <AssociationConnector Association="InShapeModel.FK_ProfileTracking_AspNetUsers" />
+        <AssociationConnector Association="InShapeModel.FK_SmsSender_AspNetUsers" />
+        <AssociationConnector Association="InShapeModel.FK_SysAlerts_AspNetUsers" />
+        <AssociationConnector Association="InShapeModel.FK_UserBalanceTracking_AspNetUsers" />
+        <AssociationConnector Association="InShapeModel.FK_UserDailyTick_AspNetUsers" />
+        <AssociationConnector Association="InShapeModel.FK_UserProcessing_AspNetUsers" />
+        <AssociationConnector Association="InShapeModel.FK_UserSMSs_AspNetUsers" />
+        <AssociationConnector Association="InShapeModel.FK_FrozenSubscription_AspNetUsers" />
+        <AssociationConnector Association="InShapeModel.FK_FrozenSubscription_AspNetUsers1" />
+        <AssociationConnector Association="InShapeModel.FK_ClassType_Studio" />
+        <AssociationConnector Association="InShapeModel.FK_SubscriptionType_Studio" />
+        <EntityTypeShape EntityType="InShapeModel.Tip" Width="1.5" PointX="5.25" PointY="63.25" />
+        <AssociationConnector Association="InShapeModel.FK_Tips_Company" />
+        <AssociationConnector Association="InShapeModel.FK_ClassDailySlot_Studio" />
+        <EntityTypeShape EntityType="InShapeModel.Class_Instructors" Width="1.5" PointX="12.75" PointY="57.875" />
+        <AssociationConnector Association="InShapeModel.FK_Class_Instructors_AspNetUsers" />
+        <EntityTypeShape EntityType="InShapeModel.InstructorSalary" Width="1.5" PointX="7.5" PointY="52" />
+        <AssociationConnector Association="InShapeModel.FK_InstructorSalary_AspNetUsers" />
+        <AssociationConnector Association="InShapeModel.FK_InstructorSalary_AspNetUsers1" />
+        <EntityTypeShape EntityType="InShapeModel.UserMobileDevice" Width="1.5" PointX="7.5" PointY="48.25" />
+        <AssociationConnector Association="InShapeModel.FK_User_MobileDevices_AspNetUsers" />
+        <EntityTypeShape EntityType="InShapeModel.StudioExpens" Width="1.5" PointX="5.25" PointY="60" />
+        <AssociationConnector Association="InShapeModel.FK_StudioExpenses_Studio" />
+        <EntityTypeShape EntityType="InShapeModel.Class" Width="1.5" PointX="10.5" PointY="67.875" />
+        <AssociationConnector Association="InShapeModel.FK_Class_ClassDailySlot" />
+        <AssociationConnector Association="InShapeModel.FK_Class_ClassType" />
+        <AssociationConnector Association="InShapeModel.FK_Class_Instructors_Class" />
+        <AssociationConnector Association="InShapeModel.FK_Class_StudioRoom" />
+        <AssociationConnector Association="InShapeModel.FK_ClassWaitList_Class" />
+        <EntityTypeShape EntityType="InShapeModel.StudioPlacement" Width="1.5" PointX="5.25" PointY="57.125" />
+        <AssociationConnector Association="InShapeModel.FK_StudioPlacements_Studio" />
+        <EntityTypeShape EntityType="InShapeModel.ClassEnrollment" Width="1.5" PointX="15" PointY="53.375" />
+        <AssociationConnector Association="InShapeModel.FK_UserClasses_Class" />
+        <EntityTypeShape EntityType="InShapeModel.ClassAvailablePlacement" Width="1.5" PointX="12.75" PointY="64.375" />
+        <AssociationConnector Association="InShapeModel.FK_ClassAvailablePlacements_Class" />
+        <AssociationConnector Association="InShapeModel.FK_ClassAvailablePlacements_StudioPlacements" />
+        <AssociationConnector Association="InShapeModel.FK_ClassEnrollment_ClassAvailablePlacement" />
+        <EntityTypeShape EntityType="InShapeModel.InstructorDetail" Width="1.5" PointX="7.5" PointY="41.625" />
+        <AssociationConnector Association="InShapeModel.FK_InstructorRates_AspNetUsers" />
+        <EntityTypeShape EntityType="InShapeModel.ClassTypeDetail" Width="1.5" PointX="7.5" PointY="73.75" />
+        <AssociationConnector Association="InShapeModel.FK_Class_ClassTypeDetails" />
+        <AssociationConnector Association="InShapeModel.FK_ClassTypeDetails_ClassType" />
+        <EntityTypeShape EntityType="InShapeModel.LastClass" Width="1.5" PointX="7.5" PointY="45.125" />
+        <AssociationConnector Association="InShapeModel.FK_LastClass_AspNetUsers" />
+        <EntityTypeShape EntityType="InShapeModel.EnrollmentComment" Width="1.5" PointX="17.25" PointY="54.875" />
+        <AssociationConnector Association="InShapeModel.FK_EnrollmentComments_AspNetUsers" />
+        <AssociationConnector Association="InShapeModel.FK_EnrollmentComments_AspNetUsers1" />
+        <AssociationConnector Association="InShapeModel.FK_EnrollmentComments_Class" />
+        <AssociationConnector Association="InShapeModel.FK_EnrollmentComments_ClassEnrollment" />
+        <EntityTypeShape EntityType="InShapeModel.UserSubscription" Width="1.5" PointX="7.5" PointY="35.625" />
+        <AssociationConnector Association="InShapeModel.FK_UserSubscription_AspNetUsers" />
+        <AssociationConnector Association="InShapeModel.FK_UserSubscription_AspNetUsers1" />
+        <AssociationConnector Association="InShapeModel.FK_ClassEnrollment_UserSubscription" />
+        <AssociationConnector Association="InShapeModel.FK_ClassWaitList_UserSubscription" />
+        <AssociationConnector Association="InShapeModel.FK__FrozenSub__Subsc__44EA3301" />
+        <AssociationConnector Association="InShapeModel.FK_UserSubscription_SubscriptionType" />
+        <AssociationConnector Association="InShapeModel.FK_UserBalanceTracking_UserSubscription" />
+        <EntityTypeShape EntityType="InShapeModel.Company" Width="1.5" PointX="0.75" PointY="45.875" />
+        <AssociationConnector Association="InShapeModel.FK_BalanceChangeType_Company" />
+        <AssociationConnector Association="InShapeModel.FK_MSGTypes_Company" />
+        <AssociationConnector Association="InShapeModel.FK_SMSSettings_Company" />
+        <AssociationConnector Association="InShapeModel.FK_Studio_Company" />
+        <AssociationConnector Association="InShapeModel.FK_Subscribers_Company" />
+        <EntityTypeShape EntityType="InShapeModel.DailyExport" Width="1.5" PointX="0.75" PointY="0.75" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
